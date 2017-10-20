@@ -22,7 +22,6 @@
 #import "WXComponent_internal.h"
 #import "WXTransform.h"
 #import "WXAssert.h"
-#import "WXComponent_internal.h"
 #import "WXSDKInstance_private.h"
 #import "WXComponent+BoxShadow.h"
 #import "WXLayoutDefine.h"

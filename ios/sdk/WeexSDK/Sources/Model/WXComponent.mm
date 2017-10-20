@@ -39,6 +39,7 @@
 #import "WXComponent+BoxShadow.h"
 #import "WXTracingManager.h"
 #import "WXComponent+Events.h"
+#import "WXCoreLayout.h"
 
 #pragma clang diagnostic ignored "-Wincomplete-implementation"
 #pragma clang diagnostic ignored "-Wobjc-protocol-method-implementation"
@@ -65,6 +66,8 @@
 }
 
 #pragma mark Life Cycle
+
+
 
 - (instancetype)initWithRef:(NSString *)ref
                        type:(NSString *)type
@@ -137,6 +140,11 @@
         [self _initCompositingAttribute:_attributes];
         [self _handleBorders:styles isUpdating:NO];
         
+        WXCoreFlexLayout::WXCoreLayoutNode *flexNode = WXCoreFlexLayout::WXCoreLayoutNode::newWXCoreNode();
+        flexNode->setStyleWidth(1000.1f);
+        flexNode->setStyleHeight(600.1f);
+        flexNode->calculateLayout();
+        flexNode->freeWXCoreNode();
     }
     
     return self;
@@ -189,7 +197,7 @@
 
 - (void)dealloc
 {
-    free_css_node(_cssNode);
+//    free_css_node(_cssNode);
 
 //    [self _removeAllEvents];
     // remove all gesture and all
@@ -703,7 +711,7 @@
         if(strongSelf) {
             UIColor * startColor = (UIColor*)linearGradient[@"startColor"];
             UIColor * endColor = (UIColor*)linearGradient[@"endColor"];
-            CAGradientLayer * gradientLayer = [WXUtility gradientLayerFromColors:@[startColor, endColor] locations:nil frame:strongSelf.view.bounds gradientType:[linearGradient[@"gradientType"] integerValue]];
+            CAGradientLayer * gradientLayer = [WXUtility gradientLayerFromColors:@[startColor, endColor] locations:nil frame:strongSelf.view.bounds gradientType:(WXGradientType)[linearGradient[@"gradientType"] integerValue]];
             if (gradientLayer) {
                 _backgroundColor = [UIColor colorWithPatternImage:[strongSelf imageFromLayer:gradientLayer]];
                 strongSelf.view.backgroundColor = _backgroundColor;
