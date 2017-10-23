@@ -18,9 +18,15 @@
  */
 
 #import "WXComponent.h"
-#import "WXCoreLayout.h"
+#include "WXCoreLayout.h"
 
 #define FlexUndefined NAN
+
+@interface WXComponent ()
+{
+    WXCoreFlexLayout::WXCoreLayoutNode *_flexCssNode;
+}
+@end
 
 @interface WXComponent (FlexLayout)
 

@@ -259,11 +259,19 @@ _Nonnull SEL WXSwizzledSelectorForSelector(_Nonnull SEL selector);
  */
 CGFloat WXScreenScale();
 
+#if defined __cplusplus
+extern "C" {
+#endif
+    
 /**
  * @abstract Returns a Round float coordinates to the main screen pixel.
  *
  */
 CGFloat WXRoundPixelValue(CGFloat value);
+    
+#if defined __cplusplus
+};
+#endif
 
 /**
  * @abstract Returns a Floor float coordinates to the main screen pixel.

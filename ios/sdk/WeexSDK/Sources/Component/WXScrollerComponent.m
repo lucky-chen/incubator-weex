@@ -705,7 +705,7 @@ WX_EXPORT_METHOD(@selector(resetLoadmore))
         
         layoutNode(_scrollerCSSNode, CSS_UNDEFINED, CSS_UNDEFINED, CSS_DIRECTION_INHERIT);
         if ([WXLog logLevel] >= WXLogLevelDebug) {
-            print_css_node(_scrollerCSSNode, CSS_PRINT_LAYOUT | CSS_PRINT_STYLE | CSS_PRINT_CHILDREN);
+            print_css_node(_scrollerCSSNode, (css_print_options_t)(CSS_PRINT_LAYOUT | CSS_PRINT_STYLE | CSS_PRINT_CHILDREN));
         }
         CGSize size = {
             WXRoundPixelValue(_scrollerCSSNode->layout.dimensions[CSS_WIDTH]),

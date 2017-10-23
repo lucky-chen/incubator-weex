@@ -43,6 +43,7 @@ static NSThread *WXComponentThread;
 
 #define WXAssertComponentExist(component)  WXAssert(component, @"component not exists")
 
+
 @implementation WXComponentManager
 {
     __weak WXSDKInstance *_weexInstance;
@@ -182,7 +183,9 @@ static NSThread *WXComponentThread;
     // if no instance width/height, use layout width/height, as Android's wrap_content
     _rootCSSNode->style.dimensions[CSS_WIDTH] = self.weexInstance.frame.size.width ?: CSS_UNDEFINED;
     _rootCSSNode->style.dimensions[CSS_HEIGHT] =  self.weexInstance.frame.size.height ?: CSS_UNDEFINED;
-    
+}
+
+- (void)_applyRootFrame:(CGRect)rootFrame{
     _rootFlexCSSNode->setStylePosition(WXCoreFlexLayout::WXCore_PositionEdge_Left, self.weexInstance.frame.origin.x);
     _rootFlexCSSNode->setStylePosition(WXCoreFlexLayout::WXCore_PositionEdge_Top, self.weexInstance.frame.origin.y);
     _rootFlexCSSNode->setStyleWidth(self.weexInstance.frame.size.width ?: FlexUndefined);
@@ -836,7 +839,7 @@ static css_node_t * rootNodeGetChild(void *context, int i)
     
     if ([_rootComponent needsLayout]) {
         if ([WXLog logLevel] >= WXLogLevelDebug) {
-            //print_css_node(_rootCSSNode, CSS_PRINT_LAYOUT | CSS_PRINT_STYLE | CSS_PRINT_CHILDREN);
+            print_css_node(_rootCSSNode, (css_print_options_t)(CSS_PRINT_LAYOUT | CSS_PRINT_STYLE | CSS_PRINT_CHILDREN));
         }
     }
     
@@ -875,9 +878,12 @@ static css_node_t * rootNodeGetChild(void *context, int i)
     _rootCSSNode->children_count = 1;
 }
 
-//TODO
 - (void)_initRootFlexCssNode
 {
+    _rootFlexCSSNode = WXCoreFlexLayout::WXCoreLayoutNode::newWXCoreNode();
+    [self _applyRootFrame:self.weexInstance.frame];
+    _rootFlexCSSNode->setFlexWrap(WXCoreFlexLayout::WXCore_Wrap_NoWrap);
+    _rootFlexCSSNode->context = (__bridge void *)(self);
 }
 
 - (void)_calculateRootFrame
@@ -907,12 +913,14 @@ static css_node_t * rootNodeGetChild(void *context, int i)
 {
     [_fixedComponents addObject:fixComponent];
     _rootCSSNode->children_count = (int)[_fixedComponents count] + 1;
+    _rootFlexCSSNode->addChildAt(fixComponent.flexCssNode, (int32_t)([_fixedComponents count]));
 }
 
 - (void)removeFixedComponent:(WXComponent *)fixComponent
 {
     [_fixedComponents removeObject:fixComponent];
     _rootCSSNode->children_count = (int)[_fixedComponents count] + 1;
+//    _rootFlexCSSNode->removeChildAt(uint32_t index)
 }
 
 @end

@@ -19,12 +19,6 @@
 
 #import "WXComponent+FlexLayout.h"
 
-@interface WXComponent() {
-    WXCoreFlexLayout::WXCoreLayoutNode *_flexCssNode;
-}
-
-@end
-
 @implementation WXComponent (FlexLayout)
 
 -(WXCoreFlexLayout::WXCoreLayoutNode *)initFlexCssNode{
