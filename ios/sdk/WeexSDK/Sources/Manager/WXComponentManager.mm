@@ -37,6 +37,7 @@
 #import "WXPrerenderManager.h"
 #import "WXTracingManager.h"
 #import "WXLayoutDefine.h"
+#import "WXComponent+FlexLayout.h"
 
 static NSThread *WXComponentThread;
 
@@ -59,6 +60,7 @@ static NSThread *WXComponentThread;
     NSMutableArray *_fixedComponents;
     
     css_node_t *_rootCSSNode;
+    WXCoreFlexLayout::WXCoreLayoutNode* _rootFlexCSSNode;
     CADisplayLink *_displayLink;
 }
 
@@ -90,6 +92,7 @@ static NSThread *WXComponentThread;
 - (void)dealloc
 {
     free_css_node(_rootCSSNode);
+    _rootFlexCSSNode->freeWXCoreNode();
     [NSMutableArray wx_releaseArray:_fixedComponents];
 }
 
@@ -161,9 +164,11 @@ static NSThread *WXComponentThread;
         [self _applyRootFrame:frame toRootCSSNode:_rootCSSNode];
         if (!_rootComponent.styles[@"width"]) {
             _rootComponent.cssNode->style.dimensions[CSS_WIDTH] = frame.size.width ?: CSS_UNDEFINED;
+            _rootComponent.flexCssNode->setStyleWidth(frame.size.width ?:FlexUndefined);
         }
         if (!_rootComponent.styles[@"height"]) {
             _rootComponent.cssNode->style.dimensions[CSS_HEIGHT] = frame.size.height ?: CSS_UNDEFINED;
+            _rootComponent.flexCssNode->setStyleHeight(frame.size.height ?:FlexUndefined);
         }
         [_rootComponent setNeedsLayout];
         [self startComponentTasks];
@@ -174,10 +179,14 @@ static NSThread *WXComponentThread;
 {
     _rootCSSNode->style.position[CSS_LEFT] = self.weexInstance.frame.origin.x;
     _rootCSSNode->style.position[CSS_TOP] = self.weexInstance.frame.origin.y;
-    
     // if no instance width/height, use layout width/height, as Android's wrap_content
     _rootCSSNode->style.dimensions[CSS_WIDTH] = self.weexInstance.frame.size.width ?: CSS_UNDEFINED;
     _rootCSSNode->style.dimensions[CSS_HEIGHT] =  self.weexInstance.frame.size.height ?: CSS_UNDEFINED;
+    
+    _rootFlexCSSNode->setStylePosition(WXCoreFlexLayout::WXCore_PositionEdge_Left, self.weexInstance.frame.origin.x);
+    _rootFlexCSSNode->setStylePosition(WXCoreFlexLayout::WXCore_PositionEdge_Top, self.weexInstance.frame.origin.y);
+    _rootFlexCSSNode->setStyleWidth(self.weexInstance.frame.size.width ?: FlexUndefined);
+    _rootFlexCSSNode->setStyleHeight(self.weexInstance.frame.size.height ?: FlexUndefined);
 }
 
 - (void)_addUITask:(void (^)())block
@@ -217,6 +226,7 @@ static NSThread *WXComponentThread;
     _rootComponent = [self _buildComponentForData:data supercomponent:nil];
     
     [self _initRootCSSNode];
+    [self _initRootFlexCssNode];
     
     NSArray *subcomponentsData = [data valueForKey:@"children"];
     if (subcomponentsData) {
@@ -822,10 +832,11 @@ static css_node_t * rootNodeGetChild(void *context, int i)
     }
     
     layoutNode(_rootCSSNode, _rootCSSNode->style.dimensions[CSS_WIDTH], _rootCSSNode->style.dimensions[CSS_HEIGHT], CSS_DIRECTION_INHERIT);
+    _rootFlexCSSNode->calculateLayout();
     
     if ([_rootComponent needsLayout]) {
         if ([WXLog logLevel] >= WXLogLevelDebug) {
-            print_css_node(_rootCSSNode, CSS_PRINT_LAYOUT | CSS_PRINT_STYLE | CSS_PRINT_CHILDREN);
+            //print_css_node(_rootCSSNode, CSS_PRINT_LAYOUT | CSS_PRINT_STYLE | CSS_PRINT_CHILDREN);
         }
     }
     
@@ -862,6 +873,11 @@ static css_node_t * rootNodeGetChild(void *context, int i)
     _rootCSSNode->get_child = rootNodeGetChild;
     _rootCSSNode->context = (__bridge void *)(self);
     _rootCSSNode->children_count = 1;
+}
+
+//TODO
+- (void)_initRootFlexCssNode
+{
 }
 
 - (void)_calculateRootFrame

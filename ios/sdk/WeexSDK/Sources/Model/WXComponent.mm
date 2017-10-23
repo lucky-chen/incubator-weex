@@ -39,7 +39,7 @@
 #import "WXComponent+BoxShadow.h"
 #import "WXTracingManager.h"
 #import "WXComponent+Events.h"
-#import "WXCoreLayout.h"
+#import "WXComponent+FlexLayout.h"
 
 #pragma clang diagnostic ignored "-Wincomplete-implementation"
 #pragma clang diagnostic ignored "-Wobjc-protocol-method-implementation"
@@ -136,15 +136,10 @@
         
         [self _setupNavBarWithStyles:_styles attributes:_attributes];
         [self _initCSSNodeWithStyles:_styles];
+        [self _initFlexCssNodeWithStyles:_styles];
         [self _initViewPropertyWithStyles:_styles];
         [self _initCompositingAttribute:_attributes];
         [self _handleBorders:styles isUpdating:NO];
-        
-        WXCoreFlexLayout::WXCoreLayoutNode *flexNode = WXCoreFlexLayout::WXCoreLayoutNode::newWXCoreNode();
-        flexNode->setStyleWidth(1000.1f);
-        flexNode->setStyleHeight(600.1f);
-        flexNode->calculateLayout();
-        flexNode->freeWXCoreNode();
     }
     
     return self;
@@ -165,6 +160,7 @@
     } else {
         component->_templateComponent = self->_templateComponent;
     }
+    // TODO FlexLayout
     memcpy(component->_cssNode, self.cssNode, sizeof(css_node_t));
     component->_cssNode->context = (__bridge void *)component;
     component->_calculatedFrame = self.calculatedFrame;
@@ -198,8 +194,8 @@
 - (void)dealloc
 {
 //    free_css_node(_cssNode);
-
-//    [self _removeAllEvents];
+    self.flexCssNode->freeWXCoreNode();
+    
     // remove all gesture and all
     if (_tapGesture) {
         [_tapGesture removeTarget:nil action:NULL];
@@ -278,12 +274,14 @@
         if (displayType == WXDisplayTypeNone) {
             _isNeedJoinLayoutSystem = NO;
             [self.supercomponent _recomputeCSSNodeChildren];
+            [self.supercomponent _recomputeFlexCSSNodeChildren];
             WXPerformBlockOnMainThread(^{
                 [self removeFromSuperview];
             });
         } else {
             _isNeedJoinLayoutSystem = YES;
             [self.supercomponent _recomputeCSSNodeChildren];
+            [self.supercomponent _recomputeFlexCSSNodeChildren];
             WXPerformBlockOnMainThread(^{
                 [self _buildViewHierarchyLazily];
                 // TODO: insert into the correct index
@@ -516,6 +514,7 @@
     }
     
     [self _recomputeCSSNodeChildren];
+    [self _recomputeFlexCSSNodeChildren];
     [self setNeedsLayout];
 }
 
@@ -530,6 +529,7 @@
 {
     [self.supercomponent _removeSubcomponent:self];
     [self.supercomponent _recomputeCSSNodeChildren];
+    [self.supercomponent _recomputeFlexCSSNodeChildren];
     [self.supercomponent setNeedsLayout];
     
     if (_positionType == WXPositionTypeFixed) {
@@ -573,12 +573,14 @@
     } else {
         styles = [self parseStyles:styles];
         [self _updateCSSNodeStyles:styles];
+        [self _updateFlexCSSNodeStyles:styles];
     }
     
     if (isUpdateStyles) {
         [self _modifyStyles:styles];
     }
     [self _resetCSSNodeStyles:resetStyles];
+    [self _resetFlexCssNodeStyles:resetStyles];
 }
 
 - (BOOL)_isPropertyTransitionStyles:(NSDictionary *)styles

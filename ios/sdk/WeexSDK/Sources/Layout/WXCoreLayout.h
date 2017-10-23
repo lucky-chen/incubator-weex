@@ -91,6 +91,11 @@ namespace WXCoreFlexLayout {
    */
   class WXCoreLayoutNode {
   public:
+      
+    void *context;
+    void (*print)(void *context);
+    bool (*is_dirty)(void *context);
+      
     static WXCoreLayoutNode *newWXCoreNode() {
       return new WXCoreLayoutNode();
     }
