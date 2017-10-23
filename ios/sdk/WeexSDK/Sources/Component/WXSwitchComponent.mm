@@ -20,6 +20,7 @@
 #import "WXSwitchComponent.h"
 #import "WXConvert.h"
 #import "WXComponent_internal.h"
+#import "WXComponent+FlexLayout.h"
 
 @interface WXSwitchView : UISwitch
 
@@ -45,9 +46,13 @@
     if (self = [super initWithRef:ref type:type styles:styles attributes:attributes events:events weexInstance:weexInstance]) {
         _checked = attributes[@"checked"] ? [WXConvert BOOL:attributes[@"checked"]] : NO;
         _disabled = attributes[@"disabled"] ? [WXConvert BOOL:attributes[@"disabled"]] : NO;
-        
+#ifndef USE_FLEX
         self.cssNode->style.dimensions[CSS_WIDTH] = 51;
         self.cssNode->style.dimensions[CSS_HEIGHT] = 31;
+#else
+        self.flexCssNode->setStyleWidth(51);
+        self.flexCssNode->setStyleHeight(31);
+#endif
     }
     return self;
 }

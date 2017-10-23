@@ -270,6 +270,7 @@ static NSThread *WXComponentThread;
     
 }
 
+#ifndef USE_FLEX
 static bool rootNodeIsDirty(void *context)
 {
     WXComponentManager *manager = (__bridge WXComponentManager *)(context);
@@ -287,6 +288,7 @@ static css_node_t * rootNodeGetChild(void *context, int i)
     
     return NULL;
 }
+#endif
 
 - (void)addComponent:(NSDictionary *)componentData toSupercomponent:(NSString *)superRef atIndex:(NSInteger)index appendingInTree:(BOOL)appendingInTree
 {

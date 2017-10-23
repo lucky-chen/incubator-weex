@@ -23,6 +23,7 @@
 #import "NSTimer+Weex.h"
 #import "WXSDKManager.h"
 #import "WXUtility.h"
+#import "WXComponent+FlexLayout.h"
 
 @class WXSliderView;
 @class WXIndicatorView;
@@ -255,11 +256,11 @@
         NSInteger tag2 = obj2.tag >= index ? obj2.tag - index : obj2.tag + weakSelf.itemViews.count - index;
         
         if (tag1 > tag2) {
-            return 1;
+            return NSOrderedDescending;
         } else if (tag1 < tag2) {
-            return -1;
+            return NSOrderedAscending;
         } else {
-            return 0;
+            return NSOrderedSame;
         }
     }];
 }
@@ -424,8 +425,11 @@
         if (attributes[@"offsetXAccuracy"]) {
             _offsetXAccuracy = [WXConvert CGFloat:attributes[@"offsetXAccuracy"]];
         }
-        
+#ifndef USE_FLEX
         self.cssNode->style.flex_direction = CSS_FLEX_DIRECTION_ROW;
+#else
+        self.flexCssNode->setFlexDirection(WXCoreFlexLayout::WXCore_Flex_Direction_Row);
+#endif
     }
     return self;
 }
