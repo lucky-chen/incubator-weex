@@ -59,9 +59,11 @@ static NSThread *WXComponentThread;
 
     WXComponent *_rootComponent;
     NSMutableArray *_fixedComponents;
-    
+#ifndef USE_FLEX
     css_node_t *_rootCSSNode;
+#else
     WXCoreFlexLayout::WXCoreLayoutNode* _rootFlexCSSNode;
+#endif
     CADisplayLink *_displayLink;
 }
 
@@ -92,8 +94,11 @@ static NSThread *WXComponentThread;
 
 - (void)dealloc
 {
+#ifndef USE_FLEX
     free_css_node(_rootCSSNode);
+#else
     _rootFlexCSSNode->freeWXCoreNode();
+#endif
     [NSMutableArray wx_releaseArray:_fixedComponents];
 }
 
@@ -160,22 +165,32 @@ static NSThread *WXComponentThread;
 - (void)rootViewFrameDidChange:(CGRect)frame
 {
     WXAssertComponentThread();
-    
+#ifndef USE_FLEX
     if (_rootCSSNode) {
         [self _applyRootFrame:frame toRootCSSNode:_rootCSSNode];
         if (!_rootComponent.styles[@"width"]) {
             _rootComponent.cssNode->style.dimensions[CSS_WIDTH] = frame.size.width ?: CSS_UNDEFINED;
-            _rootComponent.flexCssNode->setStyleWidth(frame.size.width ?:FlexUndefined);
         }
         if (!_rootComponent.styles[@"height"]) {
             _rootComponent.cssNode->style.dimensions[CSS_HEIGHT] = frame.size.height ?: CSS_UNDEFINED;
+        }
+    }
+#else
+    if (_rootFlexCSSNode) {
+        [self _applyRootFrame:frame];
+        if (!_rootComponent.styles[@"width"]) {
+            _rootComponent.flexCssNode->setStyleWidth(frame.size.width ?:FlexUndefined);
+        }
+        if (!_rootComponent.styles[@"height"]) {
             _rootComponent.flexCssNode->setStyleHeight(frame.size.height ?:FlexUndefined);
         }
-        [_rootComponent setNeedsLayout];
-        [self startComponentTasks];
     }
+#endif
+    [_rootComponent setNeedsLayout];
+    [self startComponentTasks];
 }
 
+#ifndef USE_FLEX
 - (void)_applyRootFrame:(CGRect)rootFrame toRootCSSNode:(css_node_t *)rootCSSNode
 {
     _rootCSSNode->style.position[CSS_LEFT] = self.weexInstance.frame.origin.x;
@@ -184,13 +199,14 @@ static NSThread *WXComponentThread;
     _rootCSSNode->style.dimensions[CSS_WIDTH] = self.weexInstance.frame.size.width ?: CSS_UNDEFINED;
     _rootCSSNode->style.dimensions[CSS_HEIGHT] =  self.weexInstance.frame.size.height ?: CSS_UNDEFINED;
 }
-
+#else
 - (void)_applyRootFrame:(CGRect)rootFrame{
     _rootFlexCSSNode->setStylePosition(WXCoreFlexLayout::WXCore_PositionEdge_Left, self.weexInstance.frame.origin.x);
     _rootFlexCSSNode->setStylePosition(WXCoreFlexLayout::WXCore_PositionEdge_Top, self.weexInstance.frame.origin.y);
     _rootFlexCSSNode->setStyleWidth(self.weexInstance.frame.size.width ?: FlexUndefined);
     _rootFlexCSSNode->setStyleHeight(self.weexInstance.frame.size.height ?: FlexUndefined);
 }
+#endif
 
 - (void)_addUITask:(void (^)())block
 {
@@ -227,9 +243,11 @@ static NSThread *WXComponentThread;
     WXAssertParam(data);
     
     _rootComponent = [self _buildComponentForData:data supercomponent:nil];
-    
+#ifndef USE_FLEX
     [self _initRootCSSNode];
+#else
     [self _initRootFlexCssNode];
+#endif
     
     NSArray *subcomponentsData = [data valueForKey:@"children"];
     if (subcomponentsData) {
@@ -833,13 +851,18 @@ static css_node_t * rootNodeGetChild(void *context, int i)
     if (!needsLayout) {
         return;
     }
-    
+#ifndef USE_FLEX
     layoutNode(_rootCSSNode, _rootCSSNode->style.dimensions[CSS_WIDTH], _rootCSSNode->style.dimensions[CSS_HEIGHT], CSS_DIRECTION_INHERIT);
+#else
     _rootFlexCSSNode->calculateLayout();
+#endif
     
     if ([_rootComponent needsLayout]) {
         if ([WXLog logLevel] >= WXLogLevelDebug) {
+#ifndef USE_FLEX
             print_css_node(_rootCSSNode, (css_print_options_t)(CSS_PRINT_LAYOUT | CSS_PRINT_STYLE | CSS_PRINT_CHILDREN));
+#else
+#endif
         }
     }
     
@@ -864,7 +887,7 @@ static css_node_t * rootNodeGetChild(void *context, int i)
         }
     });
 }
-
+#ifndef USE_FLEX
 - (void)_initRootCSSNode
 {
     _rootCSSNode = new_css_node();
@@ -877,7 +900,7 @@ static css_node_t * rootNodeGetChild(void *context, int i)
     _rootCSSNode->context = (__bridge void *)(self);
     _rootCSSNode->children_count = 1;
 }
-
+#else
 - (void)_initRootFlexCssNode
 {
     _rootFlexCSSNode = WXCoreFlexLayout::WXCoreLayoutNode::newWXCoreNode();
@@ -885,9 +908,11 @@ static css_node_t * rootNodeGetChild(void *context, int i)
     _rootFlexCSSNode->setFlexWrap(WXCoreFlexLayout::WXCore_Wrap_NoWrap);
     _rootFlexCSSNode->context = (__bridge void *)(self);
 }
+#endif
 
 - (void)_calculateRootFrame
 {
+#ifndef USE_FLEX
     if (!_rootCSSNode->layout.should_update) {
         return;
     }
@@ -904,6 +929,26 @@ static css_node_t * rootNodeGetChild(void *context, int i)
     });
     
     resetNodeLayout(_rootCSSNode);
+#else
+    //TODO
+//    if (!_rootFlexCSSNode->layout.should_update) {
+//        return;
+//    }
+//    _rootFlexCSSNode->layout.should_update = false;
+    
+    CGRect frame = CGRectMake(WXRoundPixelValue(_rootFlexCSSNode->getStylePositionLeft()),
+                              WXRoundPixelValue(_rootFlexCSSNode->getStylePositionTop()),
+                              WXRoundPixelValue(_rootFlexCSSNode->getStyleWidth()),
+                              WXRoundPixelValue(_rootFlexCSSNode->getStyleHeight()));
+    WXPerformBlockOnMainThread(^{
+        if(!self.weexInstance.isRootViewFrozen) {
+            self.weexInstance.rootView.frame = frame;
+        }
+    });
+    
+//    resetNodeLayout(_rootFlexCSSNode);
+    
+#endif
 }
 
 
@@ -912,15 +957,21 @@ static css_node_t * rootNodeGetChild(void *context, int i)
 - (void)addFixedComponent:(WXComponent *)fixComponent
 {
     [_fixedComponents addObject:fixComponent];
+#ifndef USE_FLEX
     _rootCSSNode->children_count = (int)[_fixedComponents count] + 1;
+#else
     _rootFlexCSSNode->addChildAt(fixComponent.flexCssNode, (int32_t)([_fixedComponents count]));
+#endif
 }
 
 - (void)removeFixedComponent:(WXComponent *)fixComponent
 {
     [_fixedComponents removeObject:fixComponent];
+#ifndef USE_FLEX
     _rootCSSNode->children_count = (int)[_fixedComponents count] + 1;
-//    _rootFlexCSSNode->removeChildAt(uint32_t index)
+#else
+    //    _rootFlexCSSNode->removeChildAt(uint32_t index)
+#endif
 }
 
 @end

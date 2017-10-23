@@ -426,6 +426,7 @@ WX_EXPORT_METHOD(@selector(getSelectionRange:))
 
 -(void)updatePattern
 {
+#ifndef USE_FLEX
     UIEdgeInsets padding = UIEdgeInsetsMake(self.cssNode->style.padding[CSS_TOP], self.cssNode->style.padding[CSS_LEFT], self.cssNode->style.padding[CSS_BOTTOM], self.cssNode->style.padding[CSS_RIGHT]);
     if (!UIEdgeInsetsEqualToEdgeInsets(padding, _padding)) {
         [self setPadding:padding];
@@ -436,6 +437,7 @@ WX_EXPORT_METHOD(@selector(getSelectionRange:))
         [self setBorder:border];
     }
     
+#else
     UIEdgeInsets padding_flex = UIEdgeInsetsMake(self.flexCssNode->getStylePositionTop(), self.flexCssNode->getStylePositionLeft(), self.flexCssNode->getStylePositionBottom(), self.flexCssNode->getStylePositionRight());
     if (!UIEdgeInsetsEqualToEdgeInsets(padding_flex, _padding)) {
         [self setPadding:padding_flex];
@@ -445,6 +447,7 @@ WX_EXPORT_METHOD(@selector(getSelectionRange:))
     if (!UIEdgeInsetsEqualToEdgeInsets(border_flex, _border)) {
         [self setBorder:border_flex];
     }
+#endif
 }
 
 - (CGSize (^)(CGSize))measureBlock
@@ -453,6 +456,7 @@ WX_EXPORT_METHOD(@selector(getSelectionRange:))
     return ^CGSize (CGSize constrainedSize) {
         
         CGSize computedSize = [[[NSString alloc] init]sizeWithAttributes:nil];
+#ifndef USE_FLEX
         //TODO:more elegant way to use max and min constrained size
         if (!isnan(weakSelf.cssNode->style.minDimensions[CSS_WIDTH])) {
             computedSize.width = MAX(computedSize.width, weakSelf.cssNode->style.minDimensions[CSS_WIDTH]);
@@ -470,7 +474,7 @@ WX_EXPORT_METHOD(@selector(getSelectionRange:))
             computedSize.height = MIN(computedSize.height, weakSelf.cssNode->style.maxDimensions[CSS_HEIGHT]);
         }
         
-        //TODO
+#else
         if (!isnan(weakSelf.flexCssNode->getMinWidth())) {
             computedSize.width = MAX(computedSize.width, weakSelf.flexCssNode->getMinWidth());
         }
@@ -486,7 +490,7 @@ WX_EXPORT_METHOD(@selector(getSelectionRange:))
         if (!isnan(weakSelf.flexCssNode->getMaxHeight())) {
             computedSize.height = MIN(computedSize.height, weakSelf.flexCssNode->getMaxHeight());
         }
-        
+#endif
         return (CGSize) {
             WXCeilPixelValue(computedSize.width),
             WXCeilPixelValue(computedSize.height)

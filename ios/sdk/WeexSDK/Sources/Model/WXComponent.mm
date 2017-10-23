@@ -135,8 +135,11 @@
         }
         
         [self _setupNavBarWithStyles:_styles attributes:_attributes];
+#ifndef USE_FLEX
         [self _initCSSNodeWithStyles:_styles];
+#else
         [self _initFlexCssNodeWithStyles:_styles];
+#endif
         [self _initViewPropertyWithStyles:_styles];
         [self _initCompositingAttribute:_attributes];
         [self _handleBorders:styles isUpdating:NO];
@@ -193,8 +196,11 @@
 
 - (void)dealloc
 {
-//    free_css_node(_cssNode);
+#ifndef USE_FLEX
+    free_css_node(_cssNode);
+#else
     self.flexCssNode->freeWXCoreNode();
+#endif
     
     // remove all gesture and all
     if (_tapGesture) {
@@ -273,15 +279,21 @@
         _displayType = displayType;
         if (displayType == WXDisplayTypeNone) {
             _isNeedJoinLayoutSystem = NO;
+#ifndef USE_FLEX
             [self.supercomponent _recomputeCSSNodeChildren];
+#else
             [self.supercomponent _recomputeFlexCSSNodeChildren];
+#endif
             WXPerformBlockOnMainThread(^{
                 [self removeFromSuperview];
             });
         } else {
             _isNeedJoinLayoutSystem = YES;
+#ifndef USE_FLEX
             [self.supercomponent _recomputeCSSNodeChildren];
+#else
             [self.supercomponent _recomputeFlexCSSNodeChildren];
+#endif
             WXPerformBlockOnMainThread(^{
                 [self _buildViewHierarchyLazily];
                 // TODO: insert into the correct index
@@ -512,9 +524,11 @@
     if (_useCompositing || _isCompositingChild) {
         subcomponent->_isCompositingChild = YES;
     }
-    
+#ifndef USE_FLEX
     [self _recomputeCSSNodeChildren];
+#else
     [self _recomputeFlexCSSNodeChildren];
+#endif
     [self setNeedsLayout];
 }
 
@@ -528,8 +542,11 @@
 - (void)_removeFromSupercomponent
 {
     [self.supercomponent _removeSubcomponent:self];
+#ifndef USE_FLEX
     [self.supercomponent _recomputeCSSNodeChildren];
+#else
     [self.supercomponent _recomputeFlexCSSNodeChildren];
+#endif
     [self.supercomponent setNeedsLayout];
     
     if (_positionType == WXPositionTypeFixed) {
@@ -572,15 +589,20 @@
         [_transition _handleTransitionWithStyles:styles withTarget:self];
     } else {
         styles = [self parseStyles:styles];
+#ifndef USE_FLEX
         [self _updateCSSNodeStyles:styles];
+#else
         [self _updateFlexCSSNodeStyles:styles];
+#endif
     }
-    
     if (isUpdateStyles) {
         [self _modifyStyles:styles];
     }
+#ifndef USE_FLEX
     [self _resetCSSNodeStyles:resetStyles];
+#else
     [self _resetFlexCssNodeStyles:resetStyles];
+#endif
 }
 
 - (BOOL)_isPropertyTransitionStyles:(NSDictionary *)styles

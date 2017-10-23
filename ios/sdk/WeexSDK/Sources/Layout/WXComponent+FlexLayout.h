@@ -21,6 +21,7 @@
 #include "WXCoreLayout.h"
 
 #define FlexUndefined NAN
+#define USE_FLEX
 
 @interface WXComponent ()
 {

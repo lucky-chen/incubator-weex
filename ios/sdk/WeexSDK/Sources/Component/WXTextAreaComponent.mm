@@ -76,6 +76,7 @@ typedef UITextView WXTextAreaView;
         
         CGSize computedSize = [[[NSString alloc] init]sizeWithAttributes:@{NSFontAttributeName:[UIFont systemFontOfSize:weakSelf.textView.font.pointSize]}];
         computedSize.height = _rows? computedSize.height *weakSelf.rows + (CorrectY + CorrectY/2):0;
+#ifndef USE_FLEX
         if (!isnan(weakSelf.cssNode->style.minDimensions[CSS_WIDTH])) {
             computedSize.width = MAX(computedSize.width, weakSelf.cssNode->style.minDimensions[CSS_WIDTH]);
         }
@@ -91,8 +92,7 @@ typedef UITextView WXTextAreaView;
         if (!isnan(weakSelf.cssNode->style.maxDimensions[CSS_HEIGHT])) {
             computedSize.height = MIN(computedSize.height, weakSelf.cssNode->style.maxDimensions[CSS_HEIGHT]);
         }
-        
-        //TODO
+#else
         if (!isnan(weakSelf.flexCssNode->getMinWidth())) {
             computedSize.width = MAX(computedSize.width, weakSelf.flexCssNode->getMinWidth());
         }
@@ -108,7 +108,7 @@ typedef UITextView WXTextAreaView;
         if (!isnan(weakSelf.flexCssNode->getMaxHeight())) {
             computedSize.height = MIN(computedSize.height, weakSelf.flexCssNode->getMaxHeight());
         }
-        
+#endif
         return (CGSize) {
             WXCeilPixelValue(computedSize.width),
             WXCeilPixelValue(computedSize.height)

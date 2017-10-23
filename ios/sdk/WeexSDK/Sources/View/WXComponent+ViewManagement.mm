@@ -229,13 +229,19 @@ do {\
             if (positionType == WXPositionTypeFixed) {
                 [self.weexInstance.componentManager addFixedComponent:self];
                 _isNeedJoinLayoutSystem = NO;
+#ifndef USE_FLEX
                 [self.supercomponent _recomputeCSSNodeChildren];
+#else
                 [self.supercomponent _recomputeFlexCSSNodeChildren];
+#endif
             } else if (_positionType == WXPositionTypeFixed) {
                 [self.weexInstance.componentManager removeFixedComponent:self];
                 _isNeedJoinLayoutSystem = YES;
+#ifndef USE_FLEX
                 [self.supercomponent _recomputeCSSNodeChildren];
+#else
                 [self.supercomponent _recomputeFlexCSSNodeChildren];
+#endif
             }
             
             _positionType = positionType;
