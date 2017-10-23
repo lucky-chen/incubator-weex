@@ -19,6 +19,7 @@
 
 #import "WXScrollerProtocol.h"
 #import "WXComponent.h"
+#import "WXComponent+FlexLayout.h"
 
 @interface WXScrollerComponent : WXComponent <WXScrollerProtocol, UIScrollViewDelegate>
 
@@ -28,7 +29,11 @@
 
 @property (nonatomic, assign) CGSize contentSize;
 
+#ifndef USE_FLEX
 @property (nonatomic, readonly, assign) css_node_t *scrollerCSSNode;
+#else
+@property (nonatomic, readonly, assign) WXCoreFlexLayout::WXCoreLayoutNode *flexScrollerCSSNode;
+#endif
 
 - (NSUInteger)childrenCountForScrollerLayout;
 

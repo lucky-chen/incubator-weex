@@ -23,6 +23,16 @@
 #define FlexUndefined NAN
 #define USE_FLEX
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+    
+    bool flexIsUndefined(float value);
+    
+#ifdef __cplusplus
+}
+#endif
+    
 @interface WXComponent ()
 {
     WXCoreFlexLayout::WXCoreLayoutNode *_flexCssNode;

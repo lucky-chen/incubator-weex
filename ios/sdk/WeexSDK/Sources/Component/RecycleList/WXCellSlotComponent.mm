@@ -69,6 +69,7 @@ static const NSString *WXDefaultRecycleTemplateType = @"WXDefaultRecycleTemplate
 {
     WXAssertComponentThread();
     
+#ifndef USE_FLEX
     //TODO: _isUseContainerWidth?
     if (isUndefined(self.cssNode->style.dimensions[CSS_WIDTH])) {
         self.cssNode->style.dimensions[CSS_WIDTH] = ((WXScrollerComponent *)(self.supercomponent)).scrollerCSSNode->style.dimensions[CSS_WIDTH];
@@ -80,6 +81,18 @@ static const NSString *WXDefaultRecycleTemplateType = @"WXDefaultRecycleTemplate
             print_css_node(self.cssNode, (css_print_options_t)(CSS_PRINT_LAYOUT | CSS_PRINT_STYLE | CSS_PRINT_CHILDREN));
         }
     }
+#else
+    if (flexIsUndefined(self.flexCssNode->getStyleWidth())) {
+        self.flexCssNode->setStyleWidth(((WXScrollerComponent *)(self.supercomponent)).flexScrollerCSSNode->getStyleWidth());
+    }
+    
+    if ([self needsLayout]) {
+        self.flexCssNode->calculateLayout();
+        if ([WXLog logLevel] >= WXLogLevelDebug) {
+            
+        }
+    }
+#endif
     
     NSMutableSet<WXComponent *> *dirtyComponents = [NSMutableSet set];
     [self _calculateFrameWithSuperAbsolutePosition:CGPointZero gatherDirtyComponents:dirtyComponents];

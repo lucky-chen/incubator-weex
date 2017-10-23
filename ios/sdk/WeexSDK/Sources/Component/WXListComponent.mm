@@ -324,7 +324,11 @@
 
 - (float)headerWidthForLayout:(WXHeaderComponent *)cell
 {
+#ifndef USE_FLEX
     return self.scrollerCSSNode->style.dimensions[CSS_WIDTH];
+#else
+    return self.flexScrollerCSSNode->getStyleWidth();
+#endif
 }
 
 - (void)headerDidLayout:(WXHeaderComponent *)header
@@ -412,7 +416,11 @@
 
 - (float)containerWidthForLayout:(WXCellComponent *)cell
 {
+#ifndef USE_FLEX
     return self.scrollerCSSNode->style.dimensions[CSS_WIDTH];
+#else
+    return self.flexScrollerCSSNode->getStyleWidth();
+#endif
 }
 
 - (void)cellDidRemove:(WXCellComponent *)cell

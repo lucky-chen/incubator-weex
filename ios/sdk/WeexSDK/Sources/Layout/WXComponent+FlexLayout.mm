@@ -19,6 +19,10 @@
 
 #import "WXComponent+FlexLayout.h"
 
+bool flexIsUndefined(float value) {
+    return isnan(value);
+}
+
 @implementation WXComponent (FlexLayout)
 
 -(WXCoreFlexLayout::WXCoreLayoutNode *)initFlexCssNode{

@@ -436,7 +436,11 @@ typedef enum : NSUInteger {
 
 - (CGFloat)collectionView:(UICollectionView *)collectionView contentWidthForLayout:(UICollectionViewLayout *)collectionViewLayout
 {
+#ifndef USE_FLEX
     return self.scrollerCSSNode->style.dimensions[CSS_WIDTH];
+#else
+    return self.flexScrollerCSSNode->getStyleWidth();
+#endif
 }
 
 - (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout heightForItemAtIndexPath:(NSIndexPath *)indexPath

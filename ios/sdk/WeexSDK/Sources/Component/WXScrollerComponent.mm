@@ -79,7 +79,11 @@
     BOOL _showScrollBar;
     BOOL _pagingEnabled;
 
+#ifndef USE_FLEX
     css_node_t *_scrollerCSSNode;
+#else
+    WXCoreFlexLayout::WXCoreLayoutNode *_flexScrollerCSSNode;
+#endif
     
     NSHashTable* _delegates;
 }
@@ -91,10 +95,16 @@ WX_EXPORT_METHOD(@selector(resetLoadmore))
     _previousLoadMoreContentHeight=0;
 }
 
+#ifndef USE_FLEX
 - (css_node_t *)scrollerCSSNode
 {
     return _scrollerCSSNode;
 }
+#else
+- (WXCoreFlexLayout::WXCoreLayoutNode *)flexScrollerCSSNode{
+    return _flexScrollerCSSNode;
+}
+#endif
 
 - (void)_insertSubcomponent:(WXComponent *)subcomponent atIndex:(NSInteger)index
 {
@@ -132,6 +142,8 @@ WX_EXPORT_METHOD(@selector(resetLoadmore))
         _listenLoadMore = [events containsObject:@"loadmore"];
         _scrollable = attributes[@"scrollable"] ? [WXConvert BOOL:attributes[@"scrollable"]] : YES;
         _offsetAccuracy = attributes[@"offsetAccuracy"] ? [WXConvert WXPixelType:attributes[@"offsetAccuracy"] scaleFactor:self.weexInstance.pixelScaleFactor] : 0;
+        
+#ifndef USE_FLEX
         _scrollerCSSNode = new_css_node();
         
         // let scroller fill the rest space if it is a child component and has no fixed height & width
@@ -142,6 +154,18 @@ WX_EXPORT_METHOD(@selector(resetLoadmore))
              self.cssNode->style.flex <= 0.0) {
             self.cssNode->style.flex = 1.0;
         }
+#else
+        _flexScrollerCSSNode = WXCoreFlexLayout::WXCoreLayoutNode::newWXCoreNode();
+        
+        // let scroller fill the rest space if it is a child component and has no fixed height & width
+        if (((_scrollDirection == WXScrollDirectionVertical &&
+              flexIsUndefined(self.flexCssNode->getStyleHeight())) ||
+             (_scrollDirection == WXScrollDirectionHorizontal &&
+              flexIsUndefined(self.flexCssNode->getStyleWidth()))) &&
+            self.flexCssNode->getFlex() <= 0.0) {
+            self.flexCssNode->setFlex(1.0);
+        }
+#endif
     }
     
     return self;
@@ -206,8 +230,11 @@ WX_EXPORT_METHOD(@selector(resetLoadmore))
 {
     [self.stickyArray removeAllObjects];
     [self.listenerArray removeAllObjects];
-    
+#ifndef USE_FLEX
     free(_scrollerCSSNode);
+#else
+    self.flexCssNode->freeWXCoreNode();
+#endif
 }
 
 - (void)updateAttributes:(NSDictionary *)attributes
@@ -684,6 +711,7 @@ WX_EXPORT_METHOD(@selector(resetLoadmore))
      *  layout from children to scroller to get scroller's contentSize
      */
     if ([self needsLayout]) {
+#ifndef USE_FLEX
         memcpy(_scrollerCSSNode, self.cssNode, sizeof(css_node_t));
         _scrollerCSSNode->children_count = (int)[self childrenCountForScrollerLayout];
         
@@ -720,6 +748,37 @@ WX_EXPORT_METHOD(@selector(resetLoadmore))
         
         _scrollerCSSNode->layout.dimensions[CSS_WIDTH] = CSS_UNDEFINED;
         _scrollerCSSNode->layout.dimensions[CSS_HEIGHT] = CSS_UNDEFINED;
+#else
+       memcpy(_flexScrollerCSSNode, self.flexCssNode, sizeof(WXCoreFlexLayout::WXCoreLayoutNode));
+       _flexScrollerCSSNode->setStylePosition(WXCoreFlexLayout::WXCore_PositionEdge_Left, 0);
+        _flexScrollerCSSNode->setStylePosition(WXCoreFlexLayout::WXCore_PositionEdge_Top, 0);
+        if (_scrollDirection == WXScrollDirectionVertical) {
+            _flexScrollerCSSNode->setFlexDirection(WXCoreFlexLayout::WXCore_Flex_Direction_Column);
+            _flexScrollerCSSNode->setStyleWidth(self.flexCssNode->getStyleWidth());
+            _flexScrollerCSSNode->setStyleHeight(FlexUndefined);
+        } else {
+            _flexScrollerCSSNode->setFlexDirection(WXCoreFlexLayout::WXCore_Flex_Direction_Row);
+            _flexScrollerCSSNode->setStyleHeight(self.flexCssNode->getStyleHeight());
+            _flexScrollerCSSNode->setStyleWidth(FlexUndefined);
+        }
+        _flexScrollerCSSNode->calculateLayout();
+        if ([WXLog logLevel] >= WXLogLevelDebug) {
+            
+        }
+        CGSize size = {
+            WXRoundPixelValue(_flexScrollerCSSNode->getStyleWidth()),
+            WXRoundPixelValue(_flexScrollerCSSNode->getStyleHeight())
+        };
+        
+        if (!CGSizeEqualToSize(size, _contentSize)) {
+            // content size
+            _contentSize = size;
+            [dirtyComponents addObject:self];
+        }
+        
+        _flexScrollerCSSNode->setStyleWidth(FlexUndefined);
+        _flexScrollerCSSNode->setStyleHeight(FlexUndefined);
+#endif
     }
     
     [super _calculateFrameWithSuperAbsolutePosition:superAbsolutePosition gatherDirtyComponents:dirtyComponents];
