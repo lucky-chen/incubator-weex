@@ -26,6 +26,7 @@
 #import "WXAssert.h"
 #import "WXComponent_internal.h"
 #import "WXComponent+PseudoClassManagement.h"
+#import "WXComponent+FlexLayout.h"
 
 @interface WXEditComponent()
 
@@ -434,6 +435,16 @@ WX_EXPORT_METHOD(@selector(getSelectionRange:))
     if (!UIEdgeInsetsEqualToEdgeInsets(border, _border)) {
         [self setBorder:border];
     }
+    
+    UIEdgeInsets padding_flex = UIEdgeInsetsMake(self.flexCssNode->getStylePositionTop(), self.flexCssNode->getStylePositionLeft(), self.flexCssNode->getStylePositionBottom(), self.flexCssNode->getStylePositionRight());
+    if (!UIEdgeInsetsEqualToEdgeInsets(padding_flex, _padding)) {
+        [self setPadding:padding_flex];
+    }
+    
+    UIEdgeInsets border_flex = UIEdgeInsetsMake(self.flexCssNode->getBorderWidthTop(), self.flexCssNode->getBorderWidthLeft(), self.flexCssNode->getBorderWidthBottom(), self.flexCssNode->getBorderWidthRight());
+    if (!UIEdgeInsetsEqualToEdgeInsets(border_flex, _border)) {
+        [self setBorder:border_flex];
+    }
 }
 
 - (CGSize (^)(CGSize))measureBlock
@@ -457,6 +468,23 @@ WX_EXPORT_METHOD(@selector(getSelectionRange:))
         
         if (!isnan(weakSelf.cssNode->style.maxDimensions[CSS_HEIGHT])) {
             computedSize.height = MIN(computedSize.height, weakSelf.cssNode->style.maxDimensions[CSS_HEIGHT]);
+        }
+        
+        //TODO
+        if (!isnan(weakSelf.flexCssNode->getMinWidth())) {
+            computedSize.width = MAX(computedSize.width, weakSelf.flexCssNode->getMinWidth());
+        }
+        
+        if (!isnan(weakSelf.flexCssNode->getMaxWidth())) {
+            computedSize.width = MIN(computedSize.width, weakSelf.flexCssNode->getMaxWidth());
+        }
+        
+        if (!isnan(weakSelf.flexCssNode->getMinHeight())) {
+            computedSize.height = MAX(computedSize.height, weakSelf.flexCssNode->getMinHeight());
+        }
+        
+        if (!isnan(weakSelf.flexCssNode->getMaxHeight())) {
+            computedSize.height = MIN(computedSize.height, weakSelf.flexCssNode->getMaxHeight());
         }
         
         return (CGSize) {

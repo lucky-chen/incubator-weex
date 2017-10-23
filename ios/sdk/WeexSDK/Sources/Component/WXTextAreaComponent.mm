@@ -21,6 +21,7 @@
 #import "WXUtility.h"
 #import "WXComponent+Layout.h"
 #import "WXComponent_internal.h"
+#import "WXComponent+FlexLayout.h"
 
 #define CorrectX 4 //textview fill text 4 pixel from left. so placeholderlabel have 4 pixel too
 #define CorrectY 8 // textview fill text 8 pixel from top
@@ -89,6 +90,23 @@ typedef UITextView WXTextAreaView;
         
         if (!isnan(weakSelf.cssNode->style.maxDimensions[CSS_HEIGHT])) {
             computedSize.height = MIN(computedSize.height, weakSelf.cssNode->style.maxDimensions[CSS_HEIGHT]);
+        }
+        
+        //TODO
+        if (!isnan(weakSelf.flexCssNode->getMinWidth())) {
+            computedSize.width = MAX(computedSize.width, weakSelf.flexCssNode->getMinWidth());
+        }
+        
+        if (!isnan(weakSelf.flexCssNode->getMaxWidth())) {
+            computedSize.width = MIN(computedSize.width, weakSelf.flexCssNode->getMaxWidth());
+        }
+        
+        if (!isnan(weakSelf.flexCssNode->getMinHeight())) {
+            computedSize.height = MAX(computedSize.height, weakSelf.flexCssNode->getMinHeight());
+        }
+        
+        if (!isnan(weakSelf.flexCssNode->getMaxHeight())) {
+            computedSize.height = MIN(computedSize.height, weakSelf.flexCssNode->getMaxHeight());
         }
         
         return (CGSize) {

@@ -253,25 +253,20 @@ _Nonnull SEL WXSwizzledSelectorForSelector(_Nonnull SEL selector);
  */
 + (CGFloat)defaultPixelScaleFactor;
 
+#if defined __cplusplus
+extern "C" {
+#endif
 /**
  * @abstract Returns the scale of the main screen.
  *
  */
 CGFloat WXScreenScale();
-
-#if defined __cplusplus
-extern "C" {
-#endif
     
 /**
  * @abstract Returns a Round float coordinates to the main screen pixel.
  *
  */
 CGFloat WXRoundPixelValue(CGFloat value);
-    
-#if defined __cplusplus
-};
-#endif
 
 /**
  * @abstract Returns a Floor float coordinates to the main screen pixel.
@@ -284,12 +279,15 @@ CGFloat WXFloorPixelValue(CGFloat value);
  *
  */
 CGFloat WXCeilPixelValue(CGFloat value);
-
+    
+#if defined __cplusplus
+};
+#endif
+    
 /**
  *  @abstract check whether the file is exist
  *
  */
-
 + (BOOL)isFileExist:(NSString * _Nonnull)filePath;
 /**
  *  @abstract Returns the document directory path.
@@ -412,6 +410,10 @@ CGPoint WXPixelPointResize(CGPoint value) DEPRECATED_MSG_ATTRIBUTE("Use WXPixelS
  */
 + (NSDictionary *_Nullable)linearGradientWithBackgroundImage:(NSString *_Nullable)backgroundImage;
 
+#if defined __cplusplus
+extern "C" {
+#endif
+    
 /**
  *  @abstract compare float a and b, if a equal b, return true,or reture false.
  *
@@ -442,6 +444,10 @@ BOOL WXFloatGreaterThan(CGFloat a, CGFloat b);
  *
  */
 BOOL WXFloatGreaterThanWithPrecision(CGFloat a,CGFloat b,double precision);
+
+#if defined __cplusplus
+};
+#endif
 
 /**
  *  @abstract convert returnKeyType to type string .
