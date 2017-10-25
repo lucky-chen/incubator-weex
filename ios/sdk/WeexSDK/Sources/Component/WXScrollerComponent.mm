@@ -26,6 +26,7 @@
 #import "WXUtility.h"
 #import "WXLoadingComponent.h"
 #import "WXRefreshComponent.h"
+#import "WXScrollerComponent+Layout.h"
 
 @interface WXScrollerComponnetView:UIScrollView
 @end
@@ -78,12 +79,6 @@
     NSString *_direction;
     BOOL _showScrollBar;
     BOOL _pagingEnabled;
-
-#ifndef USE_FLEX
-    css_node_t *_scrollerCSSNode;
-#else
-    WXCoreFlexLayout::WXCoreLayoutNode *_flexScrollerCSSNode;
-#endif
     
     NSHashTable* _delegates;
 }
@@ -94,17 +89,6 @@ WX_EXPORT_METHOD(@selector(resetLoadmore))
 {
     _previousLoadMoreContentHeight=0;
 }
-
-#ifndef USE_FLEX
-- (css_node_t *)scrollerCSSNode
-{
-    return _scrollerCSSNode;
-}
-#else
-- (WXCoreFlexLayout::WXCoreLayoutNode *)flexScrollerCSSNode{
-    return _flexScrollerCSSNode;
-}
-#endif
 
 - (void)_insertSubcomponent:(WXComponent *)subcomponent atIndex:(NSInteger)index
 {

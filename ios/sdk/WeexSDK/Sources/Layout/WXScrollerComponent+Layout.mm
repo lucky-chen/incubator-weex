@@ -17,40 +17,18 @@
  * under the License.
  */
 
-#import "WXComponent.h"
-#include "WXCoreLayout.h"
+#import "WXScrollerComponent+Layout.h"
 
-#define FlexUndefined NAN
-#define USE_FLEX
+@implementation WXScrollerComponent (FlexLayout)
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-    
-    bool flexIsUndefined(float value);
-    
-#ifdef __cplusplus
-}
-#endif
-    
-@interface WXComponent ()
+#ifndef USE_FLEX
+- (css_node_t *)scrollerCSSNode
 {
-    WXCoreFlexLayout::WXCoreLayoutNode *_flexCssNode;
+    return _scrollerCSSNode;
 }
-@end
-
-@interface WXComponent (FlexLayout)
-
-@property (nonatomic,assign) WXCoreFlexLayout::WXCoreLayoutNode *flexCssNode;
-
--(WXCoreFlexLayout::WXCoreLayoutNode*) initFlexCssNode;
-
--(void)_recomputeFlexCSSNodeChildren;
-
--(void)_resetFlexCssNodeStyles:(NSMutableArray *)resetStyles;
-
--(void)_updateFlexCSSNodeStyles:(NSDictionary *)resetStyles;
-
--(void) layoutFlexCssNode:(WXCoreFlexLayout::WXCoreLayoutNode*)flexCSSNode width:cssWidth height:cssHeight direction:cssDirection;
-
+#else
+- (WXCoreFlexLayout::WXCoreLayoutNode *)flexScrollerCSSNode{
+    return _flexScrollerCSSNode;
+}
+#endif
 @end

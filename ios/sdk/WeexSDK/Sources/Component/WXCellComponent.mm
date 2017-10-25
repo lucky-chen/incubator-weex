@@ -23,7 +23,7 @@
 #import "WXListComponent.h"
 #import "WXComponent_internal.h"
 #import "WXDiffUtil.h"
-#import "WXComponent+FlexLayout.h"
+#import "WXComponent+Layout.h"
 
 @interface WXCellComponent ()
 

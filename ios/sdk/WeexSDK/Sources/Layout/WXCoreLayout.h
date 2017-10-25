@@ -1,4 +1,5 @@
 #ifdef __cplusplus
+
 #ifndef WEEXCORE_FLEXLAYOUT_WXCORELAYOUTNODE_H
 #define WEEXCORE_FLEXLAYOUT_WXCORELAYOUTNODE_H
 
@@ -14,12 +15,12 @@ namespace WXCoreFlexLayout {
   class WXCoreFlexLine;
 
   typedef struct WXCoreSize {
-    float height;
     float width;
+    float height;
 
     void reset() {
-      height = 0;
       width = 0;
+      height = 0;
     }
   } WXCoreSize;
 
@@ -86,16 +87,18 @@ namespace WXCoreFlexLayout {
   };
 
 
+  typedef enum FormatingContext {
+    BFC,
+    NON_BFC,
+    ALL,
+  } FormatingContext;
+
   /**
    * Layout node
    */
   class WXCoreLayoutNode {
   public:
-      
-    void *context;
-    void (*print)(void *context);
-    bool (*is_dirty)(void *context);
-      
+
     static WXCoreLayoutNode *newWXCoreNode() {
       return new WXCoreLayoutNode();
     }
@@ -133,6 +136,14 @@ namespace WXCoreFlexLayout {
       }
     }
 
+    void reset() {
+      mLayoutResult->reset();
+      for (int i = 0; i < getChildCount(NON_BFC); i++) {
+        WXCoreLayoutNode *child = getChildAt(NON_BFC, i);
+        child->reset();
+      }
+    }
+
   private:
 
     WXCoreLayoutNode() :
@@ -160,6 +171,10 @@ namespace WXCoreFlexLayout {
 
     std::vector<WXCoreLayoutNode *> mChildList;
 
+    std::vector<WXCoreLayoutNode *> BFCs;
+
+    std::vector<WXCoreLayoutNode *> NonBFCs;
+
     WXCoreLayoutNode *mParent;
 
     WXCoreCSSStyle *mCssStyle;
@@ -173,6 +188,8 @@ namespace WXCoreFlexLayout {
     bool mVisible;
 
     WXCoreMeasureFunc measureFunc;
+
+    void *context;
 
   public:
 
@@ -188,6 +205,14 @@ namespace WXCoreFlexLayout {
 
     bool haveMeasureFunc() {
       return measureFunc == nullptr ? false : true;
+    }
+
+    void *getContext() {
+      return context;
+    }
+
+    void setContext(void *context) {
+      this->context = context;
     }
 
   private:
@@ -254,14 +279,14 @@ namespace WXCoreFlexLayout {
     void measure(float width, float height, bool useMeasureFunc) {
 
       if (useMeasureFunc && measureFunc != nullptr &&
-          (isnan(width) || isnan(height))) {
+          !(width == mCssStyle->mStyleWidth && height == mCssStyle->mStyleHeight)) {
         WXCoreSize size = measureFunc(this, width, height);
         onMeasure(size.width, size.height);
-        if (isnan(width)) {
+        if (width != mCssStyle->mStyleWidth) {
           width = mLayoutResult->mLayoutSize.width +
                   getPaddingRight() + getBorderWidthRight() + getPaddingLeft() + getBorderWidthLeft();
         }
-        if (isnan(height)) {
+        if (height != mCssStyle->mStyleHeight) {
           height = mLayoutResult->mLayoutSize.height +
                    getPaddingTop() + getBorderWidthTop() + getPaddingBottom() + getBorderWidthBottom();
         }
@@ -310,21 +335,46 @@ namespace WXCoreFlexLayout {
      * Entry function to calculate layout
      */
     void calculateLayout() {
-      measure(getStyleWidth(), getStyleHeight(), true);
+      BFCs.clear();
+      initFormatingContext(BFCs);
+      reset();
+      WXCoreSize bfcSize = calculateBFCSize();
+      measure(bfcSize.width, bfcSize.height, true);
       layout(mCssStyle->mMargin.getMargin(WXCore_Margin_Left) + getLayoutPositionLeft(),
              mCssStyle->mMargin.getMargin(WXCore_Margin_Top) + getLayoutPositionTop(),
              mCssStyle->mMargin.getMargin(WXCore_Margin_Left) + getLayoutWidth(),
              mCssStyle->mMargin.getMargin(WXCore_Margin_Top) + getLayoutHeight());
+      for (int i = 0; i < getChildCount(BFC); ++i) {
+        WXCoreLayoutNode *child = getChildAt(BFC, i);
+        child->calculateLayout();
+      }
     }
 
     /** ================================ tree =================================== **/
 
-    uint32_t getChildCount() {
-      return (uint32_t)mChildList.size();
+    uint32_t getChildCount(FormatingContext formatingContext) {
+      switch (formatingContext) {
+        case NON_BFC:
+          return NonBFCs.size();
+        case BFC:
+          return BFCs.size();
+        case ALL:
+        default:
+          return mChildList.size();
+      }
     }
 
     void removeChildAt(uint32_t index) {
       mChildList.erase(mChildList.begin() + index);
+    }
+
+    void removeChild(WXCoreLayoutNode *child) {
+      for (int index = 0; index < mChildList.size(); index++) {
+        if (child == mChildList[index]) {
+          mChildList.erase(mChildList.begin() + index);
+          break;
+        }
+      }
     }
 
     void addChildAt(WXCoreLayoutNode *child, uint32_t index) {
@@ -332,12 +382,65 @@ namespace WXCoreFlexLayout {
       child->mParent = this;
     }
 
-    WXCoreLayoutNode *getChildAt(uint32_t index) {
-      return mChildList[index];
+    WXCoreLayoutNode *getChildAt(FormatingContext formatingContext, uint32_t index) {
+      switch (formatingContext) {
+        case NON_BFC:
+          return NonBFCs[index];
+        case BFC:
+          return BFCs[index];
+        case ALL:
+        default:
+          return mChildList[index];
+      }
     }
 
     WXCoreLayoutNode *getParent() {
       return mParent;
+    }
+
+    void initFormatingContext(std::vector<WXCoreLayoutNode *> &BFCs) {
+      NonBFCs.clear();
+      for (int i = 0; i < getChildCount(ALL); i++) {
+        WXCoreLayoutNode *child = getChildAt(ALL, i);
+        if (isBFC(child)) {
+          BFCs.push_back(child);
+        } else {
+          NonBFCs.push_back(child);
+          child->initFormatingContext(BFCs);
+        }
+      }
+    }
+
+    WXCoreSize calculateBFCSize() {
+      float width = mCssStyle->mStyleWidth, height = mCssStyle->mStyleHeight;
+      if (mCssStyle->mPositionType == WXCore_PositionType_Absolute) {
+        if (isnan(width) &&
+            mParent != nullptr &&
+            !isnan(mCssStyle->mStylePosition.getPosition(WXCore_PositionEdge_Left)) &&
+            !isnan(mCssStyle->mStylePosition.getPosition(WXCore_PositionEdge_Right))) {
+          width = mParent->mLayoutResult->mLayoutSize.width -
+                  mCssStyle->mStylePosition.getPosition(WXCore_PositionEdge_Left) -
+                  mCssStyle->mStylePosition.getPosition(WXCore_PositionEdge_Right);
+        }
+
+        if (isnan(height) &&
+            mParent != nullptr &&
+            !isnan(mCssStyle->mStylePosition.getPosition(WXCore_PositionEdge_Top)) &&
+            !isnan(mCssStyle->mStylePosition.getPosition(WXCore_PositionEdge_Bottom))) {
+          height = mParent->mLayoutResult->mLayoutSize.height -
+                   mCssStyle->mStylePosition.getPosition(WXCore_PositionEdge_Top) -
+                   mCssStyle->mStylePosition.getPosition(WXCore_PositionEdge_Bottom);
+        }
+      }
+
+      WXCoreSize size;
+      size.width = width;
+      size.height = height;
+      return size;
+    }
+
+    bool isBFC(WXCoreLayoutNode *node) {
+      return node->mCssStyle->mPositionType == WXCore_PositionType_Absolute;
     }
 
 
@@ -658,6 +761,7 @@ namespace WXCoreFlexLayout {
   private:
     float getLargestMainSize();
   };
+
 }
-#endif
 #endif //WEEXCORE_FLEXLAYOUT_WXCORELAYOUTNODE_H
+#endif

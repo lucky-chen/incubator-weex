@@ -28,7 +28,7 @@
 #import "WXView.h"
 #import <pthread/pthread.h>
 #import <CoreText/CoreText.h>
-#import "WXComponent+FlexLayout.h"
+#import "WXComponent+Layout.h"
 
 // WXText is a non-public is not permitted
 @interface WXTextView : WXView
@@ -257,8 +257,9 @@ do {\
     if (!UIEdgeInsetsEqualToEdgeInsets(flex_padding, _padding)) {
         _padding = flex_padding;
         [self setNeedsRepaint];
-#endif
     }
+#endif
+    
 }
 
 - (void)fillAttributes:(NSDictionary *)attributes

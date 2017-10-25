@@ -23,7 +23,7 @@
 #import "NSTimer+Weex.h"
 #import "WXSDKManager.h"
 #import "WXUtility.h"
-#import "WXComponent+FlexLayout.h"
+#import "WXComponent+Layout.h"
 
 @class WXSliderView;
 @class WXIndicatorView;

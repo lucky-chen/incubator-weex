@@ -36,15 +36,6 @@ typedef id (^WXDataBindingBlock)(NSDictionary *data, BOOL *needUpdate);
 @package
     NSString *_type;
     NSMutableArray *_subcomponents;
-    /**
-     *  Layout
-     */
-    css_node_t *_cssNode;
-    BOOL _isLayoutDirty;
-    CGRect _calculatedFrame;
-    CGPoint _absolutePosition;
-    WXPositionType _positionType;
-    
     
     //Transition
     WXTransition *_transition;
@@ -159,13 +150,6 @@ typedef id (^WXDataBindingBlock)(NSDictionary *data, BOOL *needUpdate);
 ///--------------------------------------
 /// @name Package Internal Methods
 ///--------------------------------------
-
-/**
- * @abstract Return the css node used to layout.
- *
- * @warning Subclasses must not override this.
- */
-@property(nonatomic, readonly, assign) css_node_t *cssNode;
 
 - (void)_layoutDidFinish;
 - (void)_calculateFrameWithSuperAbsolutePosition:(CGPoint)superAbsolutePosition

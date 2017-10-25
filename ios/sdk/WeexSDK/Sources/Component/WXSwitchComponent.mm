@@ -20,7 +20,7 @@
 #import "WXSwitchComponent.h"
 #import "WXConvert.h"
 #import "WXComponent_internal.h"
-#import "WXComponent+FlexLayout.h"
+#import "WXComponent+Layout.h"
 
 @interface WXSwitchView : UISwitch
 

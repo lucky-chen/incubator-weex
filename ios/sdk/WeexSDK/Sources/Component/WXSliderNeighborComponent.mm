@@ -24,7 +24,7 @@
 #import "WXIndicatorComponent.h"
 #import "WXSDKInstance.h"
 #import "NSTimer+Weex.h"
-#import "WXComponent+FlexLayout.h"
+#import "WXComponent+Layout.h"
 
 #define MAX_VISIBLE_ITEMS 30
 #define MIN_TOGGLE_DURATION 0.2

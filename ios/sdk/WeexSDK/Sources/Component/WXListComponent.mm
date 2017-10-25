@@ -30,6 +30,7 @@
 #import "WXSDKInstance_private.h"
 #import "WXRefreshComponent.h"
 #import "WXLoadingComponent.h"
+#import "WXScrollerComponent+Layout.h"
 
 @interface WXTableView : UITableView
 

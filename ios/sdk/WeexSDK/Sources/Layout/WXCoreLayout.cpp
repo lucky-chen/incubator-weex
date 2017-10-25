@@ -20,12 +20,17 @@ static T min_num(T a, T b) {
   return a < b ? a : b;
 }
 
+static float computedChildCrossSize(float partentCrossSize, float usedSpaceInCrossSize, float childCrossSize) {
+  return (isnan(childCrossSize) && !isnan(partentCrossSize)) ? partentCrossSize - usedSpaceInCrossSize
+                                                             : childCrossSize;
+}
+
 namespace WXCoreFlexLayout {
 
   void WXCoreLayoutNode::onMeasure(float width, float height) {
-    if (mChildrenFrozen == nullptr || mChildrenFrozen_oldlength < getChildCount()) {
-      mChildrenFrozen = new bool[getChildCount()];
-      mChildrenFrozen_oldlength = getChildCount();
+    if (mChildrenFrozen == nullptr || mChildrenFrozen_oldlength < getChildCount(NON_BFC)) {
+      mChildrenFrozen = new bool[getChildCount(NON_BFC)];
+      mChildrenFrozen_oldlength = getChildCount(NON_BFC);
     }
 
     // Only calculate the children views which are affected from the last measure.
@@ -41,7 +46,7 @@ namespace WXCoreFlexLayout {
         break;
     }
 
-    memset(mChildrenFrozen, false, getChildCount());
+    memset(mChildrenFrozen, false, getChildCount(NON_BFC));
   }
 
 /**
@@ -54,7 +59,7 @@ namespace WXCoreFlexLayout {
 
     mFlexLines.clear();
 
-    uint32_t childCount = getChildCount();
+    uint32_t childCount = getChildCount(NON_BFC);
 
     float largestHeightInRow = 0;
     float totalCrossSize = 0;
@@ -64,7 +69,7 @@ namespace WXCoreFlexLayout {
 
     // Determine how many flex lines are needed in this layout by measuring each child.
     for (uint32_t i = 0; i < childCount; i++) {
-      WXCoreLayoutNode *child = getChildAt(i);
+      WXCoreLayoutNode *child = getChildAt(NON_BFC, i);
 
       // Record stretch child's index
       if (child->mCssStyle->mAlignSelf == WXCore_AlignSelf_Stretch ||
@@ -73,13 +78,12 @@ namespace WXCoreFlexLayout {
         flexLine->mIndicesAlignSelfStretch.push_back(i);
       }
 
-      float childHeight = (isnan(child->mCssStyle->mStyleHeight) && !isnan(height)) ? height - getPaddingTop() +
-                                                                                      getBorderWidthTop() +
-                                                                                      child->getMarginTop() +
-                                                                                      getPaddingBottom() +
-                                                                                      getBorderWidthBottom() +
-                                                                                      child->getMarginBottom()
-                                                                                    : child->mCssStyle->mStyleHeight;
+      float childHeight = computedChildCrossSize(height,
+                                                 getPaddingTop() + getBorderWidthTop() +
+                                                 child->getMarginTop() +
+                                                 getPaddingBottom() + getBorderWidthBottom() +
+                                                 child->getMarginBottom(),
+                                                 child->mCssStyle->mStyleHeight);
       // Measure child based on its MeasureSpec
       child->measure(child->mCssStyle->mStyleWidth, childHeight, true);
 
@@ -149,7 +153,7 @@ namespace WXCoreFlexLayout {
 
     mFlexLines.clear();
 
-    uint32_t childCount = getChildCount();
+    uint32_t childCount = getChildCount(NON_BFC);
     float largestWidthInColumn = 0;
     float totalCrossSize = 0;
 
@@ -158,7 +162,7 @@ namespace WXCoreFlexLayout {
 
     // Determine how many flex lines are needed in this layout by measuring each child.
     for (uint32_t i = 0; i < childCount; i++) {
-      WXCoreLayoutNode *child = getChildAt(i);
+      WXCoreLayoutNode *child = getChildAt(NON_BFC, i);
 
       // Record stretch child's index
       if (child->mCssStyle->mAlignSelf == WXCore_AlignSelf_Stretch ||
@@ -167,13 +171,12 @@ namespace WXCoreFlexLayout {
         flexLine->mIndicesAlignSelfStretch.push_back(i);
       }
 
-      float childWidth = (isnan(child->mCssStyle->mStyleWidth) && !isnan(width)) ? width - getPaddingLeft() +
-                                                                                   getBorderWidthLeft() +
-                                                                                   child->getMarginLeft() +
-                                                                                   getPaddingRight() +
-                                                                                   getBorderWidthRight() +
-                                                                                   child->getMarginRight()
-                                                                                 : child->mCssStyle->mStyleWidth;
+      float childWidth = computedChildCrossSize(width,
+                                                getPaddingLeft() + getBorderWidthLeft() +
+                                                child->getMarginLeft() +
+                                                getPaddingRight() + getBorderWidthRight() +
+                                                child->getMarginRight(),
+                                                child->mCssStyle->mStyleWidth);
       // Measure child based on its MeasureSpec
       child->measure(childWidth, child->mCssStyle->mStyleHeight, true);
 
@@ -333,7 +336,7 @@ namespace WXCoreFlexLayout {
     float sizeBeforeExpand = flexLine->mMainSize;
     bool needReExpand = false;
     float unitSpace = (maxMainSize - flexLine->mMainSize + flexLine->mTotalFlexibleSize) /
-                      (flexLine->mTotalFlexibleSize > 1 ? flexLine->mTotalFlexGrow : 1);
+                      (flexLine->mTotalFlexGrow > 1 ? flexLine->mTotalFlexGrow : 1);
     flexLine->mMainSize = paddingAlongMainAxis;
 
     if (!calledRecursively) {
@@ -343,7 +346,7 @@ namespace WXCoreFlexLayout {
     float largestCrossSize = 0;
 
     for (uint32_t i = 0; i < flexLine->mItemCount; i++) {
-      WXCoreLayoutNode *child = getChildAt(childIndex);
+      WXCoreLayoutNode *child = getChildAt(NON_BFC, childIndex);
 
       if (isMainAxisDirectionHorizontal(flexDirection)) {
         // The direction of the main axis is horizontal
@@ -442,7 +445,7 @@ namespace WXCoreFlexLayout {
       uint32_t viewIndex = 0;
       for (WXCoreFlexLine *flexLine : mFlexLines) {
         for (uint32_t i = 0; i < flexLine->mItemCount; i++, viewIndex++) {
-          WXCoreLayoutNode *child = getChildAt(viewIndex);
+          WXCoreLayoutNode *child = getChildAt(NON_BFC, viewIndex);
 
           if (child->mCssStyle->mAlignSelf != WXCore_AlignSelf_Auto &&
               child->mCssStyle->mAlignSelf != WXCore_AlignSelf_Stretch) {
@@ -466,7 +469,7 @@ namespace WXCoreFlexLayout {
       // WXCoreAlignItems is STRETCH
       for (WXCoreFlexLine *flexLine : mFlexLines) {
         for (uint32_t index : flexLine->mIndicesAlignSelfStretch) {
-          WXCoreLayoutNode *child = getChildAt(index);
+          WXCoreLayoutNode *child = getChildAt(NON_BFC, index);
           switch (flexDirection) {
             case WXCore_Flex_Direction_Row:
             case WXCore_Flex_Direction_Row_Reverse:
@@ -621,7 +624,7 @@ namespace WXCoreFlexLayout {
     // SPACE_BETWEEN or SPACE_AROUND
     float childRight;
 
-    for (uint32_t i = 0, size = (uint32_t)mFlexLines.size(); i < size; i++) {
+    for (uint32_t i = 0, size = (uint32_t) mFlexLines.size(); i < size; i++) {
       WXCoreFlexLine *flexLine = mFlexLines[i];
 
       float spaceBetweenItem = 0;
@@ -662,7 +665,7 @@ namespace WXCoreFlexLayout {
 
       for (uint32_t j = 0; j < flexLine->mItemCount; j++) {
 
-        WXCoreLayoutNode *child = getChildAt(currentViewIndex);
+        WXCoreLayoutNode *child = getChildAt(NON_BFC, currentViewIndex);
 
         if (child == nullptr) {
           continue;
@@ -806,7 +809,7 @@ namespace WXCoreFlexLayout {
     // Used only for if the direction is from mStyleBottom to mStyleTop
     float childBottom;
 
-    for (uint32_t i = 0, size = (uint32_t)mFlexLines.size(); i < size; i++) {
+    for (uint32_t i = 0, size = (uint32_t) mFlexLines.size(); i < size; i++) {
       WXCoreFlexLine *flexLine = mFlexLines[i];
       float spaceBetweenItem = 0;
 
@@ -845,7 +848,7 @@ namespace WXCoreFlexLayout {
       spaceBetweenItem = max_num<float>(spaceBetweenItem, 0);
 
       for (uint32_t j = 0; j < flexLine->mItemCount; j++) {
-        WXCoreLayoutNode *child = getChildAt(currentViewIndex);
+        WXCoreLayoutNode *child = getChildAt(NON_BFC, currentViewIndex);
         if (child == nullptr) {
           continue;
         }

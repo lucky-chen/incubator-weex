@@ -22,6 +22,7 @@
 #import "WXLoadingIndicator.h"
 #import "WXComponent_internal.h"
 #import "WXLog.h"
+#import "WXComponent+Layout.h"
 
 @interface WXLoadingComponent()
 

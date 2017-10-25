@@ -37,7 +37,7 @@
 #import "WXPrerenderManager.h"
 #import "WXTracingManager.h"
 #import "WXLayoutDefine.h"
-#import "WXComponent+FlexLayout.h"
+#import "WXComponent+Layout.h"
 
 static NSThread *WXComponentThread;
 
@@ -97,7 +97,9 @@ static NSThread *WXComponentThread;
 #ifndef USE_FLEX
     free_css_node(_rootCSSNode);
 #else
-    _rootFlexCSSNode->freeWXCoreNode();
+    if(_rootFlexCSSNode){
+        _rootFlexCSSNode->freeWXCoreNode();
+    }
 #endif
     [NSMutableArray wx_releaseArray:_fixedComponents];
 }
@@ -247,6 +249,7 @@ static NSThread *WXComponentThread;
     [self _initRootCSSNode];
 #else
     [self _initRootFlexCssNode];
+    _rootFlexCSSNode->addChildAt(_rootComponent.flexCssNode, (uint32_t)[_fixedComponents count]);
 #endif
     
     NSArray *subcomponentsData = [data valueForKey:@"children"];
@@ -264,6 +267,7 @@ static NSThread *WXComponentThread;
         __strong typeof(self) strongSelf = weakSelf;
         strongSelf.weexInstance.rootView.wx_component = strongSelf->_rootComponent;
         [strongSelf.weexInstance.rootView addSubview:strongSelf->_rootComponent.view];
+        
         [WXTracingManager startTracingWithInstanceId:weakSelf.weexInstance.instanceId ref:data[@"ref"] className:nil name:data[@"type"] phase:WXTracingEnd functionName:@"createBody" options:@{@"threadName":WXTUIThread}];
     }];
     
@@ -899,7 +903,7 @@ static css_node_t * rootNodeGetChild(void *context, int i)
     _rootCSSNode->style.flex_wrap = CSS_NOWRAP;
     _rootCSSNode->is_dirty = rootNodeIsDirty;
     _rootCSSNode->get_child = rootNodeGetChild;
-    _rootCSSNode->context = (__bridge void *)(self);
+    _rootCSSNode->context=(__bridge void *)(self);
     _rootCSSNode->children_count = 1;
 }
 #else
@@ -908,7 +912,7 @@ static css_node_t * rootNodeGetChild(void *context, int i)
     _rootFlexCSSNode = WXCoreFlexLayout::WXCoreLayoutNode::newWXCoreNode();
     [self _applyRootFrame:self.weexInstance.frame];
     _rootFlexCSSNode->setFlexWrap(WXCoreFlexLayout::WXCore_Wrap_NoWrap);
-    _rootFlexCSSNode->context = (__bridge void *)(self);
+    _rootFlexCSSNode->setContext((__bridge void *)(self));
 }
 #endif
 
@@ -938,10 +942,10 @@ static css_node_t * rootNodeGetChild(void *context, int i)
 //    }
 //    _rootFlexCSSNode->layout.should_update = false;
     
-    CGRect frame = CGRectMake(WXRoundPixelValue(_rootFlexCSSNode->getStylePositionLeft()),
-                              WXRoundPixelValue(_rootFlexCSSNode->getStylePositionTop()),
-                              WXRoundPixelValue(_rootFlexCSSNode->getStyleWidth()),
-                              WXRoundPixelValue(_rootFlexCSSNode->getStyleHeight()));
+    CGRect frame = CGRectMake(WXRoundPixelValue(_rootFlexCSSNode->getLayoutPositionLeft()),
+                              WXRoundPixelValue(_rootFlexCSSNode->getLayoutPositionTop()),
+                              WXRoundPixelValue(_rootFlexCSSNode->getLayoutWidth()),
+                              WXRoundPixelValue(_rootFlexCSSNode->getLayoutHeight()));
     WXPerformBlockOnMainThread(^{
         if(!self.weexInstance.isRootViewFrozen) {
             self.weexInstance.rootView.frame = frame;
@@ -962,7 +966,7 @@ static css_node_t * rootNodeGetChild(void *context, int i)
 #ifndef USE_FLEX
     _rootCSSNode->children_count = (int)[_fixedComponents count] + 1;
 #else
-    _rootFlexCSSNode->addChildAt(fixComponent.flexCssNode, (int32_t)([_fixedComponents count]));
+    _rootFlexCSSNode->addChildAt(fixComponent.flexCssNode, (uint32_t)([_fixedComponents count]) +1 );
 #endif
 }
 
@@ -972,6 +976,7 @@ static css_node_t * rootNodeGetChild(void *context, int i)
 #ifndef USE_FLEX
     _rootCSSNode->children_count = (int)[_fixedComponents count] + 1;
 #else
+    // TODO
     //    _rootFlexCSSNode->removeChildAt(uint32_t index)
 #endif
 }

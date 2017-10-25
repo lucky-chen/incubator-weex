@@ -26,7 +26,7 @@
 #import "WXAssert.h"
 #import "WXComponent_internal.h"
 #import "WXComponent+PseudoClassManagement.h"
-#import "WXComponent+FlexLayout.h"
+#import "WXComponent+Layout.h"
 
 @interface WXEditComponent()
 

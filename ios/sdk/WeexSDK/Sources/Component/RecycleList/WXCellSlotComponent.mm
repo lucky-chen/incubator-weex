@@ -23,7 +23,7 @@
 #import "WXSDKInstance_private.h"
 #import "WXConvert.h"
 #import "WXAssert.h"
-#import "WXScrollerComponent.h"
+#import "WXScrollerComponent+Layout.h"
 
 static const NSString *WXDefaultRecycleTemplateType = @"WXDefaultRecycleTemplateType";
 

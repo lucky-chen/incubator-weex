@@ -20,7 +20,50 @@
 #import "WXComponent.h"
 #import "WXSDKInstance.h"
 #import "WXUtility.h"
+#import "WXLayoutDefine.h"
+#include "WXCoreLayout.h"
+
+#define FlexUndefined NAN
+//#define USE_FLEX
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+    bool flexIsUndefined(float value);
+#ifdef __cplusplus
+}
+#endif
+
+@interface WXComponent ()
+{
+    @package
+    /**
+     *  Layout
+     */
+#ifndef USE_FLEX
+    css_node_t *_cssNode;
+#else
+    WXCoreFlexLayout::WXCoreLayoutNode *_flexCssNode;
+#endif
+    BOOL _isLayoutDirty;
+    CGRect _calculatedFrame;
+    CGPoint _absolutePosition;
+    WXPositionType _positionType;
+}
+
+#ifndef USE_FLEX
+/**
+ * @abstract Return the css node used to layout.
+ *
+ * @warning Subclasses must not override this.
+ */
+@property(nonatomic, readonly, assign) css_node_t *cssNode;
+#else
+@property (nonatomic,assign) WXCoreFlexLayout::WXCoreLayoutNode *flexCssNode;
+#endif
+
+@end
 
 @interface WXComponent (Layout)
-
+- (void)_insertChildCssNode:(WXComponent*)subcomponent atIndex:(NSInteger)index;
 @end

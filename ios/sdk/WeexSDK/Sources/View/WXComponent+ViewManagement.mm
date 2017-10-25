@@ -25,7 +25,7 @@
 #import "WXSDKInstance_private.h"
 #import "WXTransform.h"
 #import "WXTracingManager.h"
-#import "WXComponent+FlexLayout.h"
+#import "WXComponent+Layout.h"
 
 #define WX_BOARD_RADIUS_RESET_ALL(key)\
 do {\
@@ -229,19 +229,11 @@ do {\
             if (positionType == WXPositionTypeFixed) {
                 [self.weexInstance.componentManager addFixedComponent:self];
                 _isNeedJoinLayoutSystem = NO;
-#ifndef USE_FLEX
                 [self.supercomponent _recomputeCSSNodeChildren];
-#else
-                [self.supercomponent _recomputeFlexCSSNodeChildren];
-#endif
             } else if (_positionType == WXPositionTypeFixed) {
                 [self.weexInstance.componentManager removeFixedComponent:self];
                 _isNeedJoinLayoutSystem = YES;
-#ifndef USE_FLEX
                 [self.supercomponent _recomputeCSSNodeChildren];
-#else
-                [self.supercomponent _recomputeFlexCSSNodeChildren];
-#endif
             }
             
             _positionType = positionType;

@@ -3,11 +3,12 @@
 #ifndef WEEXCORE_FLEXLAYOUT_WXCOREFLEXENUMS_H
 #define WEEXCORE_FLEXLAYOUT_WXCOREFLEXENUMS_H
 
+
 #include "WXCoreFlexEnum.h"
 #include <math.h>
 
 namespace WXCoreFlexLayout {
-    
+
   /**
    * Margin: margin-left、margin-right、margin-top、margin-bottom
    */
@@ -465,5 +466,5 @@ namespace WXCoreFlexLayout {
     }
   };
 }
-#endif
 #endif //WEEXCORE_FLEXLAYOUT_WXCOREFLEXENUMS_H
+#endif

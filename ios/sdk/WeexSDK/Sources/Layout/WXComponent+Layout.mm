@@ -24,7 +24,10 @@
 #import "WXAssert.h"
 #import "WXSDKInstance_private.h"
 #import "WXComponent+BoxShadow.h"
-#import "WXLayoutDefine.h"
+
+bool flexIsUndefined(float value) {
+    return isnan(value);
+}
 
 @implementation WXComponent (Layout)
 
@@ -60,6 +63,7 @@
 
 - (void)_initCSSNodeWithStyles:(NSDictionary *)styles
 {
+#ifndef USE_FLEX
     _cssNode = new_css_node();
     
     _cssNode->print = cssNodePrint;
@@ -83,6 +87,26 @@
             _cssNode->style.dimensions[CSS_WIDTH] = self.weexInstance.frame.size.width;
         }
     }
+#else
+    _flexCssNode = WXCoreFlexLayout::WXCoreLayoutNode::newWXCoreNode();
+    if ([self measureBlock]) {
+        _flexCssNode->setMeasureFunc(flexCssNodeMeasure);
+    }
+    _flexCssNode->setContext((__bridge void *)self);
+    
+    [self _recomputeCSSNodeChildren];
+    [self _fillCSSNode:styles];
+    
+    if ([self.ref isEqualToString:WX_SDK_ROOT_REF]) {
+        if (flexIsUndefined(_flexCssNode->getStyleHeight()) && self.weexInstance.frame.size.height) {
+            _flexCssNode->setStyleHeight(self.weexInstance.frame.size.height);
+        }
+        
+        if (flexIsUndefined(_flexCssNode->getStyleWidth()) && self.weexInstance.frame.size.width) {
+            _flexCssNode->setStyleWidth(self.weexInstance.frame.size.width);
+        }
+    }
+#endif
 }
 
 - (void)_updateCSSNodeStyles:(NSDictionary *)styles
@@ -97,7 +121,11 @@
 
 - (void)_recomputeCSSNodeChildren
 {
+#ifndef USE_FLEX
     _cssNode->children_count = (int)[self _childrenCountForLayout];
+#else
+    
+#endif
 }
 
 - (NSUInteger)_childrenCountForLayout
@@ -158,7 +186,7 @@
                            gatherDirtyComponents:(NSMutableSet<WXComponent *> *)dirtyComponents
 {
     WXAssertComponentThread();
-    
+#ifndef USE_FLEX
     if (!_cssNode->layout.should_update) {
         return;
     }
@@ -183,12 +211,41 @@
     _cssNode->layout.dimensions[CSS_HEIGHT] = CSS_UNDEFINED;
     _cssNode->layout.position[CSS_LEFT] = 0;
     _cssNode->layout.position[CSS_TOP] = 0;
+
+    [self _frameDidCalculated:isFrameChanged];
+    NSArray * subcomponents = [_subcomponents copy];
+    for (WXComponent *subcomponent in subcomponents) {
+        [subcomponent _calculateFrameWithSuperAbsolutePosition:newAbsolutePosition gatherDirtyComponents:dirtyComponents];
+    }
+#else
+    _isLayoutDirty = NO;
+    CGRect newFrame = CGRectMake(WXRoundPixelValue(_flexCssNode->getLayoutPositionLeft()),
+                                 WXRoundPixelValue(_flexCssNode->getLayoutPositionTop()),
+                                 WXRoundPixelValue(_flexCssNode->getLayoutWidth()),
+                                 WXRoundPixelValue(_flexCssNode->getLayoutHeight()));
+    
+    BOOL isFrameChanged = NO;
+    if (!CGRectEqualToRect(newFrame, _calculatedFrame)) {
+        isFrameChanged = YES;
+        _calculatedFrame = newFrame;
+        [dirtyComponents addObject:self];
+    }
+    
+    CGPoint newAbsolutePosition = [self computeNewAbsolutePosition:superAbsolutePosition];
+    
+    // TODO: Do we need clear layout result after frame has been setted?
+    
+//    _flexCssNode->setStyleWidth(FlexUndefined);
+//    _flexCssNode->setStyleHeight(FlexUndefined);
+//    _flexCssNode->setStylePosition(WXCoreFlexLayout::WXCore_PositionEdge_Left, 0);
+//    _flexCssNode->setStylePosition(WXCoreFlexLayout::WXCore_PositionEdge_Top, 0);
     
     [self _frameDidCalculated:isFrameChanged];
     NSArray * subcomponents = [_subcomponents copy];
     for (WXComponent *subcomponent in subcomponents) {
         [subcomponent _calculateFrameWithSuperAbsolutePosition:newAbsolutePosition gatherDirtyComponents:dirtyComponents];
     }
+#endif
 }
 
 - (CGPoint)computeNewAbsolutePosition:(CGPoint)superAbsolutePosition
@@ -206,6 +263,8 @@
     }
     [self layoutDidFinish];
 }
+
+#ifndef USE_FLEX
 
 #define WX_STYLE_FILL_CSS_NODE(key, cssProp, type)\
 do {\
@@ -239,6 +298,8 @@ do {\
     WX_STYLE_FILL_CSS_NODE_PIXEL(key, cssProp[CSS_BOTTOM])\
 } while(0);
 
+#else
+#endif
 
 - (CGFloat)WXPixelType:(id)value
 {
@@ -247,6 +308,7 @@ do {\
 
 - (void)_fillCSSNode:(NSDictionary *)styles
 {
+#ifndef USE_FLEX
     // flex
     WX_STYLE_FILL_CSS_NODE(flex, flex, CGFloat)
     WX_STYLE_FILL_CSS_NODE(flexDirection, flex_direction, css_flex_direction_t)
@@ -290,7 +352,125 @@ do {\
     WX_STYLE_FILL_CSS_NODE_PIXEL(paddingLeft, padding[CSS_LEFT])
     WX_STYLE_FILL_CSS_NODE_PIXEL(paddingRight, padding[CSS_RIGHT])
     WX_STYLE_FILL_CSS_NODE_PIXEL(paddingBottom, padding[CSS_BOTTOM])
+#else
+    // flex
+    if (styles[@"flex"]) {
+        _flexCssNode->setFlex([WXConvert CGFloat:styles[@"flex"]]);
+    } else {
+        // to make the default flex value is zero, yoga is nan, maybe this can configured by yoga config
+        _flexCssNode->setFlex(0);
+    }
+    if (styles[@"flexDirection"]) {
+        _flexCssNode->setFlexDirection([self fxFlexDirection:styles[@"flexDirection"]]);
+    }
+    if (styles[@"alignItems"]) {
+        _flexCssNode->setAlignItems([self fxAlign:styles[@"alignItems"]]);
+    }
+    if (styles[@"alignSelf"]) {
+        _flexCssNode->setAlignSelf([self fxAlignSelf:styles[@"alignSelf"]]);
+    }
+    if (styles[@"flexWrap"]) {
+        _flexCssNode->setFlexWrap([self fxWrap:styles[@"flexWrap"]]);
+    }
+    if (styles[@"justifyContent"]) {
+        _flexCssNode->setJustifyContent([self fxJustify:styles[@"justifyContent"]]);
+    }
+    
+    // position
+    if (styles[@"position"]) {
+        _flexCssNode->setStylePositionType([self fxPositionType:styles[@"position"]]);
+    }
+    if (styles[@"top"]) {
+        _flexCssNode->setStylePosition(WXCoreFlexLayout::WXCore_PositionEdge_Top, [WXConvert WXPixelType:styles[@"top"] scaleFactor:self.weexInstance.pixelScaleFactor]);
+    }
+    if (styles[@"left"]) {
+        _flexCssNode->setStylePosition(WXCoreFlexLayout::WXCore_PositionEdge_Left, [WXConvert WXPixelType:styles[@"left"] scaleFactor:self.weexInstance.pixelScaleFactor]);
+    }
+    if(styles[@"right"]) {
+        _flexCssNode->setStylePosition(WXCoreFlexLayout::WXCore_PositionEdge_Right, [WXConvert WXPixelType:styles[@"right"] scaleFactor:self.weexInstance.pixelScaleFactor]);
+    }
+    if (styles[@"bottom"]) {
+        _flexCssNode->setStylePosition(WXCoreFlexLayout::WXCore_PositionEdge_Bottom, [WXConvert WXPixelType:styles[@"bottom"] scaleFactor:self.weexInstance.pixelScaleFactor]);
+    }
+    
+    // dimension
+    if (styles[@"width"]) {
+        _flexCssNode->setStyleWidth([WXConvert WXPixelType:styles[@"width"] scaleFactor:self.weexInstance.pixelScaleFactor]);
+    }
+    if (styles[@"height"]) {
+        _flexCssNode->setStyleHeight([WXConvert WXPixelType:styles[@"height"] scaleFactor:self.weexInstance.pixelScaleFactor]);
+    }
+    if (styles[@"minWidth"]) {
+        _flexCssNode->setMinWidth([WXConvert WXPixelType:styles[@"minWidth"] scaleFactor:self.weexInstance.pixelScaleFactor]);
+    }
+    if (styles[@"minHeight"]) {
+        _flexCssNode->setMinHeight([WXConvert WXPixelType:styles[@"minHeight"] scaleFactor:self.weexInstance.pixelScaleFactor]);
+    }
+    if (styles[@"maxWidth"]) {
+        _flexCssNode->setMaxWidth([WXConvert WXPixelType:styles[@"maxWidth"] scaleFactor:self.weexInstance.pixelScaleFactor]);
+    }
+    if (styles[@"maxHeight"]) {
+        _flexCssNode->setMaxHeight([WXConvert WXPixelType:styles[@"maxHeight"] scaleFactor:self.weexInstance.pixelScaleFactor]);
+    }
+    
+    // margin
+    if (styles[@"margin"]) {
+        _flexCssNode->setMargin(WXCoreFlexLayout::WXCore_Margin_ALL, [WXConvert WXPixelType:styles[@"margin"] scaleFactor:self.weexInstance.pixelScaleFactor]);
+    }
+    if (styles[@"marginTop"]) {
+        _flexCssNode->setMargin(WXCoreFlexLayout::WXCore_Margin_Top, [WXConvert WXPixelType:styles[@"marginTop"] scaleFactor:self.weexInstance.pixelScaleFactor]);
+    }
+    if (styles[@"marginBottom"]) {
+        _flexCssNode->setMargin(WXCoreFlexLayout::WXCore_Margin_Bottom, [WXConvert WXPixelType:styles[@"marginBottom"] scaleFactor:self.weexInstance.pixelScaleFactor]);
+    }
+    if (styles[@"marginRight"]) {
+        _flexCssNode->setMargin(WXCoreFlexLayout::WXCore_Margin_Right, [WXConvert WXPixelType:styles[@"marginRight"] scaleFactor:self.weexInstance.pixelScaleFactor]);
+    }
+    if (styles[@"marginLeft"]) {
+        _flexCssNode->setMargin(WXCoreFlexLayout::WXCore_Margin_Left, [WXConvert WXPixelType:styles[@"marginLeft"] scaleFactor:self.weexInstance.pixelScaleFactor]);
+    }
+    
+    // border
+    if (styles[@"border"]) {
+        _flexCssNode->setBorderWidth(WXCoreFlexLayout::WXCore_Border_Width_ALL, [WXConvert WXPixelType:styles[@"border"] scaleFactor:self.weexInstance.pixelScaleFactor]);
+    }
+    if (styles[@"borderTopWidth"]) {
+        _flexCssNode->setBorderWidth(WXCoreFlexLayout::WXCore_Border_Width_Top, [WXConvert WXPixelType:styles[@"borderTopWidth"] scaleFactor:self.weexInstance.pixelScaleFactor]);
+    }
+    
+    if (styles[@"borderLeftWidth"]) {
+        _flexCssNode->setBorderWidth(WXCoreFlexLayout::WXCore_Border_Width_Left, [WXConvert WXPixelType:styles[@"borderLeftWidth"] scaleFactor:self.weexInstance.pixelScaleFactor]);
+    }
+    
+    if (styles[@"borderBottomWidth"]) {
+        _flexCssNode->setBorderWidth(WXCoreFlexLayout::WXCore_Border_Width_Bottom, [WXConvert WXPixelType:styles[@"borderBottomWidth"] scaleFactor:self.weexInstance.pixelScaleFactor]);
+    }
+    if (styles[@"borderRightWidth"]) {
+        _flexCssNode->setBorderWidth(WXCoreFlexLayout::WXCore_Border_Width_Right, [WXConvert WXPixelType:styles[@"borderRightWidth"] scaleFactor:self.weexInstance.pixelScaleFactor]);
+    }
+    
+    // padding
+    if (styles[@"padding"]) {
+        _flexCssNode->setPadding(WXCoreFlexLayout::WXCore_Padding_ALL, [WXConvert WXPixelType:styles[@"padding"] scaleFactor:self.weexInstance.pixelScaleFactor]);
+    }
+    if (styles[@"paddingTop"]) {
+        _flexCssNode->setPadding(WXCoreFlexLayout::WXCore_Padding_Top, [WXConvert WXPixelType:styles[@"paddingTop"] scaleFactor:self.weexInstance.pixelScaleFactor]);
+    }
+    if (styles[@"paddingLeft"]) {
+        _flexCssNode->setPadding(WXCoreFlexLayout::WXCore_Padding_Left, [WXConvert WXPixelType:styles[@"paddingLeft"] scaleFactor:self.weexInstance.pixelScaleFactor]);
+    }
+    if (styles[@"paddingBottom"]) {
+        _flexCssNode->setPadding(WXCoreFlexLayout::WXCore_Padding_Bottom, [WXConvert WXPixelType:styles[@"paddingBottom"] scaleFactor:self.weexInstance.pixelScaleFactor]);
+    }
+    if (styles[@"paddingRight"]) {
+        _flexCssNode->setPadding(WXCoreFlexLayout::WXCore_Padding_Right, [WXConvert WXPixelType:styles[@"paddingRight"] scaleFactor:self.weexInstance.pixelScaleFactor]);
+    }
+    
+    [self setNeedsLayout];
+#endif
 }
+
+#ifndef USE_FLEX
 
 #define WX_STYLE_RESET_CSS_NODE(key, cssProp, defaultValue)\
 do {\
@@ -308,8 +488,13 @@ do {\
     WX_STYLE_RESET_CSS_NODE(key, cssProp[CSS_BOTTOM], defaultValue)\
 } while(0);
 
+#else
+#endif
+
+
 - (void)_resetCSSNode:(NSArray *)styles;
 {
+#ifndef USE_FLEX
     // flex
     WX_STYLE_RESET_CSS_NODE(flex, flex, 0.0)
     WX_STYLE_RESET_CSS_NODE(flexDirection, flex_direction, CSS_FLEX_DIRECTION_COLUMN)
@@ -353,10 +538,16 @@ do {\
     WX_STYLE_RESET_CSS_NODE(paddingLeft, padding[CSS_LEFT], 0.0)
     WX_STYLE_RESET_CSS_NODE(paddingRight, padding[CSS_RIGHT], 0.0)
     WX_STYLE_RESET_CSS_NODE(paddingBottom, padding[CSS_BOTTOM], 0.0)
+#else
+#endif
 }
 
 #pragma mark CSS Node Override
 
+#ifndef USE_FLEX
+#if defined __cplusplus
+extern "C" {
+#endif
 static void cssNodePrint(void *context)
 {
     WXComponent *component = (__bridge WXComponent *)context;
@@ -394,7 +585,7 @@ static bool cssNodeIsDirty(void *context)
     
     return needsLayout;
 }
-
+    
 static css_dim_t cssNodeMeasure(void *context, float width, css_measure_mode_t widthMode, float height, css_measure_mode_t heightMode)
 {
     WXComponent *component = (__bridge WXComponent *)context;
@@ -407,6 +598,145 @@ static css_dim_t cssNodeMeasure(void *context, float width, css_measure_mode_t w
     CGSize constrainedSize = CGSizeMake(width, height);
     CGSize resultSize = measureBlock(constrainedSize);
     
-    return (css_dim_t){resultSize.width, resultSize.height};
+    return (css_dim_t){(float)resultSize.width, (float)resultSize.height};
 }
+#if defined __cplusplus
+};
+#endif
+
+#else
+
+static WXCoreFlexLayout::WXCoreSize flexCssNodeMeasure(WXCoreFlexLayout::WXCoreLayoutNode *node, float width, float height){
+    WXComponent *component = (__bridge WXComponent *)(node->getContext());
+    
+    CGSize (^measureBlock)(CGSize) = [component measureBlock];
+    
+    if (!measureBlock) {
+        return (WXCoreFlexLayout::WXCoreSize){NAN, NAN};
+    }
+    CGSize constrainedSize = CGSizeMake(width, height);
+    CGSize resultSize = measureBlock(constrainedSize);
+    WXCoreFlexLayout::WXCoreSize size;
+    size.height=(float)resultSize.height;
+    size.width=(float)resultSize.width;
+    return size;
+}
+
+-(WXCoreFlexLayout::WXCorePositionType)fxPositionType:(id)value
+{
+    if([value isKindOfClass:[NSString class]]){
+        if ([value isEqualToString:@"absolute"]) {
+            return WXCoreFlexLayout::WXCore_PositionType_Absolute;
+        } else if ([value isEqualToString:@"relative"]) {
+            return WXCoreFlexLayout::WXCore_PositionType_Relative;
+        } else if ([value isEqualToString:@"fixed"]) {
+            return WXCoreFlexLayout::WXCore_PositionType_Fixed;
+        } else if ([value isEqualToString:@"sticky"]) {
+            return WXCoreFlexLayout::WXCore_PositionType_Relative;
+        }
+    }
+    return WXCoreFlexLayout::WXCore_PositionType_Relative;
+}
+
+- (WXCoreFlexLayout::WXCoreFlexDirection)fxFlexDirection:(id)value
+{
+    if([value isKindOfClass:[NSString class]]){
+        if ([value isEqualToString:@"column"]) {
+            return WXCoreFlexLayout::WXCore_Flex_Direction_Column;
+        } else if ([value isEqualToString:@"column-reverse"]) {
+            return WXCoreFlexLayout::WXCore_Flex_Direction_Column_Reverse;
+        } else if ([value isEqualToString:@"row"]) {
+            return WXCoreFlexLayout::WXCore_Flex_Direction_Row;
+        } else if ([value isEqualToString:@"row-reverse"]) {
+            return WXCoreFlexLayout::WXCore_Flex_Direction_Row_Reverse;
+        }
+    }
+    return WXCoreFlexLayout::WXCore_Flex_Direction_Column;
+}
+
+//TODO
+- (WXCoreFlexLayout::WXCoreAlignItems)fxAlign:(id)value
+{
+    if([value isKindOfClass:[NSString class]]){
+        if ([value isEqualToString:@"stretch"]) {
+            return WXCoreFlexLayout::WXCore_AlignItems_Stretch;
+        } else if ([value isEqualToString:@"flex-start"]) {
+            return WXCoreFlexLayout::WXCore_AlignItems_Flex_Start;
+        } else if ([value isEqualToString:@"flex-end"]) {
+            return WXCoreFlexLayout::WXCore_AlignItems_Flex_End;
+        } else if ([value isEqualToString:@"center"]) {
+            return WXCoreFlexLayout::WXCore_AlignItems_Center;
+        } else if ([value isEqualToString:@"auto"]) {
+//            return YGAlignAuto;
+        } else if ([value isEqualToString:@"baseline"]) {
+//            return YGAlignBaseline;
+        }
+    }
+    
+    return WXCoreFlexLayout::WXCore_AlignItems_Stretch;
+}
+
+- (WXCoreFlexLayout::WXCoreAlignSelf)fxAlignSelf:(id)value
+{
+    if([value isKindOfClass:[NSString class]]){
+        if ([value isEqualToString:@"stretch"]) {
+            return WXCoreFlexLayout::WXCore_AlignSelf_Stretch;
+        } else if ([value isEqualToString:@"flex-start"]) {
+            return WXCoreFlexLayout::WXCore_AlignSelf_Flex_Start;
+        } else if ([value isEqualToString:@"flex-end"]) {
+            return WXCoreFlexLayout::WXCore_AlignSelf_Flex_End;
+        } else if ([value isEqualToString:@"center"]) {
+            return WXCoreFlexLayout::WXCore_AlignSelf_Center;
+        } else if ([value isEqualToString:@"auto"]) {
+            return WXCoreFlexLayout::WXCore_AlignSelf_Auto;
+        } else if ([value isEqualToString:@"baseline"]) {
+            //            return YGAlignBaseline;
+        }
+    }
+    
+    return WXCoreFlexLayout::WXCore_AlignSelf_Stretch;
+}
+
+- (WXCoreFlexLayout::WXCoreFlexWrap)fxWrap:(id)value
+{
+    if([value isKindOfClass:[NSString class]]) {
+        if ([value isEqualToString:@"nowrap"]) {
+            return WXCoreFlexLayout::WXCore_Wrap_NoWrap;
+        } else if ([value isEqualToString:@"wrap"]) {
+            return WXCoreFlexLayout::WXCore_Wrap_Wrap;
+        } else if ([value isEqualToString:@"wrap-reverse"]) {
+            return WXCoreFlexLayout::WXCore_Wrap_WrapReverse;
+        }
+    }
+    
+    return WXCoreFlexLayout::WXCore_Wrap_NoWrap;
+}
+
+- (WXCoreFlexLayout::WXCoreJustifyContent)fxJustify:(id)value
+{
+    if([value isKindOfClass:[NSString class]]){
+        if ([value isEqualToString:@"flex-start"]) {
+            return WXCoreFlexLayout::WXCore_Justify_Flex_Start;
+        } else if ([value isEqualToString:@"center"]) {
+            return WXCoreFlexLayout::WXCore_Justify_Center;
+        } else if ([value isEqualToString:@"flex-end"]) {
+            return WXCoreFlexLayout::WXCore_Justify_Flex_End;
+        } else if ([value isEqualToString:@"space-between"]) {
+            return WXCoreFlexLayout::WXCore_Justify_Space_Between;
+        } else if ([value isEqualToString:@"space-around"]) {
+            return WXCoreFlexLayout::WXCore_Justify_Space_Around;
+        }
+    }
+    
+    return WXCoreFlexLayout::WXCore_Justify_Flex_Start;
+}
+
+
+- (void)_insertChildCssNode:(WXComponent*)subcomponent atIndex:(NSInteger)index
+{
+    self.flexCssNode->addChildAt(subcomponent.flexCssNode, (uint32_t)index);
+}
+
+#endif
+
 @end

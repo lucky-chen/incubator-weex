@@ -33,6 +33,8 @@
 #import "NSObject+WXSwizzle.h"
 #import "WXComponent+Events.h"
 #import "WXRecyclerDragController.h"
+#import "WXComponent+Layout.h"
+#import "WXScrollerComponent+Layout.h"
 
 static NSString * const kCollectionCellReuseIdentifier = @"WXRecyclerCell";
 static NSString * const kCollectionHeaderReuseIdentifier = @"WXRecyclerHeader";
@@ -610,6 +612,7 @@ typedef enum : NSUInteger {
 
 - (void)_fillPadding
 {
+#ifndef USE_FLEX
     UIEdgeInsets padding = {
         WXFloorPixelValue(self.cssNode->style.padding[CSS_TOP] + self.cssNode->style.border[CSS_TOP]),
         WXFloorPixelValue(self.cssNode->style.padding[CSS_LEFT] + self.cssNode->style.border[CSS_LEFT]),
@@ -631,6 +634,8 @@ typedef enum : NSUInteger {
             });
         }
     }
+#else
+#endif
 }
 
 - (NSArray<WXSectionDataController *> *)_sectionArrayFromComponents:(NSArray<WXComponent *> *)components

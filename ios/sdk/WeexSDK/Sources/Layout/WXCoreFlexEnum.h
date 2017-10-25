@@ -1,4 +1,5 @@
 #ifdef __cplusplus
+
 #ifndef WEEXCORE_FLEXLAYOUT_WXCOREFLEXENUM_H
 #define WEEXCORE_FLEXLAYOUT_WXCOREFLEXENUM_H
 
@@ -94,5 +95,5 @@ namespace WXCoreFlexLayout {
   } WXCoreBorderWidthEdge;
     
 }
-#endif
 #endif //WEEXCORE_FLEXLAYOUT_WXCOREFLEXENUM_H
+#endif
