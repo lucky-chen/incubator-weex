@@ -738,7 +738,7 @@ WX_EXPORT_METHOD(@selector(resetLoadmore))
         // can't use memcpy because of simple copy. but this seems has question.`~`
         _flexScrollerCSSNode->copyStyle(self.flexCssNode);
         _flexScrollerCSSNode->copyMeasureFunc(self.flexCssNode);
-        
+
        _flexScrollerCSSNode->setStylePosition(WXCoreFlexLayout::WXCore_PositionEdge_Left, 0);
         _flexScrollerCSSNode->setStylePosition(WXCoreFlexLayout::WXCore_PositionEdge_Top, 0);
         if (_scrollDirection == WXScrollDirectionVertical) {

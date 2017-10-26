@@ -59,7 +59,7 @@ extern "C" {
  */
 @property(nonatomic, readonly, assign) css_node_t *cssNode;
 #else
-@property (nonatomic,assign) WXCoreFlexLayout::WXCoreLayoutNode *flexCssNode;
+@property(nonatomic, readonly, assign) WXCoreFlexLayout::WXCoreLayoutNode *flexCssNode;
 #endif
 
 @end

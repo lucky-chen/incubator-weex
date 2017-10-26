@@ -93,7 +93,6 @@ bool flexIsUndefined(float value) {
         _flexCssNode->setMeasureFunc(flexCssNodeMeasure);
     }
     _flexCssNode->setContext((__bridge void *)self);
-    
     [self _recomputeCSSNodeChildren];
     [self _fillCSSNode:styles];
     
@@ -198,7 +197,6 @@ bool flexIsUndefined(float value) {
                                  WXRoundPixelValue(_cssNode->layout.position[CSS_TOP]),
                                  WXRoundPixelValue(_cssNode->layout.dimensions[CSS_WIDTH]),
                                  WXRoundPixelValue(_cssNode->layout.dimensions[CSS_HEIGHT]));
-    
     BOOL isFrameChanged = NO;
     if (!CGRectEqualToRect(newFrame, _calculatedFrame)) {
         isFrameChanged = YES;
@@ -225,6 +223,13 @@ bool flexIsUndefined(float value) {
                                  WXRoundPixelValue(_flexCssNode->getLayoutWidth()),
                                  WXRoundPixelValue(_flexCssNode->getLayoutHeight()));
     
+    //TODO: test code,need remove
+    if([self isKindOfClass:NSClassFromString(@"WXTextComponent")]){
+        if(_flexCssNode->getLayoutPositionLeft()==0){
+         
+        }
+        NSLog(@"~~~~~~text->%@, Left->%.f,Top->%.f,super->%@",[self valueForKey:@"_text"],_flexCssNode->getLayoutPositionLeft(),_flexCssNode->getLayoutPositionTop(),[self supercomponent]);
+    }
     BOOL isFrameChanged = NO;
     if (!CGRectEqualToRect(newFrame, _calculatedFrame)) {
         isFrameChanged = YES;
@@ -603,7 +608,7 @@ static css_dim_t cssNodeMeasure(void *context, float width, css_measure_mode_t w
 
 static WXCoreFlexLayout::WXCoreSize flexCssNodeMeasure(WXCoreFlexLayout::WXCoreLayoutNode *node, float width, float height){
     WXComponent *component = (__bridge WXComponent *)(node->getContext());
-    
+    NSLog(@"~~~~~~ text->%@, flexCssNodeMeasure start",[component valueForKey:@"_text"]);
     CGSize (^measureBlock)(CGSize) = [component measureBlock];
     
     if (!measureBlock) {
@@ -614,6 +619,7 @@ static WXCoreFlexLayout::WXCoreSize flexCssNodeMeasure(WXCoreFlexLayout::WXCoreL
     WXCoreFlexLayout::WXCoreSize size;
     size.height=(float)resultSize.height;
     size.width=(float)resultSize.width;
+    NSLog(@"~~~~~~ text->%@ flexCssNodeMeasure end:%.f,%.f",[component valueForKey:@"_text"],size.width,size.height);
 //    WXLogInfo(@"FlexLayout -- measure:[%@,width:%f,height:%f]",node->getContext(),size.width,size.height);
     return size;
 }
@@ -731,6 +737,7 @@ static WXCoreFlexLayout::WXCoreSize flexCssNodeMeasure(WXCoreFlexLayout::WXCoreL
 - (void)_insertChildCssNode:(WXComponent*)subcomponent atIndex:(NSInteger)index
 {
     self.flexCssNode->addChildAt(subcomponent.flexCssNode, (uint32_t)index);
+    NSLog(@"~~~~~ -- P:%@ -> C:%@",self,subcomponent);
 //    WXLogInfo(@"FlexLayout -- P:%@ -> C:%@",self,subcomponent);
 }
 

@@ -977,8 +977,7 @@ static css_node_t * rootNodeGetChild(void *context, int i)
 #ifndef USE_FLEX
     _rootCSSNode->children_count = (int)[_fixedComponents count] + 1;
 #else
-    // TODO
-    //    _rootFlexCSSNode->removeChildAt(uint32_t index)
+    _rootFlexCSSNode->removeChild(fixComponent->_flexCssNode);
 #endif
 }
 

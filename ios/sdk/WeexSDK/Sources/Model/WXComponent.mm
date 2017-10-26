@@ -526,6 +526,8 @@
 #else
     if (subcomponent->_isNeedJoinLayoutSystem) {
         [self _insertChildCssNode:subcomponent atIndex:index];
+    }else{
+        NSLog(@"~~~~~ -- no need JoinLayoutSystem");
     }
 #endif
     
@@ -537,6 +539,11 @@
 {
     pthread_mutex_lock(&_propertyMutex);
     [_subcomponents removeObject:subcomponent];
+#ifndef USE_FLEX
+#else
+    subcomponent->_isNeedJoinLayoutSystem = NO;
+    self.flexCssNode->removeChild(subcomponent.flexCssNode);
+#endif
     pthread_mutex_unlock(&_propertyMutex);
 }
 
