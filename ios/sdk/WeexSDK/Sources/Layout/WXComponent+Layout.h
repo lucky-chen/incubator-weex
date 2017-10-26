@@ -24,7 +24,7 @@
 #include "WXCoreLayout.h"
 
 #define FlexUndefined NAN
-//#define USE_FLEX
+#define USE_FLEX
 
 #ifdef __cplusplus
 extern "C" {
@@ -65,5 +65,8 @@ extern "C" {
 @end
 
 @interface WXComponent (Layout)
+#ifndef USE_FLEX
+#else
 - (void)_insertChildCssNode:(WXComponent*)subcomponent atIndex:(NSInteger)index;
+#endif
 @end

@@ -186,6 +186,7 @@ bool flexIsUndefined(float value) {
                            gatherDirtyComponents:(NSMutableSet<WXComponent *> *)dirtyComponents
 {
     WXAssertComponentThread();
+
 #ifndef USE_FLEX
     if (!_cssNode->layout.should_update) {
         return;
@@ -233,12 +234,7 @@ bool flexIsUndefined(float value) {
     
     CGPoint newAbsolutePosition = [self computeNewAbsolutePosition:superAbsolutePosition];
     
-    // TODO: Do we need clear layout result after frame has been setted?
-    
-//    _flexCssNode->setStyleWidth(FlexUndefined);
-//    _flexCssNode->setStyleHeight(FlexUndefined);
-//    _flexCssNode->setStylePosition(WXCoreFlexLayout::WXCore_PositionEdge_Left, 0);
-//    _flexCssNode->setStylePosition(WXCoreFlexLayout::WXCore_PositionEdge_Top, 0);
+//    _flexCssNode->resetLayoutSize();
     
     [self _frameDidCalculated:isFrameChanged];
     NSArray * subcomponents = [_subcomponents copy];
@@ -568,9 +564,9 @@ static css_node_t * cssNodeGetChild(void *context, int i)
     
     if(i >= 0 && i < subcomponents.count){
         WXComponent *child = subcomponents[i];
+//        WXLogInfo(@"FlexLayout -- P:%@ -> C:%@",component,(__bridge WXComponent *)child->_cssNode->context);
         return child->_cssNode;
     }
-    
     
     WXAssert(NO, @"Can not find component:%@'s css node child at index: %ld, totalCount:%ld", component, i, subcomponents.count);
     return NULL;
@@ -597,7 +593,6 @@ static css_dim_t cssNodeMeasure(void *context, float width, css_measure_mode_t w
     
     CGSize constrainedSize = CGSizeMake(width, height);
     CGSize resultSize = measureBlock(constrainedSize);
-    
     return (css_dim_t){(float)resultSize.width, (float)resultSize.height};
 }
 #if defined __cplusplus
@@ -619,6 +614,7 @@ static WXCoreFlexLayout::WXCoreSize flexCssNodeMeasure(WXCoreFlexLayout::WXCoreL
     WXCoreFlexLayout::WXCoreSize size;
     size.height=(float)resultSize.height;
     size.width=(float)resultSize.width;
+//    WXLogInfo(@"FlexLayout -- measure:[%@,width:%f,height:%f]",node->getContext(),size.width,size.height);
     return size;
 }
 
@@ -735,6 +731,7 @@ static WXCoreFlexLayout::WXCoreSize flexCssNodeMeasure(WXCoreFlexLayout::WXCoreL
 - (void)_insertChildCssNode:(WXComponent*)subcomponent atIndex:(NSInteger)index
 {
     self.flexCssNode->addChildAt(subcomponent.flexCssNode, (uint32_t)index);
+//    WXLogInfo(@"FlexLayout -- P:%@ -> C:%@",self,subcomponent);
 }
 
 #endif

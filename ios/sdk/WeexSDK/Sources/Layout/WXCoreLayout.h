@@ -7,6 +7,7 @@
 #include "WXCoreFlexEnum.h"
 #include <vector>
 #include <memory.h>
+#include <string.h>
 
 namespace WXCoreFlexLayout {
 
@@ -136,6 +137,10 @@ namespace WXCoreFlexLayout {
       }
     }
 
+      void resetLayoutSize(){
+          mLayoutResult->mLayoutSize.reset();
+      }
+      
     void reset() {
       mLayoutResult->reset();
       for (int i = 0; i < getChildCount(NON_BFC); i++) {
@@ -143,6 +148,18 @@ namespace WXCoreFlexLayout {
         child->reset();
       }
     }
+
+    void copyStyle(const WXCoreLayoutNode *srcNode) {
+      if (memcmp(mCssStyle, srcNode->mCssStyle, sizeof(WXCoreCSSStyle)) != 0) {
+        memcpy(mCssStyle, srcNode->mCssStyle, sizeof(WXCoreCSSStyle));
+      }
+    }
+      
+      void copyMeasureFunc(const WXCoreLayoutNode *srcNode) {
+          if (memcmp(&measureFunc, &srcNode->measureFunc, sizeof(WXCoreMeasureFunc)) != 0) {
+              memcpy(&measureFunc, &srcNode->measureFunc, sizeof(WXCoreMeasureFunc));
+          }
+      }
 
   private:
 
@@ -322,10 +339,20 @@ namespace WXCoreFlexLayout {
       mLayoutResult->mLayoutPosition.setPosition(WXCore_PositionEdge_Bottom, b);
     }
 
-    void determinePositionRelative(float &left, float &top, float &right, float &bottom);
+    void calcRelativeOffset(float &left, float &top, float &right, float &bottom);
+
+    void calcAbsoluteOffset(float &left, float &top, float &right, float &bottom);
 
     void layout(float left, float top, float right, float bottom) {
-      determinePositionRelative(left, top, right, bottom);
+      switch (mCssStyle->mPositionType) {
+        case WXCore_PositionType_Absolute:
+          calcAbsoluteOffset(left, top, right, bottom);
+          break;
+        default:
+        case WXCore_PositionType_Relative:
+          calcRelativeOffset(left, top, right, bottom);
+          break;
+      }
       setFrame(left, top, right, bottom);
       onLayout(left, top, right, bottom);
     }

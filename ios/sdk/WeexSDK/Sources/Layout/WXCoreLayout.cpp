@@ -574,23 +574,75 @@ namespace WXCoreFlexLayout {
     }
   }
 
-  void WXCoreLayoutNode::determinePositionRelative(float &left, float &top, float &right, float &bottom) {
-    if (mCssStyle->mPositionType == WXCore_PositionType_Relative) {
-      if (mCssStyle->mStylePosition.getPosition(WXCore_PositionEdge_Left) == 0) {
-        left -= mCssStyle->mStylePosition.getPosition(WXCore_PositionEdge_Right);
-        right -= mCssStyle->mStylePosition.getPosition(WXCore_PositionEdge_Right);
-      } else {
-        left += mCssStyle->mStylePosition.getPosition(WXCore_PositionEdge_Left);
-        right += mCssStyle->mStylePosition.getPosition(WXCore_PositionEdge_Left);
-      }
+  void WXCoreLayoutNode::calcRelativeOffset(float &left, float &top, float &right, float &bottom) {
+    if (!isnan(mCssStyle->mStylePosition.getPosition(WXCore_PositionEdge_Left))) {
+      left += mCssStyle->mStylePosition.getPosition(WXCore_PositionEdge_Left);
+      right += mCssStyle->mStylePosition.getPosition(WXCore_PositionEdge_Left);
+    } else if (!isnan(mCssStyle->mStylePosition.getPosition(WXCore_PositionEdge_Right))) {
+      left -= mCssStyle->mStylePosition.getPosition(WXCore_PositionEdge_Right);
+      right -= mCssStyle->mStylePosition.getPosition(WXCore_PositionEdge_Right);
+    }
 
-      if (mCssStyle->mStylePosition.getPosition(WXCore_PositionEdge_Top) == 0) {
-        top -= mCssStyle->mStylePosition.getPosition(WXCore_PositionEdge_Bottom);
-        bottom -= mCssStyle->mStylePosition.getPosition(WXCore_PositionEdge_Bottom);
+    if (!isnan(mCssStyle->mStylePosition.getPosition(WXCore_PositionEdge_Top))) {
+      top += mCssStyle->mStylePosition.getPosition(WXCore_PositionEdge_Top);
+      bottom += mCssStyle->mStylePosition.getPosition(WXCore_PositionEdge_Top);
+    } else if (!isnan(mCssStyle->mStylePosition.getPosition(WXCore_PositionEdge_Bottom))) {
+      top -= mCssStyle->mStylePosition.getPosition(WXCore_PositionEdge_Bottom);
+      bottom -= mCssStyle->mStylePosition.getPosition(WXCore_PositionEdge_Bottom);
+    }
+  }
+
+  void WXCoreLayoutNode::calcAbsoluteOffset(float &left, float &top, float &right, float &bottom) {
+    WXCorePadding parentPadding;
+    WXCoreBorderWidth parentBorder;
+    WXCoreSize parentSize;
+
+    if (mParent != nullptr) {
+      parentPadding = mParent->mCssStyle->mPadding;
+      parentBorder = mParent->mCssStyle->mBorderWidth;
+      parentSize = mParent->mLayoutResult->mLayoutSize;
+    }
+
+    if (isnan(mCssStyle->mStylePosition.getPosition(WXCore_PositionEdge_Left))) {
+      if (isnan(mCssStyle->mStylePosition.getPosition(WXCore_PositionEdge_Right))) {
+        left += parentBorder.getBorderWidth(WXCore_Border_Width_Left) + parentPadding.getPadding(WXCore_Padding_Left);
+        right += parentBorder.getBorderWidth(WXCore_Border_Width_Left) + parentPadding.getPadding(WXCore_Padding_Left);
       } else {
-        top += mCssStyle->mStylePosition.getPosition(WXCore_PositionEdge_Top);
-        bottom += mCssStyle->mStylePosition.getPosition(WXCore_PositionEdge_Top);
+        right += parentSize.width -
+                 (parentBorder.getBorderWidth(WXCore_Border_Width_Right) +
+                  mCssStyle->mStylePosition.getPosition(WXCore_PositionEdge_Right)
+                  + mLayoutResult->mLayoutSize.width);
+        left += parentSize.width -
+                (parentBorder.getBorderWidth(WXCore_Border_Width_Right) +
+                 mCssStyle->mStylePosition.getPosition(WXCore_PositionEdge_Right)
+                 + mLayoutResult->mLayoutSize.width);
       }
+    } else {
+      left += parentBorder.getBorderWidth(WXCore_Border_Width_Left) +
+              mCssStyle->mStylePosition.getPosition(WXCore_PositionEdge_Left);
+      right += parentBorder.getBorderWidth(WXCore_Border_Width_Left) +
+               mCssStyle->mStylePosition.getPosition(WXCore_PositionEdge_Left);
+    }
+
+    if (isnan(mCssStyle->mStylePosition.getPosition(WXCore_PositionEdge_Top))) {
+      if (isnan(mCssStyle->mStylePosition.getPosition(WXCore_PositionEdge_Bottom))) {
+        top += parentBorder.getBorderWidth(WXCore_Border_Width_Top) + parentPadding.getPadding(WXCore_Padding_Top);
+        bottom += parentBorder.getBorderWidth(WXCore_Border_Width_Top) + parentPadding.getPadding(WXCore_Padding_Top);
+      } else {
+        top += parentSize.height -
+               (parentBorder.getBorderWidth(WXCore_Border_Width_Bottom) +
+                mCssStyle->mStylePosition.getPosition(WXCore_PositionEdge_Bottom)
+                + mLayoutResult->mLayoutSize.height);
+        bottom += parentSize.height -
+                  (parentBorder.getBorderWidth(WXCore_Border_Width_Bottom) +
+                   mCssStyle->mStylePosition.getPosition(WXCore_PositionEdge_Bottom)
+                   + mLayoutResult->mLayoutSize.height);
+      }
+    } else {
+      top += parentBorder.getBorderWidth(WXCore_Border_Width_Top) +
+             mCssStyle->mStylePosition.getPosition(WXCore_PositionEdge_Top);
+      bottom += parentBorder.getBorderWidth(WXCore_Border_Width_Top) +
+                mCssStyle->mStylePosition.getPosition(WXCore_PositionEdge_Top);
     }
   }
 

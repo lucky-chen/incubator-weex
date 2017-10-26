@@ -30,5 +30,14 @@
 - (WXCoreFlexLayout::WXCoreLayoutNode *)flexScrollerCSSNode{
     return _flexScrollerCSSNode;
 }
+
+- (void)_insertChildCssNode:(WXComponent *)subcomponent atIndex:(NSInteger)index
+{
+    [super _insertChildCssNode:subcomponent atIndex:(uint32_t)index];
+    
+    self.flexScrollerCSSNode->addChildAt(subcomponent.flexCssNode, (uint32_t) index);
+//    WXLogInfo(@"FlexLayout -- P:%@ -> C:%@",self,subcomponent);
+}
+
 #endif
 @end

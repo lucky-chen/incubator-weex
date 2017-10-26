@@ -217,7 +217,9 @@ WX_EXPORT_METHOD(@selector(resetLoadmore))
 #ifndef USE_FLEX
     free(_scrollerCSSNode);
 #else
-    self.flexCssNode->freeWXCoreNode();
+    if(_flexScrollerCSSNode){
+        _flexScrollerCSSNode->freeWXCoreNode();
+    }
 #endif
 }
 
@@ -733,25 +735,30 @@ WX_EXPORT_METHOD(@selector(resetLoadmore))
         _scrollerCSSNode->layout.dimensions[CSS_WIDTH] = CSS_UNDEFINED;
         _scrollerCSSNode->layout.dimensions[CSS_HEIGHT] = CSS_UNDEFINED;
 #else
-       memcpy(_flexScrollerCSSNode, self.flexCssNode, sizeof(WXCoreFlexLayout::WXCoreLayoutNode));
+        // can't use memcpy because of simple copy. but this seems has question.`~`
+        _flexScrollerCSSNode->copyStyle(self.flexCssNode);
+        _flexScrollerCSSNode->copyMeasureFunc(self.flexCssNode);
+        
        _flexScrollerCSSNode->setStylePosition(WXCoreFlexLayout::WXCore_PositionEdge_Left, 0);
         _flexScrollerCSSNode->setStylePosition(WXCoreFlexLayout::WXCore_PositionEdge_Top, 0);
         if (_scrollDirection == WXScrollDirectionVertical) {
             _flexScrollerCSSNode->setFlexDirection(WXCoreFlexLayout::WXCore_Flex_Direction_Column);
-            _flexScrollerCSSNode->setStyleWidth(self.flexCssNode->getStyleWidth());
+            _flexScrollerCSSNode->setStyleWidth(self.flexCssNode->getLayoutWidth());
             _flexScrollerCSSNode->setStyleHeight(FlexUndefined);
         } else {
             _flexScrollerCSSNode->setFlexDirection(WXCoreFlexLayout::WXCore_Flex_Direction_Row);
-            _flexScrollerCSSNode->setStyleHeight(self.flexCssNode->getStyleHeight());
+            _flexScrollerCSSNode->setStyleHeight(self.flexCssNode->getLayoutHeight());
             _flexScrollerCSSNode->setStyleWidth(FlexUndefined);
         }
+        
+        _flexScrollerCSSNode->resetLayoutSize();
         _flexScrollerCSSNode->calculateLayout();
         if ([WXLog logLevel] >= WXLogLevelDebug) {
             
         }
         CGSize size = {
-            WXRoundPixelValue(_flexScrollerCSSNode->getStyleWidth()),
-            WXRoundPixelValue(_flexScrollerCSSNode->getStyleHeight())
+            WXRoundPixelValue(_flexScrollerCSSNode->getLayoutWidth()),
+            WXRoundPixelValue(_flexScrollerCSSNode->getLayoutHeight())
         };
         
         if (!CGSizeEqualToSize(size, _contentSize)) {
@@ -759,9 +766,7 @@ WX_EXPORT_METHOD(@selector(resetLoadmore))
             _contentSize = size;
             [dirtyComponents addObject:self];
         }
-        
-        _flexScrollerCSSNode->setStyleWidth(FlexUndefined);
-        _flexScrollerCSSNode->setStyleHeight(FlexUndefined);
+        _flexScrollerCSSNode->resetLayoutSize();
 #endif
     }
     

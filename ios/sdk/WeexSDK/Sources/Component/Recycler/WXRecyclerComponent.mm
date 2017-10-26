@@ -160,6 +160,10 @@ typedef enum : NSUInteger {
     return [[WXCollectionView alloc] initWithFrame:CGRectZero collectionViewLayout:_collectionViewlayout];
 }
 
+- (void)_insertChildCssNode:(WXComponent *)subcomponent atIndex:(NSInteger)index
+{
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];

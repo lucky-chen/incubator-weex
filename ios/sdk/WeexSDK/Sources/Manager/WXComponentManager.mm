@@ -861,6 +861,7 @@ static css_node_t * rootNodeGetChild(void *context, int i)
     layoutNode(_rootCSSNode, _rootCSSNode->style.dimensions[CSS_WIDTH], _rootCSSNode->style.dimensions[CSS_HEIGHT], CSS_DIRECTION_INHERIT);
 #else
     _rootFlexCSSNode->calculateLayout();
+//    WXLogInfo(@"FlexLayout -- calculateLayout");
 #endif
     
     if ([_rootComponent needsLayout]) {
