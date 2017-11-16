@@ -380,12 +380,12 @@ namespace WXCoreFlexLayout {
     inline uint32_t getChildCount(FormatingContext formatingContext) {
       switch (formatingContext) {
         case NON_BFC:
-          return NonBFCs.size();
+          return (uint32_t)NonBFCs.size();
         case BFC:
-          return BFCs.size();
+          return (uint32_t)BFCs.size();
         case ALL:
         default:
-          return mChildList.size();
+          return (uint32_t)mChildList.size();
       }
     }
 

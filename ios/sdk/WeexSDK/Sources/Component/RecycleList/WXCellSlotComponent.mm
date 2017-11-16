@@ -39,7 +39,7 @@ static const NSString *WXDefaultRecycleTemplateType = @"WXDefaultRecycleTemplate
     self = [super initWithRef:ref type:type styles:styles attributes:attributes events:events weexInstance:weexInstance];
     if (self) {
         // TODO: isRecycle / insertAnimation / deleteAnimation / keepScrollPosition
-        _templateType = attributes[@"templateType"] ? [WXConvert NSString:attributes[@"templateType"]] : WXDefaultRecycleTemplateType;
+        _templateType = attributes[@"templateType"] ? [WXConvert NSString:attributes[@"templateType"]] : (NSString *)WXDefaultRecycleTemplateType;
         _lazyCreateView = YES;
         _isNeedJoinLayoutSystem = NO;
     }
