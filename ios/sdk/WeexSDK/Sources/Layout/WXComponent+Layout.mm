@@ -606,7 +606,7 @@ static css_dim_t cssNodeMeasure(void *context, float width, css_measure_mode_t w
 
 #else
 
-static WXCoreFlexLayout::WXCoreSize flexCssNodeMeasure(WXCoreFlexLayout::WXCoreLayoutNode *node, float width, float height){
+static WXCoreFlexLayout::WXCoreSize flexCssNodeMeasure(WXCoreFlexLayout::WXCoreLayoutNode *node, float width, WXCoreFlexLayout::MeasureMode widthMeasureMode,float height, WXCoreFlexLayout::MeasureMode heightMeasureMode){
     WXComponent *component = (__bridge WXComponent *)(node->getContext());
     NSLog(@"~~~~~~ text->%@, flexCssNodeMeasure start",[component valueForKey:@"_text"]);
     CGSize (^measureBlock)(CGSize) = [component measureBlock];

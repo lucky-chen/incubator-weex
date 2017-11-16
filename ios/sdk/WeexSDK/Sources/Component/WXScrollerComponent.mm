@@ -751,7 +751,7 @@ WX_EXPORT_METHOD(@selector(resetLoadmore))
             _flexScrollerCSSNode->setStyleWidth(FlexUndefined);
         }
         
-        _flexScrollerCSSNode->resetLayoutSize();
+        _flexScrollerCSSNode->resetLayoutResult();
         _flexScrollerCSSNode->calculateLayout();
         if ([WXLog logLevel] >= WXLogLevelDebug) {
             
@@ -766,7 +766,7 @@ WX_EXPORT_METHOD(@selector(resetLoadmore))
             _contentSize = size;
             [dirtyComponents addObject:self];
         }
-        _flexScrollerCSSNode->resetLayoutSize();
+        _flexScrollerCSSNode->resetLayoutResult();
 #endif
     }
     

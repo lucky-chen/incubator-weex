@@ -967,7 +967,7 @@ static css_node_t * rootNodeGetChild(void *context, int i)
 #ifndef USE_FLEX
     _rootCSSNode->children_count = (int)[_fixedComponents count] + 1;
 #else
-    _rootFlexCSSNode->addChildAt(fixComponent.flexCssNode, (uint32_t)([_fixedComponents count]) +1 );
+    _rootFlexCSSNode->addChildAt(fixComponent.flexCssNode, (uint32_t)([_fixedComponents count]));
 #endif
 }
 
