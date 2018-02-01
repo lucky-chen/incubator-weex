@@ -27,6 +27,7 @@
 #import "WXLoadingComponent.h"
 #import "WXRefreshComponent.h"
 #import "WXScrollerComponent+Layout.h"
+#import "WXCoreLayout.h"
 
 @interface WXScrollerComponnetView:UIScrollView
 @end
@@ -139,7 +140,7 @@ WX_EXPORT_METHOD(@selector(resetLoadmore))
             self.cssNode->style.flex = 1.0;
         }
 #else
-        _flexScrollerCSSNode = WXCoreFlexLayout::WXCoreLayoutNode::newWXCoreNode();
+        _flexScrollerCSSNode = new WeexCore::WXCoreLayoutNode();
         
         // let scroller fill the rest space if it is a child component and has no fixed height & width
         if (((_scrollDirection == WXScrollDirectionVertical &&
@@ -196,6 +197,8 @@ WX_EXPORT_METHOD(@selector(resetLoadmore))
 
 - (void)layoutDidFinish
 {
+
+    
     if ([self isViewLoaded]) {
         [self setContentSize:_contentSize];
         [self adjustSticky];
@@ -218,7 +221,11 @@ WX_EXPORT_METHOD(@selector(resetLoadmore))
     free(_scrollerCSSNode);
 #else
     if(_flexScrollerCSSNode){
-        _flexScrollerCSSNode->freeWXCoreNode();
+        delete _flexScrollerCSSNode;
+        
+        //WeexCore::WXCoreLayoutNode::freeNodeTree(_flexScrollerCSSNode);
+        
+        _flexScrollerCSSNode=nullptr;
     }
 #endif
 }
@@ -736,22 +743,24 @@ WX_EXPORT_METHOD(@selector(resetLoadmore))
         _scrollerCSSNode->layout.dimensions[CSS_HEIGHT] = CSS_UNDEFINED;
 #else
         // can't use memcpy because of simple copy. but this seems has question.`~`
-        _flexScrollerCSSNode->copyStyle(self.flexCssNode);
-        _flexScrollerCSSNode->copyMeasureFunc(self.flexCssNode);
-
-       _flexScrollerCSSNode->setStylePosition(WXCoreFlexLayout::WXCore_PositionEdge_Left, 0);
-        _flexScrollerCSSNode->setStylePosition(WXCoreFlexLayout::WXCore_PositionEdge_Top, 0);
+//        _flexScrollerCSSNode->copyStyle(self.flexCssNode);
+//        _flexScrollerCSSNode->copyMeasureFunc(self.flexCssNode);
+        
+        [self copyStyle];
+        _flexScrollerCSSNode->setMeasureFunc(_flexCssNode->getMeasureFunc());
+        
         if (_scrollDirection == WXScrollDirectionVertical) {
-            _flexScrollerCSSNode->setFlexDirection(WXCoreFlexLayout::WXCore_Flex_Direction_Column);
+            _flexScrollerCSSNode->setFlexDirection(WeexCore::kFlexDirectionColumn);
             _flexScrollerCSSNode->setStyleWidth(self.flexCssNode->getLayoutWidth());
             _flexScrollerCSSNode->setStyleHeight(FlexUndefined);
         } else {
-            _flexScrollerCSSNode->setFlexDirection(WXCoreFlexLayout::WXCore_Flex_Direction_Row);
+            _flexScrollerCSSNode->setFlexDirection(WeexCore::kFlexDirectionRow);
             _flexScrollerCSSNode->setStyleHeight(self.flexCssNode->getLayoutHeight());
             _flexScrollerCSSNode->setStyleWidth(FlexUndefined);
         }
         
-        _flexScrollerCSSNode->resetLayoutResult();
+       // _flexScrollerCSSNode->resetLayolsutResult();
+        _flexScrollerCSSNode->markDirty();
         _flexScrollerCSSNode->calculateLayout();
         if ([WXLog logLevel] >= WXLogLevelDebug) {
             
@@ -766,11 +775,60 @@ WX_EXPORT_METHOD(@selector(resetLoadmore))
             _contentSize = size;
             [dirtyComponents addObject:self];
         }
-        _flexScrollerCSSNode->resetLayoutResult();
+       // _flexScrollerCSSNode->resetLayolsutResult();
 #endif
     }
     
     [super _calculateFrameWithSuperAbsolutePosition:superAbsolutePosition gatherDirtyComponents:dirtyComponents];
+}
+
+
+- (void) copyStyle
+{
+    
+#ifdef USE_FLEX
+    // flex
+    _flexScrollerCSSNode->setFlex(_flexCssNode->getFlex());
+    _flexScrollerCSSNode->setFlexDirection(_flexCssNode->getFlexDirection());
+    _flexScrollerCSSNode->setAlignItems(_flexCssNode->getAlignItems());
+    _flexScrollerCSSNode->setAlignSelf(_flexCssNode->getAlignSelf());
+    _flexScrollerCSSNode->setFlexWrap(_flexCssNode->getFlexWrap());
+    _flexScrollerCSSNode->setJustifyContent(_flexCssNode->getJustifyContent());
+
+    // position
+    _flexScrollerCSSNode->setStylePositionType(_flexCssNode->getStypePositionType());
+    _flexScrollerCSSNode->setStylePosition(WeexCore::kPositionEdgeTop,_flexCssNode->getStylePositionTop());
+    _flexScrollerCSSNode->setStylePosition(WeexCore::kPositionEdgeRight,_flexCssNode->getStylePositionRight());
+    _flexScrollerCSSNode->setStylePosition(WeexCore::kPositionEdgeLeft,_flexCssNode->getStylePositionLeft());
+    _flexScrollerCSSNode->setStylePosition(WeexCore::kPositionEdgeBottom,_flexCssNode->getStylePositionBottom());
+
+    // dimension
+    _flexScrollerCSSNode->setStyleWidth(_flexCssNode->getStyleWidth());
+    _flexScrollerCSSNode->setStyleHeight(_flexCssNode->getStyleHeight());
+    _flexScrollerCSSNode->setMinWidth(_flexCssNode->getMinWidth());
+    _flexScrollerCSSNode->setMinHeight(_flexCssNode->getMinHeight());
+    _flexScrollerCSSNode->setMaxWidth(_flexCssNode->getMaxWidth());
+    _flexScrollerCSSNode->setMaxHeight(_flexCssNode->getMaxHeight());
+    
+    // margin
+    _flexScrollerCSSNode->setMargin(WeexCore::kMarginTop,_flexCssNode->getMarginTop());
+    _flexScrollerCSSNode->setMargin(WeexCore::kMarginBottom,_flexCssNode->getMarginBottom());
+    _flexScrollerCSSNode->setMargin(WeexCore::kMarginRight,_flexCssNode->getMarginRight());
+    _flexScrollerCSSNode->setMargin(WeexCore::kMarginLeft,_flexCssNode->getMarginLeft());
+    
+    // border
+    _flexScrollerCSSNode->setBorderWidth(WeexCore::kBorderWidthTop, _flexCssNode->getBorderWidthTop());
+    _flexScrollerCSSNode->setBorderWidth(WeexCore::kBorderWidthLeft, _flexCssNode->getBorderWidthLeft());
+    _flexScrollerCSSNode->setBorderWidth(WeexCore::kBorderWidthBottom, _flexCssNode->getBorderWidthBottom());
+    _flexScrollerCSSNode->setBorderWidth(WeexCore::kBorderWidthRight, _flexCssNode->getBorderWidthRight());
+
+    // padding
+    _flexScrollerCSSNode->setPadding(WeexCore::kPaddingTop,_flexCssNode->getPaddingTop());
+     _flexScrollerCSSNode->setPadding(WeexCore::kPaddingLeft,_flexCssNode->getPaddingLeft());
+     _flexScrollerCSSNode->setPadding(WeexCore::kPaddingBottom,_flexCssNode->getPaddingBottom());
+    _flexScrollerCSSNode->setPadding(WeexCore::kPaddingRight,_flexCssNode->getPaddingRight());
+# endif
+    
 }
 
 @end

@@ -83,7 +83,19 @@
         }
     }
 #else
+    if (self.delegate && ( isnan(self.flexCssNode->getStyleWidth()) || _isUseContainerWidth)) {
+        self.flexCssNode->setStyleWidth([self.delegate headerWidthForLayout:self]);
+        //TODO: set _isUseContainerWidth to NO if updateStyles have width
+        _isUseContainerWidth = YES;
+    }
+    
+    if ([self needsLayout]) {
+        self.flexCssNode->calculateLayout();
+    }
+    
 #endif
+    
+    
     
     [super _calculateFrameWithSuperAbsolutePosition:superAbsolutePosition gatherDirtyComponents:dirtyComponents];
 }

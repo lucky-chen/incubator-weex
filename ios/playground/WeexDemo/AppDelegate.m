@@ -147,6 +147,7 @@
     
 #if DEBUG
     //If you are debugging in device , please change the host to current IP of your computer.
+   // @"http://dotwe.org/raw/dist/7dc63dd6cce4f7295946e8384fd71dec.bundle.wx"
     ((WXDemoViewController *)demo).url = [NSURL URLWithString:HOME_URL];
 #else
     ((WXDemoViewController *)demo).url = [NSURL URLWithString:BUNDLE_URL];

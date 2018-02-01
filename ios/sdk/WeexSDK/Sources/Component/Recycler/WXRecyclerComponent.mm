@@ -1,3 +1,4 @@
+
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -160,9 +161,12 @@ typedef enum : NSUInteger {
     return [[WXCollectionView alloc] initWithFrame:CGRectZero collectionViewLayout:_collectionViewlayout];
 }
 
-- (void)_insertChildCssNode:(WXComponent *)subcomponent atIndex:(NSInteger)index
-{
-}
+
+//- (void)_insertChildCssNode:(WXComponent *)subcomponent atIndex:(NSInteger)index
+//{
+//    [super _insertChildCssNode:subcomponent atIndex:index];
+//}
+
 
 - (void)viewDidLoad
 {
@@ -616,14 +620,20 @@ typedef enum : NSUInteger {
 
 - (void)_fillPadding
 {
-#ifndef USE_FLEX
     UIEdgeInsets padding = {
+#ifndef USE_FLEX
         WXFloorPixelValue(self.cssNode->style.padding[CSS_TOP] + self.cssNode->style.border[CSS_TOP]),
         WXFloorPixelValue(self.cssNode->style.padding[CSS_LEFT] + self.cssNode->style.border[CSS_LEFT]),
         WXFloorPixelValue(self.cssNode->style.padding[CSS_BOTTOM] + self.cssNode->style.border[CSS_BOTTOM]),
         WXFloorPixelValue(self.cssNode->style.padding[CSS_RIGHT] + self.cssNode->style.border[CSS_RIGHT])
+#else
+        WXFloorPixelValue(self.flexCssNode->getPaddingTop() + self.flexCssNode->getBorderWidthTop()),
+        WXFloorPixelValue(self.flexCssNode->getPaddingLeft() + self.flexCssNode->getBorderWidthLeft()),
+        WXFloorPixelValue(self.flexCssNode->getPaddingBottom() + self.flexCssNode->getBorderWidthBottom()),
+        WXFloorPixelValue(self.flexCssNode->getPaddingRight() + self.flexCssNode->getBorderWidthRight())
+#endif
     };
-    
+
     if (!UIEdgeInsetsEqualToEdgeInsets(padding, _padding)) {
         _padding = padding;
         [self setNeedsLayout];
@@ -638,8 +648,6 @@ typedef enum : NSUInteger {
             });
         }
     }
-#else
-#endif
 }
 
 - (NSArray<WXSectionDataController *> *)_sectionArrayFromComponents:(NSArray<WXComponent *> *)components

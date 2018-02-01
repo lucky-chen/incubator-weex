@@ -438,12 +438,23 @@ WX_EXPORT_METHOD(@selector(getSelectionRange:))
     }
     
 #else
-    UIEdgeInsets padding_flex = UIEdgeInsetsMake(self.flexCssNode->getStylePositionTop(), self.flexCssNode->getStylePositionLeft(), self.flexCssNode->getStylePositionBottom(), self.flexCssNode->getStylePositionRight());
+    UIEdgeInsets padding_flex = UIEdgeInsetsMake(
+                                                 self.flexCssNode->getPaddingTop(),
+                                                 self.flexCssNode->getPaddingLeft(),
+                                                 self.flexCssNode->getPaddingBottom(),
+                                                 self.flexCssNode->getPaddingRight()
+    );
+    
     if (!UIEdgeInsetsEqualToEdgeInsets(padding_flex, _padding)) {
         [self setPadding:padding_flex];
     }
+  
     
     UIEdgeInsets border_flex = UIEdgeInsetsMake(self.flexCssNode->getBorderWidthTop(), self.flexCssNode->getBorderWidthLeft(), self.flexCssNode->getBorderWidthBottom(), self.flexCssNode->getBorderWidthRight());
+    
+
+    
+    
     if (!UIEdgeInsetsEqualToEdgeInsets(border_flex, _border)) {
         [self setBorder:border_flex];
     }

@@ -164,7 +164,7 @@
     memcpy(component->_cssNode, self.cssNode, sizeof(css_node_t));
     component->_cssNode->context = (__bridge void *)component;
 #else
-    memcpy(component->_flexCssNode,self.flexCssNode,sizeof(WXCoreFlexLayout::WXCoreLayoutNode));
+    memcpy(component->_flexCssNode,self.flexCssNode,sizeof(WeexCore::WXCoreLayoutNode));
     component->_flexCssNode->setContext((__bridge void *)component);
 #endif
     component->_calculatedFrame = self.calculatedFrame;
@@ -201,7 +201,15 @@
     free_css_node(_cssNode);
 #else
     if(self.flexCssNode){
-        self.flexCssNode->freeWXCoreNode();
+        
+        
+        
+        NSLog(@"test -> dealloc %@",self.ref);
+        
+        delete self.flexCssNode;
+    
+      //  WeexCore::WXCoreLayoutNode::freeNodeTree(self.flexCssNode);
+        //self.flexCssNode = nullptr;
     }
 #endif
     
@@ -312,7 +320,10 @@
 
 - (UIView *)view
 {
+    
     if (_componentType != WXComponentTypeCommon) {
+        
+        
         return nil;
     }
     if ([self isViewLoaded]) {
@@ -330,7 +341,12 @@
         _view = [self loadView];
         
         _layer = _view.layer;
+        
+        if ([_view isKindOfClass:[UITextField class]]) {
+            NSLog(@"%s", __PRETTY_FUNCTION__);
+        }
         _view.frame = _calculatedFrame;
+        
         _view.hidden = _visibility == WXVisibilityShow ? NO : YES;
         _view.clipsToBounds = _clipToBounds;
         if (![self _needsDrawBorder]) {
@@ -527,7 +543,10 @@
     if (subcomponent->_isNeedJoinLayoutSystem) {
         [self _insertChildCssNode:subcomponent atIndex:index];
     }else{
-        NSLog(@"~~~~~ -- no need JoinLayoutSystem");
+        NSLog(@"test -> no need JoinLayoutSystem parent :%@, self :%@ ",
+              self.type,
+              subcomponent.type
+              );
     }
 #endif
     

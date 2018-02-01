@@ -26,7 +26,7 @@
 #ifndef USE_FLEX
     css_node_t *_scrollerCSSNode;
 #else
-    WXCoreFlexLayout::WXCoreLayoutNode *_flexScrollerCSSNode;
+    WeexCore::WXCoreLayoutNode *_flexScrollerCSSNode;
 #endif
 }
 @end
@@ -36,7 +36,7 @@
 #ifndef USE_FLEX
 @property (nonatomic, readonly, assign) css_node_t *scrollerCSSNode;
 #else
-@property (nonatomic, readonly, assign) WXCoreFlexLayout::WXCoreLayoutNode *flexScrollerCSSNode;
+@property (nonatomic, readonly, assign) WeexCore::WXCoreLayoutNode *flexScrollerCSSNode;
 #endif
 
 @end

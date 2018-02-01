@@ -6,63 +6,74 @@
 #include "WXCoreStyle.h"
 #include "WXCoreFlexEnum.h"
 #include <vector>
-#include <memory.h>
-#include <string.h>
+#include <iostream>
+#include <string>
+#include <algorithm>
+#include "ConstantsName.h"
 
-namespace WXCoreFlexLayout {
+namespace WeexCore {
 
   class WXCoreLayoutNode;
 
   class WXCoreFlexLine;
 
-  typedef enum FormatingContext {
-    BFC,
-    NON_BFC,
-    ALL,
-  } FormatingContext;
+  enum FormattingContext {
+    kBFC,
+    kNonBFC,
+  } ;
 
-  typedef enum MeasureMode {
-    AT_MOST,
-    EXACTLY,
-  } MeasureMode;
+  enum MeasureMode {
+    kUnspecified,
+    kExactly,
+  } ;
 
-  typedef struct WXCoreSize {
+  struct WXCoreSize {
+   private:
+    float hypotheticalWidth;
+    float hypotheticalHeight;
+   public:
+    friend class WXCoreLayoutNode;
     float width;
     float height;
 
+    WXCoreSize() : hypotheticalWidth(NAN),
+                   hypotheticalHeight(NAN),
+                   width(0), height(0) {}
+
     void reset() {
+      hypotheticalWidth = NAN ;
+      hypotheticalHeight = NAN;
       width = 0;
       height = 0;
     }
-  } WXCoreSize;
+
+    bool isNAN() {
+      return isnan(width) || isnan(height);
+    }
+  };
 
   /**
    * layout-result：layout-height、layout-width、position（left、right、top、bottom）
    */
-  typedef struct WXCorelayoutResult {
+  struct WXCorelayoutResult {
     WXCoreSize mLayoutSize;
     WXCorePosition mLayoutPosition;
+
+    bool isNAN() {
+      return mLayoutSize.isNAN() || mLayoutPosition.isNAN();
+    }
 
     void reset() {
       mLayoutSize.reset();
       mLayoutPosition.reset();
     }
-  } WXCorelayoutResult;
+  };
 
-  typedef struct WXBFCDimension {
-    float width;
-    MeasureMode widthMeasureMode;
-    float height;
-    MeasureMode heightMeasureMode;
-
-    void reset() {
-      width = 0;
-      height = 0;
-    }
-  } WXBFCDimension;
-
-  typedef WXCoreSize(*WXCoreMeasureFunc)(WXCoreLayoutNode *node, float width, MeasureMode widthMeasureMode,
+  typedef WXCoreSize(*WXCoreMeasureFunc)(WXCoreLayoutNode *node, float width,
+                                         MeasureMode widthMeasureMode,
                                          float height, MeasureMode heightMeasureMode);
+
+  using Index = std::vector<WXCoreFlexLine *>::size_type;
 
   /**
    * flie line
@@ -73,14 +84,9 @@ namespace WXCoreFlexLayout {
 
     float mCrossSize;
 
-    uint32_t mItemCount;
+    Index mItemCount;
 
     float mTotalFlexGrow;
-
-    /**
-     * The sum of the cross size used before this flex line.
-     */
-    float mSumCrossSizeBefore;
 
     float mTotalFlexibleSize;
 
@@ -89,13 +95,12 @@ namespace WXCoreFlexLayout {
      * The stored indices are the absolute indices including all children in the Flexbox,
      * not the relative indices in this flex line.
      */
-    std::vector<uint32_t> mIndicesAlignSelfStretch;
+    std::vector<Index> mIndicesAlignSelfStretch;
 
     WXCoreFlexLine() : mMainSize(0),
                        mCrossSize(0),
                        mItemCount(0),
                        mTotalFlexGrow(0),
-                       mSumCrossSizeBefore(0),
                        mTotalFlexibleSize(0) {
     }
 
@@ -104,7 +109,6 @@ namespace WXCoreFlexLayout {
       mCrossSize = 0;
       mItemCount = 0;
       mTotalFlexGrow = 0;
-      mSumCrossSizeBefore = 0;
       mTotalFlexibleSize = 0;
       mIndicesAlignSelfStretch.clear();
     }
@@ -115,6 +119,53 @@ namespace WXCoreFlexLayout {
    */
   class WXCoreLayoutNode {
 
+  public:
+      WXCoreLayoutNode() :
+              mChildrenFrozen(nullptr),
+              mParent(nullptr),
+              dirty(true),
+              widthDirty{false},
+              heightDirty{false},
+              mHasNewLayout(true),
+              mIsDestroy(false),
+              measureFunc(nullptr) {
+        mCssStyle = new WXCoreCSSStyle();
+        mLayoutResult = new WXCorelayoutResult();
+      }
+
+
+      ~WXCoreLayoutNode() {
+          mIsDestroy = true;
+        mHasNewLayout = true;
+        dirty = true;
+        measureFunc = nullptr;
+        mParent = nullptr;
+        mChildList.clear();
+
+        if (mChildrenFrozen != nullptr) {
+          delete mChildrenFrozen;
+          mChildrenFrozen = nullptr;
+        }
+
+        for (WXCoreFlexLine *flexLine : mFlexLines) {
+          if (flexLine != nullptr) {
+            delete flexLine;
+            flexLine = nullptr;
+          }
+        }
+        mFlexLines.clear();
+
+        if (mCssStyle != nullptr) {
+          delete mCssStyle;
+          mCssStyle = nullptr;
+        }
+
+        if (mLayoutResult != nullptr) {
+          delete mLayoutResult;
+          mLayoutResult = nullptr;
+        }
+      }
+
   private:
 
     /**
@@ -122,9 +173,7 @@ namespace WXCoreFlexLayout {
      * expand regardless of mFlexGrow. Items are indexed by the child's
      * reordered index.
      */
-    bool *mChildrenFrozen;
-
-    uint32_t mChildrenFrozen_oldlength;
+    bool *mChildrenFrozen = nullptr;
 
     std::vector<WXCoreFlexLine *> mFlexLines;
 
@@ -134,130 +183,58 @@ namespace WXCoreFlexLayout {
 
     std::vector<WXCoreLayoutNode *> NonBFCs;
 
-    WXCoreLayoutNode *mParent;
+    WXCoreLayoutNode *mParent = nullptr;
 
-    WXCoreCSSStyle *mCssStyle;
+    WXCoreCSSStyle *mCssStyle = nullptr;
 
-    WXCorelayoutResult *mLayoutResult;
+    MeasureMode widthMeasureMode = kUnspecified;
+
+    MeasureMode heightMeasureMode = kUnspecified;
+
+    WXCorelayoutResult *mLayoutResult = nullptr;
 
     bool mHasNewLayout;
 
-    bool mIsDirty;
+    bool dirty, widthDirty, heightDirty;
 
-    bool mVisible;
+    bool mIsDestroy = true;
 
-    WXCoreMeasureFunc measureFunc;
+    WXCoreMeasureFunc measureFunc = nullptr;
 
     void *context;
 
-    MeasureMode widthMeasureMode;
-    MeasureMode heightMeasureMode;
+    /** ================================ Cache：Last calculate result =================================== **/
 
   public:
 
 
-    /** ================================ Entry =================================== **/
+    /** ================================ Engine Entry Function =================================== **/
 
     void calculateLayout();
 
-
-    /** ================================ lifeCycle =================================== **/
-
-    inline static WXCoreLayoutNode *newWXCoreNode() {
-      return new WXCoreLayoutNode();
-    }
-
-    WXCoreLayoutNode() :
-        mChildrenFrozen(nullptr),
-        mChildrenFrozen_oldlength(0),
-        mParent(nullptr),
-        mHasNewLayout(true),
-        mIsDirty(false),
-        mVisible(true),
-        measureFunc(nullptr) {
-      mCssStyle = new WXCoreCSSStyle();
-      mLayoutResult = new WXCorelayoutResult();
-    }
-
-    inline void freeWXCoreNode() {
-      mHasNewLayout = true;
-      mIsDirty = false;
-      mVisible = true;
-      measureFunc = nullptr;
-      mParent = nullptr;
-      mChildrenFrozen_oldlength = 0;
-      mChildList.clear();
-
-      if (mChildrenFrozen != nullptr) {
-        delete mChildrenFrozen;
-        mChildrenFrozen = nullptr;
-      }
-
-      for (WXCoreFlexLine *flexLine : mFlexLines) {
-        if (flexLine != nullptr) {
-          delete flexLine;
-          flexLine = nullptr;
-        }
-      }
-      mFlexLines.clear();
-
-      if (mCssStyle != nullptr) {
-        delete mCssStyle;
-        mCssStyle = nullptr;
-      }
-
-      if (mLayoutResult != nullptr) {
-        delete mLayoutResult;
-        mLayoutResult = nullptr;
-      }
-    }
-
-    inline void reset() {
-      mLayoutResult->reset();
-      for (int i = 0; i < getChildCount(NON_BFC); i++) {
-        WXCoreLayoutNode *child = getChildAt(NON_BFC, i);
-        child->reset();
-      }
-    }
-
-    inline void resetLayoutResult() {
-      mLayoutResult->reset();
-    }
-
-    inline void copyStyle(const WXCoreLayoutNode *srcNode) {
-      if (memcmp(mCssStyle, srcNode->mCssStyle, sizeof(WXCoreCSSStyle)) != 0) {
-        memcpy(mCssStyle, srcNode->mCssStyle, sizeof(WXCoreCSSStyle));
-      }
-    }
-      
-    inline void copyMeasureFunc(const WXCoreLayoutNode *srcNode) {
-      if (memcmp(&measureFunc, &srcNode->measureFunc, sizeof(WXCoreMeasureFunc)) != 0) {
-        memcpy(&measureFunc, &srcNode->measureFunc, sizeof(WXCoreMeasureFunc));
-      }
-    }
-
     /** ================================ measureFunc =================================== **/
 
-    inline void setMeasureFunc(WXCoreMeasureFunc measure) {
+    void setMeasureFunc(WXCoreMeasureFunc measure) {
       measureFunc = measure;
+      markDirty();
     }
 
-    inline WXCoreMeasureFunc getMeasureFunc() {
+    WXCoreMeasureFunc getMeasureFunc() const {
       return measureFunc;
     }
 
-    inline bool haveMeasureFunc() {
-      return measureFunc == nullptr ? false : true;
+    bool haveMeasureFunc() const {
+      return measureFunc != nullptr;
     }
 
     /** ================================ context =================================== **/
 
 
-    inline void *getContext() {
+    void *getContext() const {
       return context;
     }
 
-    inline void setContext(void *context) {
+    void setContext(void * const context) {
       this->context = context;
     }
 
@@ -265,88 +242,249 @@ namespace WXCoreFlexLayout {
 
     /** ================================ measure =================================== **/
 
-    void initMeasureMode();
+    void reset() {
+      widthMeasureMode = isnan(mCssStyle->mStyleWidth) ? kUnspecified : kExactly;
+      heightMeasureMode = isnan(mCssStyle->mStyleHeight) ? kUnspecified : kExactly;
+      if (isDirty()) {
+        mLayoutResult->reset();
 
-    inline void setLayoutWidth(float width) {
-      mLayoutResult->mLayoutSize.width = width;
+        for (WXCoreFlexLine *flexLine : mFlexLines) {
+          if (flexLine != nullptr) {
+            delete flexLine;
+            flexLine = nullptr;
+          }
+        }
+        mFlexLines.clear();
+
+        if(mChildrenFrozen != nullptr) {
+          delete mChildrenFrozen;
+          mChildrenFrozen = nullptr;
+        }
+        mChildrenFrozen = new bool[getChildCount(kNonBFC)];
+        for(int i=0;i<getChildCount(kNonBFC);i++){
+          mChildrenFrozen[i] = false;
+        }
+      }
     }
 
-    inline void setLayoutHeight(float height) {
-      mLayoutResult->mLayoutSize.height = height;
+    void setLayoutWidth(const float width) {
+      if (mLayoutResult->mLayoutSize.width != width &&
+          (!isnan(width) || !isnan(mLayoutResult->mLayoutSize.width))) {
+        mLayoutResult->mLayoutSize.width = width;
+        widthDirty = true;
+        markDirty(false);
+      }
     }
 
-    void measure(float width, MeasureMode widthMeasureMode, float height, MeasureMode heightMeasureMode,
-                 bool useMeasureFunc);
-
-    void onMeasure(float width, MeasureMode widthMeasureMode, float height, MeasureMode heightMeasureMode);
-
-    void measureHorizontal(float width, MeasureMode widthMeasureMode, float height, MeasureMode heightMeasureMode);
-
-    void measureVertical(float width, MeasureMode widthMeasureMode, float height, MeasureMode heightMeasureMode);
-
-    void checkSizeConstraints(WXCoreLayoutNode *node);
-
-    void determineMainSize(WXCoreFlexDirection flexDirection, float width, MeasureMode widthMeasureMode,
-                           float height, MeasureMode heightMeasureMode);
-
-    uint32_t expandFlexItems(WXCoreFlexLine *flexLine,
-                             WXCoreFlexDirection flexDirection, float maxMainSize,
-                             float paddingAlongMainAxis,
-                             uint32_t startIndex, bool calledRecursively);
-
-    void setMeasuredDimensionForFlex(WXCoreFlexDirection flexDirection,
-                                     float width, MeasureMode widthMeasureMode,
-                                     float height, MeasureMode heightMeasureMode);
-
-    void determineCrossSize(WXCoreFlexDirection flexDirection, float width, MeasureMode widthMeasureMode,
-                            float height, MeasureMode heightMeasureMode, float paddingAlongCrossAxis);
-
-    void stretchViews(WXCoreFlexDirection flexDirection, WXCoreAlignItems alignItems);
-
-    void stretchViewVertically(WXCoreLayoutNode *node, float crossSize);
-
-    void stretchViewHorizontally(WXCoreLayoutNode *node, float crossSize);
-
-    WXCoreSize getChildDimension(float width, float height, WXCoreLayoutNode *child,
-                                 float totalCrossSize);
-
-    bool isWrapRequired(float mainSize, float currentLength, float childLength);
-
-    bool isMainAxisDirectionHorizontal(WXCoreFlexDirection flexDirection);
-
-    void addFlexLineIfLastFlexItem(uint32_t childIndex, uint32_t childCount, WXCoreFlexLine *flexLine,
-                                   float usedCrossSizeSoFar);
-
-    void addFlexLine(WXCoreFlexLine *flexLine, float usedCrossSizeSoFar);
-
-    inline bool
-    obeyConstrainsDuringExpandMainAxis(WXCoreFlexLine *flexLine, uint32_t childIndex, float flexGrow) {
-      // This means the child can't expand beyond the value of the
-      // maxWidth/minWidth/maxHeight/minHeight attribute.
-      // To adjust the flex line length to the size of mainSize, remaining
-      // positive free space needs to be re-distributed to other flex items
-      // (children views). In that case, invoke this method again with the same
-      // startIndex.
-      mChildrenFrozen[childIndex] = true;
-      flexLine->mTotalFlexGrow -= flexGrow;
-      return true;
+    void setLayoutHeight(const float height) {
+      if (mLayoutResult->mLayoutSize.height != height &&
+          (!isnan(height) || !isnan(mLayoutResult->mLayoutSize.height))) {
+        mLayoutResult->mLayoutSize.height = height;
+        heightDirty = true;
+        markDirty(false);
+      }
     }
 
-    inline float getSumOfCrossSize() {
-      float sum = 0;
+    void setWidthMeasureMode(const MeasureMode measureMode) {
+      if (widthMeasureMode != measureMode) {
+        widthMeasureMode = measureMode;
+        if (getChildCount(kNonBFC) > 0) {
+          widthDirty = true;
+        }
+      }
+    }
+
+    void setHeightMeasureMode(const MeasureMode measureMode) {
+      if (heightMeasureMode != measureMode) {
+        heightMeasureMode = measureMode;
+        if (getChildCount(kNonBFC) > 0) {
+          heightDirty = true;
+        }
+      }
+    }
+
+    float firstLineCrossSize() const {
+      float sum = sumPaddingBorderAlongAxis(this, !isMainAxisHorizontal(this));
+      if (!mFlexLines.empty()) {
+        sum += mFlexLines[0]->mCrossSize;
+      }
+      return sum;
+    }
+
+    float getSumOfCrossSize() const {
+      float sum = sumPaddingBorderAlongAxis(this, !isMainAxisHorizontal(this));
       for (WXCoreFlexLine *flexLine: mFlexLines) {
         sum += flexLine->mCrossSize;
       }
       return sum;
     }
 
+    bool isMainAxisHorizontal(const WXCoreLayoutNode* const node) const {
+      return node->mCssStyle->mFlexDirection == kFlexDirectionRow ||
+             node->mCssStyle->mFlexDirection == kFlexDirectionRowReverse;
+    }
+
+    bool isCrossExactly() const {
+      return isMainAxisHorizontal(this) ? heightMeasureMode == kExactly
+                                        : widthMeasureMode == kExactly;
+    }
+
+    float sumPaddingBorderAlongAxis(const WXCoreLayoutNode* const node, bool horizontal) const {
+      float paddingBorderAlongAxis;
+      if (horizontal) {
+        paddingBorderAlongAxis =
+            node->mCssStyle->mPadding.getPadding(kPaddingLeft) +
+            node->mCssStyle->mPadding.getPadding(kPaddingRight) +
+            node->mCssStyle->mBorderWidth.getBorderWidth(kBorderWidthLeft) +
+            node->mCssStyle->mBorderWidth.getBorderWidth(kBorderWidthRight);
+      } else {
+        paddingBorderAlongAxis =
+            node->mCssStyle->mPadding.getPadding(kPaddingTop) +
+            node->mCssStyle->mPadding.getPadding(kPaddingBottom) +
+            node->mCssStyle->mBorderWidth.getBorderWidth(kBorderWidthTop) +
+            node->mCssStyle->mBorderWidth.getBorderWidth(kBorderWidthBottom);
+      }
+      return paddingBorderAlongAxis;
+    }
+
+    bool isWrapRequired(const float mainSize, const float currentLength, const float childLength) const {
+      return !isSingleFlexLine(mainSize) && mainSize < currentLength + childLength;
+    }
+
+    bool isSingleFlexLine(const float mainSize) const {
+      return mCssStyle->mFlexWrap == kNoWrap || isnan(mainSize);
+    }
+
+    void sumFlexGrow(const WXCoreLayoutNode* const child, WXCoreFlexLine* const flexLine, const Index i) const {
+      if (child->mCssStyle->mFlexGrow > 0) {
+        flexLine->mTotalFlexGrow += child->mCssStyle->mFlexGrow;
+        if (isMainAxisHorizontal(this)) {
+          if (!isnan(child->mLayoutResult->mLayoutSize.hypotheticalWidth)) {
+            flexLine->mTotalFlexibleSize += child->mLayoutResult->mLayoutSize.hypotheticalWidth;
+          }
+        } else {
+          if (!isnan(child->mLayoutResult->mLayoutSize.hypotheticalHeight)) {
+            flexLine->mTotalFlexibleSize += child->mLayoutResult->mLayoutSize.hypotheticalHeight;
+          }
+        }
+      } else {
+        mChildrenFrozen[i] = true;
+      }
+    }
+
+    void setMeasuredDimensionForFlex(
+        const float width, const MeasureMode widthMeasureMode,
+        const float height, const MeasureMode heightMeasureMode){
+      float actualWidth, actualHeight;
+      if (isMainAxisHorizontal(this)) {
+        actualWidth = widthMeasureMode == kExactly ? width : getLargestMainSize();
+        actualHeight = heightMeasureMode == kExactly ? height : getSumOfCrossSize();
+      } else {
+        actualHeight = heightMeasureMode == kExactly ? height : getLargestMainSize();
+        actualWidth = widthMeasureMode == kExactly ? width : firstLineCrossSize();
+      }
+      setMeasuredDimension(actualWidth, actualHeight);
+    }
+
+    float calcItemSizeAlongAxis(const WXCoreLayoutNode* const node, const bool horizontal) const {
+      float ret;
+      if (horizontal) {
+        ret = node->mCssStyle->mMargin.getMargin(kMarginLeft) +
+              node->mCssStyle->mMargin.getMargin(kMarginRight);
+        ret += node->mLayoutResult->mLayoutSize.width;
+      } else {
+        ret = node->mCssStyle->mMargin.getMargin(kMarginTop) +
+              node->mCssStyle->mMargin.getMargin(kMarginBottom);
+        ret += node->mLayoutResult->mLayoutSize.height;
+      }
+      return ret;
+    }
+
+    bool limitMainSizeForFlexGrow(WXCoreFlexLine* const flexLine, const Index childIndex,
+                                  const float flexGrow) {
+      mChildrenFrozen[childIndex] = true;
+      flexLine->mTotalFlexGrow -= flexGrow;
+      return true;
+    }
+
+    void setMeasuredDimension(const float width, const float height) {
+      mLayoutResult->mLayoutSize.width = width;
+      mLayoutResult->mLayoutSize.height = height;
+    }
+
+    std::pair<bool, float> limitChildMainSize(WXCoreFlexLine* const flexLine, const WXCoreLayoutNode* const child,
+                                                                       float childSizeAlongMainAxis, const Index childIndex){
+      bool needsReexpand = false;
+      if (isMainAxisHorizontal(this)) {
+        childSizeAlongMainAxis -= child->mCssStyle->mMargin.getMargin(kMarginLeft) +
+            child->mCssStyle->mMargin.getMargin(kMarginRight);
+        if (childSizeAlongMainAxis > child->mCssStyle->mMaxWidth) {
+          needsReexpand = limitMainSizeForFlexGrow(flexLine, childIndex, child->mCssStyle->mFlexGrow);
+          childSizeAlongMainAxis = child->mCssStyle->mMaxWidth;
+        } else if (childSizeAlongMainAxis < child->mCssStyle->mMinWidth) {
+          needsReexpand = limitMainSizeForFlexGrow(flexLine, childIndex, child->mCssStyle->mFlexGrow);
+          childSizeAlongMainAxis = child->mCssStyle->mMinWidth;
+        }
+      } else {
+        childSizeAlongMainAxis -= child->mCssStyle->mMargin.getMargin(kMarginTop) +
+            child->mCssStyle->mMargin.getMargin(kMarginBottom);
+        if (childSizeAlongMainAxis > child->mCssStyle->mMaxHeight) {
+          needsReexpand = limitMainSizeForFlexGrow(flexLine, childIndex, child->mCssStyle->mFlexGrow);
+          childSizeAlongMainAxis = child->mCssStyle->mMaxHeight;
+        } else if (childSizeAlongMainAxis < child->mCssStyle->mMinHeight) {
+          needsReexpand = limitMainSizeForFlexGrow(flexLine, childIndex, child->mCssStyle->mFlexGrow);
+          childSizeAlongMainAxis = child->mCssStyle->mMinHeight;
+        }
+      }
+      return std::make_pair(needsReexpand, childSizeAlongMainAxis);
+    }
+
+    /** ================================ other =================================== **/
+
+    void clearDirty() {
+      dirty = false;
+      widthDirty = false;
+      heightDirty = false;
+    }
+
+    void
+    measure(float, float, bool);
+
+    void hypotheticalMeasure(float, float);
+
+    void measureLeafNode(float, float, bool);
+
+    void measureInternalNode(float, float, bool, bool);
+
+    void updateCurrentFlexline(Index, WXCoreFlexLine *, Index, const WXCoreLayoutNode *, bool);
+
+    void measureChild(WXCoreLayoutNode *, float, float, bool, bool);
+
+    void adjustChildSize(WXCoreLayoutNode *, float);
+
+    void stretchViewCrossSize();
+
+    void stretchViewCrossSize(WXCoreLayoutNode *, float);
+
+    Index expandItemsInFlexLine(WXCoreFlexLine *, float, float, Index);
+
+    void checkSizeConstraints(WXCoreLayoutNode *, bool);
+
+    void
+    determineMainSize(float width, float height);
+
+    void
+    determineCrossSize(float, float, bool);
+
+    void setFrame(float, float, float, float);
+
     /** ================================ layout =================================== **/
 
     void layout(float left, float top, float right, float bottom);
 
-    void calcRelativeOffset(float &left, float &top, float &right, float &bottom);
+    void calcRelativeOffset(float &left, float &top, float &right, float &bottom) const ;
 
-    void calcAbsoluteOffset(float &left, float &top, float &right, float &bottom);
+    void calcAbsoluteOffset(float &left, float &top, float &right, float &bottom) const ;
 
     void onLayout(float left, float top, float right, float bottom);
 
@@ -365,11 +503,16 @@ namespace WXCoreFlexLayout {
                                    WXCoreAlignItems alignItems, float left, float top, float right,
                                    float bottom);
 
-    inline void setFrame(float l, float t, float r, float b) {
-      mLayoutResult->mLayoutPosition.setPosition(WXCore_PositionEdge_Left, l);
-      mLayoutResult->mLayoutPosition.setPosition(WXCore_PositionEdge_Top, t);
-      mLayoutResult->mLayoutPosition.setPosition(WXCore_PositionEdge_Right, r);
-      mLayoutResult->mLayoutPosition.setPosition(WXCore_PositionEdge_Bottom, b);
+    void initFormatingContext(std::vector<WXCoreLayoutNode *> &BFCs);
+
+    std::tuple<bool, float, float> calculateBFCDimension();
+
+    virtual void onLayoutBefore() {
+
+    }
+
+    virtual void onLayoutAfter(float width, float height) {
+
     }
 
 
@@ -377,378 +520,396 @@ namespace WXCoreFlexLayout {
 
     /** ================================ tree =================================== **/
 
-    inline uint32_t getChildCount(FormatingContext formatingContext) {
-      switch (formatingContext) {
-        case NON_BFC:
-          return (uint32_t)NonBFCs.size();
-        case BFC:
-          return (uint32_t)BFCs.size();
-        case ALL:
+    Index getChildCount(FormattingContext formattingContext) const {
+      switch (formattingContext) {
+        case kNonBFC:
+          return NonBFCs.size();
+        case kBFC:
+          return BFCs.size();
         default:
-          return (uint32_t)mChildList.size();
+          return mChildList.size();
       }
     }
 
-    inline void removeChildAt(uint32_t index) {
-      mChildList.erase(mChildList.begin() + index);
+    Index getChildCount() const {
+      return mChildList.size();
     }
 
-    inline void removeChild(WXCoreLayoutNode *child) {
+    void removeChildAt(const Index index) {
+      mChildList.erase(mChildList.begin() + index);
+      markDirty();
+    }
+
+    void removeChild(const WXCoreLayoutNode* const child) {
       for (int index = 0; index < mChildList.size(); index++) {
         if (child == mChildList[index]) {
           mChildList.erase(mChildList.begin() + index);
           break;
         }
       }
+      markDirty();
     }
 
-    inline void addChildAt(WXCoreLayoutNode *child, uint32_t index) {
+    void addChildAt(WXCoreLayoutNode* const child, Index index) {
       mChildList.insert(mChildList.begin() + index, child);
       child->mParent = this;
+      markDirty();
     }
 
-    inline WXCoreLayoutNode *getChildAt(FormatingContext formatingContext, uint32_t index) {
-      switch (formatingContext) {
-        case NON_BFC:
+    void appendChild(WXCoreLayoutNode* const child) {
+      mChildList.push_back(child);
+      child->mParent = this;
+      markDirty();
+    }
+
+    WXCoreLayoutNode *getChildAt(const FormattingContext formattingContext, const Index index) const {
+      switch (formattingContext) {
+        case kNonBFC:
           return NonBFCs[index];
-        case BFC:
+        case kBFC:
           return BFCs[index];
-        case ALL:
         default:
           return mChildList[index];
       }
     }
 
-    inline WXCoreLayoutNode *getParent() {
+    WXCoreLayoutNode *getChildAt(const Index index) const {
+      return mChildList[index];
+    }
+
+    WXCoreLayoutNode *getParent() const {
       return mParent;
     }
 
-    void initFormatingContext(std::vector<WXCoreLayoutNode *> &BFCs);
-
-    WXBFCDimension calculateBFCDimension();
-
-    inline bool isBFC(WXCoreLayoutNode *node) {
-      return node->mCssStyle->mPositionType == WXCore_PositionType_Absolute;
+    bool isBFC(WXCoreLayoutNode* const node) const {
+      return node->mCssStyle->mPositionType == kAbsolute;
     }
 
 
     /** ================================ margin =================================== **/
 
-    inline float getMarginTop() {
-      return mCssStyle->mMargin.getMargin(WXCore_Margin_Top);
+    float getMarginTop() const {
+      return mCssStyle->mMargin.getMargin(kMarginTop);
     }
 
-    inline float getMarginBottom() {
-      return mCssStyle->mMargin.getMargin(WXCore_Margin_Bottom);
+    float getMarginBottom() const {
+      return mCssStyle->mMargin.getMargin(kMarginBottom);
     }
 
-    inline float getMarginLeft() {
-      return mCssStyle->mMargin.getMargin(WXCore_Margin_Left);
+    float getMarginLeft() const  {
+      return mCssStyle->mMargin.getMargin(kMarginLeft);
     }
 
-    inline float getMarginRight() {
-      return mCssStyle->mMargin.getMargin(WXCore_Margin_Right);
+    float getMarginRight() const {
+      return mCssStyle->mMargin.getMargin(kMarginRight);
     }
 
-    inline void setMargin(WXCoreMarginEdge edge, float margin) {
-      if (mCssStyle->mMargin.setMargin(edge, margin))
-        dirty();
+    void setMargin(const WXCoreMarginEdge edge, const float margin) {
+      if (mCssStyle->mMargin.setMargin(edge, margin)) {
+        markDirty();
+      }
     }
 
     /** ================================ padding =================================== **/
 
-    inline float getPaddingLeft() {
-      return mCssStyle->mPadding.getPadding(WXCore_Padding_Left);
+    float getPaddingLeft() const {
+      return mCssStyle->mPadding.getPadding(kPaddingLeft);
     }
 
-    inline float getPaddingRight() {
-      return mCssStyle->mPadding.getPadding(WXCore_Padding_Right);
+    float getPaddingRight() const {
+      return mCssStyle->mPadding.getPadding(kPaddingRight);
     }
 
-    inline float getPaddingTop() {
-      return mCssStyle->mPadding.getPadding(WXCore_Padding_Top);
+    float getPaddingTop() const {
+      return mCssStyle->mPadding.getPadding(kPaddingTop);
     }
 
-    inline float getPaddingBottom() {
-      return mCssStyle->mPadding.getPadding(WXCore_Padding_Bottom);
+    float getPaddingBottom() const {
+      return mCssStyle->mPadding.getPadding(kPaddingBottom);
     }
 
-    inline void setPadding(WXCorePaddingEdge edge, float padding) {
-      if (mCssStyle->mPadding.setPadding(edge, padding))
-        dirty();
+    void setPadding(const WXCorePaddingEdge edge, const float padding) {
+      if (mCssStyle->mPadding.setPadding(edge, padding)) {
+        markDirty();
+      }
     }
 
 
     /** ================================ border-width =================================== **/
 
-    inline float getBorderWidthLeft() {
-      return mCssStyle->mBorderWidth.getBorderWidth(WXCore_Border_Width_Left);
+    float getBorderWidthLeft() const {
+      return mCssStyle->mBorderWidth.getBorderWidth(kBorderWidthLeft);
     }
 
-    inline float getBorderWidthRight() {
-      return mCssStyle->mBorderWidth.getBorderWidth(WXCore_Border_Width_Right);
+    float getBorderWidthRight() const {
+      return mCssStyle->mBorderWidth.getBorderWidth(kBorderWidthRight);
     }
 
-    inline float getBorderWidthTop() {
-      return mCssStyle->mBorderWidth.getBorderWidth(WXCore_Border_Width_Top);
+    float getBorderWidthTop() const {
+      return mCssStyle->mBorderWidth.getBorderWidth(kBorderWidthTop);
     }
 
-    inline float getBorderWidthBottom() {
-      return mCssStyle->mBorderWidth.getBorderWidth(WXCore_Border_Width_Bottom);
+    float getBorderWidthBottom() const {
+      return mCssStyle->mBorderWidth.getBorderWidth(kBorderWidthBottom);
     }
 
-    inline void setBorderWidth(WXCoreBorderWidthEdge edge, float borderWidth) {
-      if (mCssStyle->mBorderWidth.setBorderWidth(edge, borderWidth))
-        dirty();
+    void setBorderWidth(const WXCoreBorderWidthEdge edge, const float borderWidth) {
+      if (mCssStyle->mBorderWidth.setBorderWidth(edge, borderWidth)) {
+        markDirty();
+      }
     }
 
 
     /** ================================ position-type =================================== **/
 
-    inline void setStylePositionType(WXCorePositionType positionType) {
+    void setStylePositionType(const WXCorePositionType positionType) {
       if (mCssStyle->mPositionType != positionType) {
         mCssStyle->mPositionType = positionType;
-        dirty();
+        markDirty();
       }
     }
 
-    inline WXCorePositionType getStypePositionType() {
+    WXCorePositionType getStypePositionType() const {
       return mCssStyle->mPositionType;
     }
 
 
     /** ================================ position =================================== **/
 
-    inline float getStylePositionTop() {
-      return mCssStyle->mStylePosition.getPosition(WXCore_PositionEdge_Top);
+    float getStylePositionTop() const {
+      return mCssStyle->mStylePosition.getPosition(kPositionEdgeTop);
     }
 
-    inline float getStylePositionBottom() {
-      return mCssStyle->mStylePosition.getPosition(WXCore_PositionEdge_Bottom);
+    float getStylePositionBottom() const {
+      return mCssStyle->mStylePosition.getPosition(kPositionEdgeBottom);
     }
 
-    inline float getStylePositionLeft() {
-      return mCssStyle->mStylePosition.getPosition(WXCore_PositionEdge_Left);
+    float getStylePositionLeft() const {
+      return mCssStyle->mStylePosition.getPosition(kPositionEdgeLeft);
     }
 
-    inline float getStylePositionRight() {
-      return mCssStyle->mStylePosition.getPosition(WXCore_PositionEdge_Right);
+    float getStylePositionRight() const {
+      return mCssStyle->mStylePosition.getPosition(kPositionEdgeRight);
     }
 
-    inline void setStylePosition(WXCorePositionEdge edge, float positionRight) {
+    void setStylePosition(const WXCorePositionEdge edge, const float positionRight) {
       if (mCssStyle->mStylePosition.setPosition(edge, positionRight))
-        dirty();
+        markDirty();
     }
 
 
     /** ================================ dimension =================================== **/
 
-    inline void setStyleWidth(float width) {
-      if (mCssStyle->mStyleWidth != width) {
-        mCssStyle->mStyleWidth = width;
-        dirty();
+    void setStyleWidthLevel(const DimensionLevel level) const {
+      if (mCssStyle->mStyleWidthLevel != level) {
+        mCssStyle->mStyleWidthLevel = level;
       }
     }
 
-    inline float getStyleWidth() {
+    void setStyleHeightLevel(const DimensionLevel level) const {
+      if (mCssStyle->mStyleHeightLevel != level) {
+        mCssStyle->mStyleHeightLevel = level;
+      }
+    }
+
+    DimensionLevel getStyleHeightLevel() const {
+      return mCssStyle->mStyleHeightLevel;
+    }
+
+    DimensionLevel getStyleWidthLevel() const {
+      return mCssStyle->mStyleWidthLevel;
+    }
+
+    void setStyleWidth(const float width) {
+      if (mCssStyle->mStyleWidth != width) {
+        mCssStyle->mStyleWidth = width;
+        markDirty();
+      }
+    }
+
+    float getStyleWidth() const {
       return mCssStyle->mStyleWidth;
     }
 
-    inline void setStyleHeight(float height) {
+    void setStyleHeight(const float height) {
       if (mCssStyle->mStyleHeight != height) {
         mCssStyle->mStyleHeight = height;
-        dirty();
+        markDirty();
       }
     }
 
-    inline float getStyleHeight() {
+    float getStyleHeight() const {
       return mCssStyle->mStyleHeight;
     }
 
-    inline void setMinWidth(float minWidth) {
+    void setMinWidth(const float minWidth) {
       if (mCssStyle->mMinWidth != minWidth) {
         mCssStyle->mMinWidth = minWidth;
-        dirty();
+        markDirty();
       }
     }
 
-    inline float getMinWidth() {
+    float getMinWidth() const {
       return mCssStyle->mMinWidth;
     }
 
-    inline void setMaxWidth(float maxWidth) {
+    void setMaxWidth(const float maxWidth) {
       if (mCssStyle->mMaxWidth != maxWidth) {
         mCssStyle->mMaxWidth = maxWidth;
-        dirty();
+        markDirty();
       }
     }
 
-    inline float getMaxWidth() {
+    float getMaxWidth() const {
       return mCssStyle->mMaxWidth;
     }
 
-    inline void setMinHeight(float minHeight) {
+    void setMinHeight(const float minHeight) {
       if (mCssStyle->mMinHeight != minHeight) {
         mCssStyle->mMinHeight = minHeight;
-        dirty();
+        markDirty();
       }
     }
 
-    inline float getMinHeight() {
+    float getMinHeight() const {
       return mCssStyle->mMinHeight;
     }
 
-    inline void setMaxHeight(float maxHeight) {
+    void setMaxHeight(const float maxHeight) {
       if (mCssStyle->mMaxHeight != maxHeight) {
         mCssStyle->mMaxHeight = maxHeight;
-        dirty();
+        markDirty();
       }
     }
 
-    inline float getMaxHeight() {
+    float getMaxHeight() const {
       return mCssStyle->mMaxHeight;
     }
 
 
     /** ================================ flex-style =================================== **/
 
-    inline void setFlexDirection(WXCoreFlexDirection flexDirection) {
+    void setFlexDirection(const WXCoreFlexDirection flexDirection) {
       if (mCssStyle->mFlexDirection != flexDirection) {
         mCssStyle->mFlexDirection = flexDirection;
-        dirty();
+        markDirty();
       }
     }
 
-    inline WXCoreFlexDirection getFlexDirection() {
+    WXCoreFlexDirection getFlexDirection() const {
       return mCssStyle->mFlexDirection;
     }
 
-    inline void setFlexWrap(WXCoreFlexWrap flexWrap) {
+    void setFlexWrap(const WXCoreFlexWrap flexWrap) {
       if (mCssStyle->mFlexWrap != flexWrap) {
         mCssStyle->mFlexWrap = flexWrap;
-        dirty();
+        markDirty();
       }
     }
 
-    inline WXCoreFlexWrap getFlexWrap() {
+    WXCoreFlexWrap getFlexWrap() const {
       return mCssStyle->mFlexWrap;
     }
 
-    inline void setJustifyContent(WXCoreJustifyContent justifyContent) {
+    void setJustifyContent(const WXCoreJustifyContent justifyContent) {
       if (mCssStyle->mJustifyContent != justifyContent) {
         mCssStyle->mJustifyContent = justifyContent;
-        dirty();
       }
     }
 
-    inline WXCoreJustifyContent getJustifyContent() {
+    WXCoreJustifyContent getJustifyContent() const {
       return mCssStyle->mJustifyContent;
     }
 
-    inline void setAlignItems(WXCoreAlignItems alignItems) {
+    void setAlignItems(const WXCoreAlignItems alignItems) {
       if (mCssStyle->mAlignItems != alignItems) {
         mCssStyle->mAlignItems = alignItems;
-        dirty();
+        markDirty();
       }
     }
 
-    inline WXCoreAlignItems getAlignItems() {
+    WXCoreAlignItems getAlignItems() const {
       return mCssStyle->mAlignItems;
     }
 
-    inline void setAlignSelf(WXCoreAlignSelf alignSelf) {
+    void setAlignSelf(const WXCoreAlignSelf alignSelf) {
       if (mCssStyle->mAlignSelf != alignSelf) {
         mCssStyle->mAlignSelf = alignSelf;
-        dirty();
+        markDirty();
       }
     }
 
-    inline WXCoreAlignSelf getAlignSelf() {
+    WXCoreAlignSelf getAlignSelf() const {
       return mCssStyle->mAlignSelf;
     }
 
-    inline void setFlex(float flex) {
+    void setFlex(const float flex) {
       if (mCssStyle->mFlexGrow != flex) {
         mCssStyle->mFlexGrow = flex;
-        dirty();
+        markDirty();
       }
     }
 
-    inline float getFlex() {
+    float getFlex() const {
       return mCssStyle->mFlexGrow;
     }
 
     /** ================================ layout-result =================================== **/
 
-  public:
-
-    inline float getLayoutWidth() {
+    float getLayoutWidth() const {
       return mLayoutResult->mLayoutSize.width;
     }
 
-    inline float getLayoutHeight() {
+    float getLayoutHeight() const {
       return mLayoutResult->mLayoutSize.height;
     }
 
-    inline float getLayoutPositionTop() {
-      return mLayoutResult->mLayoutPosition.getPosition(WXCore_PositionEdge_Top);
+    float getLayoutPositionTop() const {
+      return mLayoutResult->mLayoutPosition.getPosition(kPositionEdgeTop);
     }
 
-    inline float getLayoutPositionBottom() {
-      return mLayoutResult->mLayoutPosition.getPosition(WXCore_PositionEdge_Bottom);
+    float getLayoutPositionBottom() const {
+      return mLayoutResult->mLayoutPosition.getPosition(kPositionEdgeBottom);
     }
 
-    inline float getLayoutPositionLeft() {
-      return mLayoutResult->mLayoutPosition.getPosition(WXCore_PositionEdge_Left);
+    float getLayoutPositionLeft() const {
+      return mLayoutResult->mLayoutPosition.getPosition(kPositionEdgeLeft);
     }
 
-    inline float getLayoutPositionRight() {
-      return mLayoutResult->mLayoutPosition.getPosition(WXCore_PositionEdge_Right);
+    float getLayoutPositionRight() const  {
+      return mLayoutResult->mLayoutPosition.getPosition(kPositionEdgeRight);
     }
 
-  private:
-
-    inline void setMeasuredDimension(float width, float height) {
-      mLayoutResult->mLayoutSize.width = width;
-      mLayoutResult->mLayoutSize.height = height;
-    }
-
-
-    /** ================================ other =================================== **/
-
-  private:
-    inline bool hasNewLayout() {
+    bool hasNewLayout() const {
       return mHasNewLayout;
     }
 
-    inline bool isDirty() {
-      return mIsDirty;
+    bool isDirty() const {
+      return dirty;
     }
 
-    inline void dirty() {
-      requestLayout();
-    }
-
-    inline void requestLayout() {
-      mIsDirty = true;
-      if (getParent() != nullptr) {
-        getParent()->requestLayout();
+    void markDirty(const bool recursion = true) {
+      if (!isDirty()) {
+        dirty = true;
+        if (getParent() != nullptr && recursion) {
+          getParent()->markDirty();
+        }
       }
     }
 
-  public:
-    inline bool isVisible() {
-      return mVisible;
+    void setHasNewLayout(const bool hasNewLayout) {
+      this->mHasNewLayout = hasNewLayout;
     }
 
-    inline void setVisible(bool visible) {
-      mVisible = visible;
+    float getLargestMainSize() const {
+      float largestSize = 0;
+      for (WXCoreFlexLine *flexLine : mFlexLines) {
+        largestSize = std::max(largestSize, flexLine->mMainSize);
+      }
+      return largestSize;
     }
 
-  private:
-    float getLargestMainSize();
   };
-
 }
 #endif //WEEXCORE_FLEXLAYOUT_WXCORELAYOUTNODE_H
 #endif

@@ -26,7 +26,7 @@
 #define FlexUndefined NAN
 #define USE_FLEX
 
-#ifdef __cplusplus
+#ifdef __cplusplus 
 extern "C" {
 #endif
     bool flexIsUndefined(float value);
@@ -43,7 +43,7 @@ extern "C" {
 #ifndef USE_FLEX
     css_node_t *_cssNode;
 #else
-    WXCoreFlexLayout::WXCoreLayoutNode *_flexCssNode;
+    WeexCore::WXCoreLayoutNode *_flexCssNode;
 #endif
     BOOL _isLayoutDirty;
     CGRect _calculatedFrame;
@@ -59,7 +59,7 @@ extern "C" {
  */
 @property(nonatomic, readonly, assign) css_node_t *cssNode;
 #else
-@property(nonatomic, readonly, assign) WXCoreFlexLayout::WXCoreLayoutNode *flexCssNode;
+@property(nonatomic, readonly, assign) WeexCore::WXCoreLayoutNode *flexCssNode;
 #endif
 
 @end

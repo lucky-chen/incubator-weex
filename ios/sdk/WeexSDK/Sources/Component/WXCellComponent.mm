@@ -130,7 +130,7 @@
         //TODO: set _isUseContainerWidth to NO if updateStyles have width
         _isUseContainerWidth = YES;
     }
-    
+
     if ([self needsLayout]) {
         layoutNode(self.cssNode, CSS_UNDEFINED, CSS_UNDEFINED, CSS_DIRECTION_INHERIT);
         if ([WXLog logLevel] >= WXLogLevelDebug) {

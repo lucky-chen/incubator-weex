@@ -62,7 +62,7 @@ static NSThread *WXComponentThread;
 #ifndef USE_FLEX
     css_node_t *_rootCSSNode;
 #else
-    WXCoreFlexLayout::WXCoreLayoutNode* _rootFlexCSSNode;
+    WeexCore::WXCoreLayoutNode* _rootFlexCSSNode;
 #endif
     CADisplayLink *_displayLink;
 }
@@ -97,8 +97,12 @@ static NSThread *WXComponentThread;
 #ifndef USE_FLEX
     free_css_node(_rootCSSNode);
 #else
+    
     if(_rootFlexCSSNode){
-        _rootFlexCSSNode->freeWXCoreNode();
+        delete _rootFlexCSSNode;
+        
+       // WeexCore::WXCoreLayoutNode::freeNodeTree(_rootFlexCSSNode);
+        _rootFlexCSSNode=nullptr;
     }
 #endif
     [NSMutableArray wx_releaseArray:_fixedComponents];
@@ -203,8 +207,8 @@ static NSThread *WXComponentThread;
 }
 #else
 - (void)_applyRootFrame:(CGRect)rootFrame{
-    _rootFlexCSSNode->setStylePosition(WXCoreFlexLayout::WXCore_PositionEdge_Left, self.weexInstance.frame.origin.x);
-    _rootFlexCSSNode->setStylePosition(WXCoreFlexLayout::WXCore_PositionEdge_Top, self.weexInstance.frame.origin.y);
+    _rootFlexCSSNode->setStylePosition(WeexCore::kPositionEdgeLeft, self.weexInstance.frame.origin.x);
+    _rootFlexCSSNode->setStylePosition(WeexCore::kPositionEdgeTop, self.weexInstance.frame.origin.y);
     _rootFlexCSSNode->setStyleWidth(self.weexInstance.frame.size.width ?: FlexUndefined);
     _rootFlexCSSNode->setStyleHeight(self.weexInstance.frame.size.height ?: FlexUndefined);
 }
@@ -265,7 +269,19 @@ static NSThread *WXComponentThread;
     [self _addUITask:^{
         [WXTracingManager startTracingWithInstanceId:weakSelf.weexInstance.instanceId ref:data[@"ref"] className:nil name:data[@"type"] phase:WXTracingBegin functionName:@"createBody" options:@{@"threadName":WXTUIThread}];
         __strong typeof(self) strongSelf = weakSelf;
+        
+        
+        
         strongSelf.weexInstance.rootView.wx_component = strongSelf->_rootComponent;
+        
+//        NSLog(@"test -> layer node:%@,ref:%@, frame:%@",
+//              strongSelf->_rootComponent->_type,
+//              strongSelf->_rootComponent.ref,
+//              NSStringFromCGRect(strongSelf->_rootComponent.view.layer.frame)
+//              );
+
+        
+        
         [strongSelf.weexInstance.rootView addSubview:strongSelf->_rootComponent.view];
         
         [WXTracingManager startTracingWithInstanceId:weakSelf.weexInstance.instanceId ref:data[@"ref"] className:nil name:data[@"type"] phase:WXTracingEnd functionName:@"createBody" options:@{@"threadName":WXTUIThread}];
@@ -309,11 +325,33 @@ static css_node_t * rootNodeGetChild(void *context, int i)
 - (void)_recursivelyAddComponent:(NSDictionary *)componentData toSupercomponent:(WXComponent *)supercomponent atIndex:(NSInteger)index appendingInTree:(BOOL)appendingInTree
 {
     WXComponent *component = [self _buildComponentForData:componentData supercomponent:supercomponent];
+    
+
     if (!supercomponent.subcomponents) {
         index = 0;
     } else {
         index = (index == -1 ? supercomponent->_subcomponents.count : index);
     }
+    NSLog(@"test -> _recursivelyAddComponent : super:(%@,%@):[%f,%f] ,child:(%@,%@):[%f,%f]",
+          supercomponent.type,
+          supercomponent.ref,
+#ifdef USE_FLEX
+          supercomponent.flexCssNode->getStyleWidth(),
+          supercomponent.flexCssNode->getStyleHeight(),
+          component.type,
+          component.ref,
+          component.flexCssNode->getStyleWidth(),
+          component.flexCssNode->getStyleHeight()
+#else
+          supercomponent.cssNode->style.dimensions[CSS_WIDTH],
+          supercomponent.cssNode->style.dimensions[CSS_HEIGHT],
+          component.type,
+          component.ref,
+          component.cssNode->style.dimensions[CSS_WIDTH],
+          component.cssNode->style.dimensions[CSS_HEIGHT]
+#endif
+          );
+    
     
     [supercomponent _insertSubcomponent:component atIndex:index];
     // use _lazyCreateView to forbid component like cell's view creating
@@ -436,6 +474,9 @@ static css_node_t * rootNodeGetChild(void *context, int i)
     NSDictionary *styles = data[@"style"];
     NSDictionary *attributes = data[@"attr"];
     NSArray *events = data[@"event"];
+    
+    
+    
     
     if (self.weexInstance.needValidate) {
         id<WXValidateProtocol> validateHandler = [WXHandlerFactory handlerForProtocol:@protocol(WXValidateProtocol)];
@@ -843,6 +884,7 @@ static css_node_t * rootNodeGetChild(void *context, int i)
 
 - (void)_layout
 {
+  
     BOOL needsLayout = NO;
 
     NSEnumerator *enumerator = [_indexDict objectEnumerator];
@@ -861,7 +903,6 @@ static css_node_t * rootNodeGetChild(void *context, int i)
     layoutNode(_rootCSSNode, _rootCSSNode->style.dimensions[CSS_WIDTH], _rootCSSNode->style.dimensions[CSS_HEIGHT], CSS_DIRECTION_INHERIT);
 #else
     _rootFlexCSSNode->calculateLayout();
-//    WXLogInfo(@"FlexLayout -- calculateLayout");
 #endif
     
     if ([_rootComponent needsLayout]) {
@@ -880,9 +921,31 @@ static css_node_t * rootNodeGetChild(void *context, int i)
     for (WXComponent *dirtyComponent in dirtyComponents) {
         [self _addUITask:^{
             [dirtyComponent _layoutDidFinish];
+
         }];
     }
+    
+   
 }
+
+#ifdef USE_FLEX
+- (void) _printFlexComonentFrame:(WXComponent *)component
+{
+    NSLog(@"node ref:%@, type:%@ , frame:%@",
+          component.ref,
+          component.type,
+          NSStringFromCGRect(component.view.layer.frame)
+          );
+    
+  
+    
+    for (WXComponent *childComponent in component.subcomponents) {
+        [self _printFlexComonentFrame:childComponent];
+    }
+
+    
+}
+#endif
 
 - (void)_syncUITasks
 {
@@ -910,9 +973,9 @@ static css_node_t * rootNodeGetChild(void *context, int i)
 #else
 - (void)_initRootFlexCssNode
 {
-    _rootFlexCSSNode = WXCoreFlexLayout::WXCoreLayoutNode::newWXCoreNode();
+    _rootFlexCSSNode = new WeexCore::WXCoreLayoutNode();
     [self _applyRootFrame:self.weexInstance.frame];
-    _rootFlexCSSNode->setFlexWrap(WXCoreFlexLayout::WXCore_Wrap_NoWrap);
+    _rootFlexCSSNode->setFlexWrap(WeexCore::kNoWrap);
     _rootFlexCSSNode->setContext((__bridge void *)(self));
 }
 #endif
@@ -924,6 +987,8 @@ static css_node_t * rootNodeGetChild(void *context, int i)
         return;
     }
     _rootCSSNode->layout.should_update = false;
+    
+    NSLog(@"test -> root _calculateRootFrame");
     
     CGRect frame = CGRectMake(WXRoundPixelValue(_rootCSSNode->layout.position[CSS_LEFT]),
                               WXRoundPixelValue(_rootCSSNode->layout.position[CSS_TOP]),
@@ -943,6 +1008,13 @@ static css_node_t * rootNodeGetChild(void *context, int i)
 //    }
 //    _rootFlexCSSNode->layout.should_update = false;
     
+//    if (!_rootFlexCSSNode->isDirty()) {
+//        return;
+//    }
+    
+    NSLog(@"test -> root _calculateRootFrame");
+    
+    
     CGRect frame = CGRectMake(WXRoundPixelValue(_rootFlexCSSNode->getLayoutPositionLeft()),
                               WXRoundPixelValue(_rootFlexCSSNode->getLayoutPositionTop()),
                               WXRoundPixelValue(_rootFlexCSSNode->getLayoutWidth()),
@@ -952,10 +1024,13 @@ static css_node_t * rootNodeGetChild(void *context, int i)
             self.weexInstance.rootView.frame = frame;
         }
     });
+ //   _rootFlexCSSNode->reset();
     
 //    resetNodeLayout(_rootFlexCSSNode);
     
 #endif
+    
+   
 }
 
 

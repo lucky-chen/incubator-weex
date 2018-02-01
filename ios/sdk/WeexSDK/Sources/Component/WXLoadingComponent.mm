@@ -52,7 +52,7 @@
 #ifndef USE_FLEX
         self.cssNode->style.position_type = CSS_POSITION_ABSOLUTE;
 #else
-        self.flexCssNode->setStylePositionType(WXCoreFlexLayout::WXCore_PositionType_Absolute);
+        self.flexCssNode->setStylePositionType(WeexCore::kAbsolute);
 #endif
     }
     return self;

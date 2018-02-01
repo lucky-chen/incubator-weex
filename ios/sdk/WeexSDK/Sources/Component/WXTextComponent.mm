@@ -168,6 +168,9 @@ CGFloat WXTextDefaultLineThroughWidth = 1.2;
         [self fillCSSStyles:styles];
         [self fillAttributes:attributes];
     }
+#ifdef USE_FLEX
+    NSLog(@"test -> textView nod :%x",_flexCssNode);
+#endif
     
     return self;
 }
@@ -331,6 +334,10 @@ do {\
 {
     __weak typeof(self) weakSelf = self;
     return ^CGSize (CGSize constrainedSize) {
+        NSLog(@"test -> measureblock %@, constrainedSize:%@",
+              self.type,
+              NSStringFromCGSize(constrainedSize)
+              );
         CGSize computedSize = CGSizeZero;
         NSTextStorage *textStorage = nil;
         if (![self useCoreText]) {

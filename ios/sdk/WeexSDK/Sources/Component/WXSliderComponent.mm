@@ -428,7 +428,7 @@
 #ifndef USE_FLEX
         self.cssNode->style.flex_direction = CSS_FLEX_DIRECTION_ROW;
 #else
-        self.flexCssNode->setFlexDirection(WXCoreFlexLayout::WXCore_Flex_Direction_Row);
+        self.flexCssNode->setFlexDirection(WeexCore::kFlexDirectionRow);
 #endif
     }
     return self;

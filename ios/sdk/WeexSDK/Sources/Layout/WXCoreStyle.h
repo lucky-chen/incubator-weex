@@ -5,9 +5,9 @@
 
 
 #include "WXCoreFlexEnum.h"
-#include <math.h>
+#include <cmath>
 
-namespace WXCoreFlexLayout {
+namespace WeexCore {
 
   /**
    * Margin: margin-left、margin-right、margin-top、margin-bottom
@@ -32,69 +32,9 @@ namespace WXCoreFlexLayout {
       mMarginRight = 0;
     }
 
-    bool setMargin(WXCoreMarginEdge edge, float margin) {
-      bool dirty = false;
-      switch (edge) {
-        case WXCore_Margin_ALL:
-          if (mMarginLeft != margin
-              || mMarginTop != margin
-              || mMarginRight != margin
-              || mMarginBottom != margin) {
-            mMarginLeft += margin;
-            mMarginTop += margin;
-            mMarginRight += margin;
-            mMarginBottom += margin;
-            dirty = true;
-          }
-          break;
-        case WXCore_Margin_Left:
-          if (mMarginLeft != margin) {
-            mMarginLeft = margin;
-            dirty = true;
-          }
-          break;
-        case WXCore_Margin_Top:
-          if (mMarginTop != margin) {
-            mMarginTop = margin;
-            dirty = true;
-          }
-          break;
-        case WXCore_Margin_Right:
-          if (mMarginRight != margin) {
-            mMarginRight = margin;
-            dirty = true;
-          }
-          break;
-        case WXCore_Margin_Bottom:
-          if (mMarginBottom != margin) {
-            mMarginBottom = margin;
-            dirty = true;
-          }
-          break;
-      }
-      return dirty;
-    }
+    bool setMargin(const WXCoreMarginEdge &edge, const float &margin);
 
-    float getMargin(WXCoreMarginEdge edge) {
-      float margin = 0;
-      switch (edge) {
-        case WXCore_Margin_Left:
-          margin = mMarginLeft;
-          break;
-        case WXCore_Margin_Top:
-          margin = mMarginTop;
-          break;
-        case WXCore_Margin_Right:
-          margin = mMarginRight;
-          break;
-        case WXCore_Margin_Bottom:
-          margin = mMarginBottom;
-          break;
-        default:
-          break;
-      }
-      return margin;
-    }
+    float getMargin(const WXCoreMarginEdge &edge);
   };
 
 
@@ -121,69 +61,9 @@ namespace WXCoreFlexLayout {
       mPaddingRight = 0;
     }
 
-    bool setPadding(WXCorePaddingEdge edge, float padding) {
-      bool dirty = false;
-      switch (edge) {
-        case WXCore_Padding_ALL:
-          if (mPaddingLeft != padding
-              || mPaddingTop != padding
-              || mPaddingRight != padding
-              || mPaddingBottom != padding) {
-            mPaddingLeft += padding;
-            mPaddingTop += padding;
-            mPaddingRight += padding;
-            mPaddingBottom += padding;
-            dirty = true;
-          }
-          break;
-        case WXCore_Padding_Left:
-          if (mPaddingLeft != padding) {
-            mPaddingLeft = padding;
-            dirty = true;
-          }
-          break;
-        case WXCore_Padding_Top:
-          if (mPaddingTop != padding) {
-            mPaddingTop = padding;
-            dirty = true;
-          }
-          break;
-        case WXCore_Padding_Right:
-          if (mPaddingRight != padding) {
-            mPaddingRight = padding;
-            dirty = true;
-          }
-          break;
-        case WXCore_Padding_Bottom:
-          if (mPaddingBottom != padding) {
-            mPaddingBottom = padding;
-            dirty = true;
-          }
-          break;
-      }
-      return dirty;
-    }
+    bool setPadding(const WXCorePaddingEdge &edge, const float &padding);
 
-    float getPadding(WXCorePaddingEdge edge) {
-      float padding = 0;
-      switch (edge) {
-        case WXCore_Padding_Left:
-          padding = mPaddingLeft;
-          break;
-        case WXCore_Padding_Top:
-          padding = mPaddingTop;
-          break;
-        case WXCore_Padding_Right:
-          padding = mPaddingRight;
-          break;
-        case WXCore_Padding_Bottom:
-          padding = mPaddingBottom;
-          break;
-        default:
-          break;
-      }
-      return padding;
-    }
+    float getPadding(const WXCorePaddingEdge &edge);
   };
 
 
@@ -210,69 +90,9 @@ namespace WXCoreFlexLayout {
       mBorderWidthRight = 0;
     }
 
-    bool setBorderWidth(WXCoreBorderWidthEdge edge, float borderWidth) {
-      bool dirty = false;
-      switch (edge) {
-        case WXCore_Border_Width_ALL:
-          if (mBorderWidthLeft != borderWidth
-              || mBorderWidthTop != borderWidth
-              || mBorderWidthRight != borderWidth
-              || mBorderWidthBottom != borderWidth) {
-            mBorderWidthLeft += borderWidth;
-            mBorderWidthTop += borderWidth;
-            mBorderWidthRight += borderWidth;
-            mBorderWidthBottom += borderWidth;
-            dirty = true;
-          }
-          break;
-        case WXCore_Border_Width_Left:
-          if (mBorderWidthLeft != borderWidth) {
-            mBorderWidthLeft = borderWidth;
-            dirty = true;
-          }
-          break;
-        case WXCore_Border_Width_Top:
-          if (mBorderWidthTop != borderWidth) {
-            mBorderWidthTop = borderWidth;
-            dirty = true;
-          }
-          break;
-        case WXCore_Border_Width_Right:
-          if (mBorderWidthRight != borderWidth) {
-            mBorderWidthRight = borderWidth;
-            dirty = true;
-          }
-          break;
-        case WXCore_Border_Width_Bottom:
-          if (mBorderWidthBottom != borderWidth) {
-            mBorderWidthBottom = borderWidth;
-            dirty = true;
-          }
-          break;
-      }
-      return dirty;
-    }
+    bool setBorderWidth(const WXCoreBorderWidthEdge &edge, const float &borderWidth);
 
-    float getBorderWidth(WXCoreBorderWidthEdge edge) {
-      float borderWidth = 0;
-      switch (edge) {
-        case WXCore_Border_Width_Left:
-          borderWidth = mBorderWidthLeft;
-          break;
-        case WXCore_Border_Width_Top:
-          borderWidth = mBorderWidthTop;
-          break;
-        case WXCore_Border_Width_Right:
-          borderWidth = mBorderWidthRight;
-          break;
-        case WXCore_Border_Width_Bottom:
-          borderWidth = mBorderWidthBottom;
-          break;
-        default:
-          break;
-      }
-      return borderWidth;
-    }
+    float getBorderWidth(const WXCoreBorderWidthEdge &edge);
   };
 
 
@@ -287,73 +107,36 @@ namespace WXCoreFlexLayout {
     float mRight;
 
   public:
-    WXCorePosition() : mTop(0),
-                       mBottom(0),
-                       mLeft(0),
-                       mRight(0) {}
+    WXCorePosition() : mTop(NAN),
+                       mBottom(NAN),
+                       mLeft(NAN),
+                       mRight(NAN) {}
 
     ~WXCorePosition() {
       reset();
     }
 
-    void reset() {
+    inline bool isNAN() {
+      return isnan(mTop) || isnan(mBottom) || isnan(mLeft) || isnan(mRight);
+    }
+
+    inline void reset() {
       mTop = 0;
       mBottom = 0;
       mLeft = 0;
       mRight = 0;
     }
 
-    bool setPosition(WXCorePositionEdge edge, float position) {
-      bool dirty = false;
-      switch (edge) {
-        case WXCore_PositionEdge_Left:
-          if (mLeft != position) {
-            mLeft = position;
-            dirty = true;
-          }
-          break;
-        case WXCore_PositionEdge_Top:
-          if (mTop != position) {
-            mTop = position;
-            dirty = true;
-          }
-          break;
-        case WXCore_PositionEdge_Right:
-          if (mRight != position) {
-            mRight = position;
-            dirty = true;
-          }
-          break;
-        case WXCore_PositionEdge_Bottom:
-          if (mBottom != position) {
-            mBottom = position;
-            dirty = true;
-          }
-          break;
-      }
-      return dirty;
-    }
+    bool setPosition(const WXCorePositionEdge &edge, const float &position);
 
-    float getPosition(WXCorePositionEdge edge) {
-      float position = 0;
-      switch (edge) {
-        case WXCore_PositionEdge_Left:
-          position = mLeft;
-          break;
-        case WXCore_PositionEdge_Top:
-          position = mTop;
-          break;
-        case WXCore_PositionEdge_Right:
-          position = mRight;
-          break;
-        case WXCore_PositionEdge_Bottom:
-          position = mBottom;
-          break;
-      }
-      return position;
-    }
+    float getPosition(const WXCorePositionEdge &edge);
   };
 
+  enum DimensionLevel{
+    CSS_STYLE = 1,
+    INSTANCE_STYLE = 2,
+    FALLBACK_STYLE = 3
+  };
 
   /**
    * css-style
@@ -398,6 +181,8 @@ namespace WXCoreFlexLayout {
      */
     WXCoreAlignSelf mAlignSelf;
 
+    WXCorePositionType mPositionType;
+
     float mFlexGrow;
 
     float mMinWidth;
@@ -412,6 +197,10 @@ namespace WXCoreFlexLayout {
 
     float mStyleHeight;
 
+    DimensionLevel mStyleWidthLevel;
+
+    DimensionLevel mStyleHeightLevel;
+
     WXCoreMargin mMargin;
 
     WXCorePadding mPadding;
@@ -420,45 +209,45 @@ namespace WXCoreFlexLayout {
 
     WXCorePosition mStylePosition;
 
-    WXCorePositionType mPositionType;
+    constexpr static float kFlexGrowDefault  = 0;
 
-    const static WXCoreFlexDirection FLEX_DIRECTION_DEFAULT;
+    constexpr static WXCoreFlexDirection kFlexDirectionDefault= kFlexDirectionColumn;
 
-    const static WXCoreFlexWrap FLEX_WRAP_DEFAULT;
+    constexpr static WXCoreFlexWrap kFlexWrapDefault = kNoWrap;
 
-    const static WXCoreJustifyContent FLEX_JUSTIFY_CONTENT_DEFAULT;
+    constexpr static WXCoreJustifyContent kFlexJustifyContentDefault = kJustifyFlexStart;
 
-    const static WXCoreAlignItems FLEX_ALIGN_ITEMS_DEFAULT;
+    constexpr static WXCoreAlignItems kFlexAlignItemsDefault = kAlignItemsStretch;
 
-    const static WXCoreAlignSelf FLEX_ALIGN_SELF_DEFAULT;
+    constexpr static WXCoreAlignSelf kFlexAlignSelfDefault = kAlignSelfAuto;
 
-    const static float FLEX_DEFAULT;
+    constexpr static WXCorePositionType kWXCorePositionTypeDefault = kRelative;
 
-    const static float FLEX_GROW_DEFAULT;
-
-    const static float MAX_SIZE;
-
-    WXCoreCSSStyle() : mFlexDirection(FLEX_DIRECTION_DEFAULT),
-                       mFlexWrap(FLEX_WRAP_DEFAULT),
-                       mJustifyContent(FLEX_JUSTIFY_CONTENT_DEFAULT),
-                       mAlignItems(FLEX_ALIGN_ITEMS_DEFAULT),
-                       mAlignSelf(FLEX_ALIGN_SELF_DEFAULT),
-                       mFlexGrow(FLEX_GROW_DEFAULT),
+    WXCoreCSSStyle() : mFlexDirection(kFlexDirectionDefault),
+                       mFlexWrap(kFlexWrapDefault),
+                       mJustifyContent(kFlexJustifyContentDefault),
+                       mAlignItems(kFlexAlignItemsDefault),
+                       mAlignSelf(kFlexAlignSelfDefault),
+                       mFlexGrow(kFlexGrowDefault),
+                       mPositionType(kWXCorePositionTypeDefault),
                        mStyleWidth(NAN), mStyleHeight(NAN),
+                       mStyleHeightLevel(FALLBACK_STYLE), mStyleWidthLevel(FALLBACK_STYLE),
                        mMaxWidth(MAXFLOAT), mMaxHeight(MAXFLOAT),
-                       mMinWidth(NAN), mMinHeight(NAN) {
+                       mMinWidth(0), mMinHeight(0) {
 
     }
 
     ~WXCoreCSSStyle() {
-      mFlexDirection = FLEX_DIRECTION_DEFAULT;
-      mFlexWrap = FLEX_WRAP_DEFAULT;
-      mJustifyContent = FLEX_JUSTIFY_CONTENT_DEFAULT;
-      mAlignItems = FLEX_ALIGN_ITEMS_DEFAULT;
-      mAlignSelf = FLEX_ALIGN_SELF_DEFAULT;
-      mFlexGrow = FLEX_GROW_DEFAULT;
+      mFlexDirection = kFlexDirectionDefault;
+      mFlexWrap = kFlexWrapDefault;
+      mJustifyContent = kFlexJustifyContentDefault;
+      mAlignItems = kFlexAlignItemsDefault;
+      mAlignSelf = kFlexAlignSelfDefault;
+      mFlexGrow = kFlexGrowDefault;
       mStyleWidth = NAN;
       mStyleHeight = NAN;
+      mStyleWidthLevel = FALLBACK_STYLE;
+      mStyleHeightLevel = FALLBACK_STYLE;
       mMaxWidth = MAXFLOAT;
       mMaxHeight = MAXFLOAT;
       mMinWidth = NAN;
