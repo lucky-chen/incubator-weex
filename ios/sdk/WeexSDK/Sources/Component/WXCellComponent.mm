@@ -23,6 +23,7 @@
 #import "WXListComponent.h"
 #import "WXComponent_internal.h"
 #import "WXDiffUtil.h"
+#import "WXComponent+Layout.h"
 
 @interface WXCellComponent ()
 
@@ -123,19 +124,32 @@
 
 - (void)_calculateFrameWithSuperAbsolutePosition:(CGPoint)superAbsolutePosition gatherDirtyComponents:(NSMutableSet<WXComponent *> *)dirtyComponents
 {
+#ifndef USE_FLEX
     if (self.delegate && (isUndefined(self.cssNode->style.dimensions[CSS_WIDTH]) || _isUseContainerWidth)) {
         self.cssNode->style.dimensions[CSS_WIDTH] = [self.delegate containerWidthForLayout:self];
         //TODO: set _isUseContainerWidth to NO if updateStyles have width
         _isUseContainerWidth = YES;
     }
-    
+
     if ([self needsLayout]) {
         layoutNode(self.cssNode, CSS_UNDEFINED, CSS_UNDEFINED, CSS_DIRECTION_INHERIT);
         if ([WXLog logLevel] >= WXLogLevelDebug) {
-            print_css_node(self.cssNode, CSS_PRINT_LAYOUT | CSS_PRINT_STYLE | CSS_PRINT_CHILDREN);
+            print_css_node(self.cssNode, (css_print_options_t)(CSS_PRINT_LAYOUT | CSS_PRINT_STYLE | CSS_PRINT_CHILDREN));
         }
     }
+#else
+    if (self.delegate && (flexIsUndefined(self.flexCssNode->getStyleWidth()) || _isUseContainerWidth)) {
+        self.flexCssNode->setStyleWidth([self.delegate containerWidthForLayout:self]);
+        _isUseContainerWidth = YES;
+    }
     
+    if ([self needsLayout]) {
+        self.flexCssNode->calculateLayout();
+        if ([WXLog logLevel] >= WXLogLevelDebug) {
+            
+        }
+    }
+#endif
     [super _calculateFrameWithSuperAbsolutePosition:superAbsolutePosition gatherDirtyComponents:dirtyComponents];
 }
 @end
