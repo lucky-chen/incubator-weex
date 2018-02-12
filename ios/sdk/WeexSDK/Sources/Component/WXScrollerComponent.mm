@@ -89,7 +89,7 @@
     BOOL _shouldNotifiAppearDescendantView;
     BOOL _shouldRemoveScrollerListener;
 
-    css_node_t *_scrollerCSSNode;
+    //css_node_t *_scrollerCSSNode;
     
     NSHashTable* _delegates;
 }

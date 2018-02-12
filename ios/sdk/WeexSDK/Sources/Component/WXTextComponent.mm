@@ -366,6 +366,7 @@ do {\
         NSTextStorage *textStorage = nil;
         
         //TODO:more elegant way to use max and min constrained size
+#ifndef USE_FLEX
         if (!isnan(weakSelf.cssNode->style.minDimensions[CSS_WIDTH])) {
             constrainedSize.width = MAX(constrainedSize.width, weakSelf.cssNode->style.minDimensions[CSS_WIDTH]);
         }
@@ -373,6 +374,15 @@ do {\
         if (!isnan(weakSelf.cssNode->style.maxDimensions[CSS_WIDTH])) {
             constrainedSize.width = MIN(constrainedSize.width, weakSelf.cssNode->style.maxDimensions[CSS_WIDTH]);
         }
+#else
+        if (!isnan(weakSelf.flexCssNode->getMinWidth())) {
+            constrainedSize.width = MAX(constrainedSize.width, weakSelf.flexCssNode->getMinWidth());
+        }
+        
+        if (!isnan(weakSelf.flexCssNode->getMaxWidth())) {
+            constrainedSize.width = MIN(constrainedSize.width, weakSelf.flexCssNode->getMaxWidth());
+        }
+#endif
         
         if (![self useCoreText]) {
             textStorage = [weakSelf textStorageWithWidth:constrainedSize.width];
