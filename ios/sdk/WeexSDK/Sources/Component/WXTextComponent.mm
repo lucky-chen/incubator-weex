@@ -28,6 +28,7 @@
 #import "WXView.h"
 #import <pthread/pthread.h>
 #import <CoreText/CoreText.h>
+#import "WXComponent+Layout.h"
 
 // WXText is a non-public is not permitted
 @interface WXTextView : WXView
@@ -167,6 +168,9 @@ CGFloat WXTextDefaultLineThroughWidth = 1.2;
         [self fillCSSStyles:styles];
         [self fillAttributes:attributes];
     }
+#ifdef USE_FLEX
+    NSLog(@"test -> textView nod :%x",_flexCssNode);
+#endif
     
     return self;
 }
@@ -256,6 +260,8 @@ do {\
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(repaintText:) name:WX_ICONFONT_DOWNLOAD_NOTIFICATION object:nil];
         _observerIconfont = YES;
     }
+    
+#ifndef USE_FLEX
     UIEdgeInsets padding = {
         WXFloorPixelValue(self.cssNode->style.padding[CSS_TOP] + self.cssNode->style.border[CSS_TOP]),
         WXFloorPixelValue(self.cssNode->style.padding[CSS_LEFT] + self.cssNode->style.border[CSS_LEFT]),
@@ -267,6 +273,20 @@ do {\
         _padding = padding;
         [self setNeedsRepaint];
     }
+#else
+    UIEdgeInsets flex_padding = {
+        WXFloorPixelValue(self.flexCssNode->getPaddingTop()+ self.flexCssNode->getBorderWidthTop()),
+        WXFloorPixelValue(self.flexCssNode->getPaddingLeft() + self.flexCssNode->getBorderWidthLeft()),
+        WXFloorPixelValue(self.flexCssNode->getPaddingBottom() + self.flexCssNode->getBorderWidthBottom()),
+        WXFloorPixelValue(self.flexCssNode->getPaddingRight() + self.flexCssNode->getBorderWidthRight())
+    };
+    
+    if (!UIEdgeInsetsEqualToEdgeInsets(flex_padding, _padding)) {
+        _padding = flex_padding;
+        [self setNeedsRepaint];
+    }
+#endif
+    
 }
 
 - (void)fillAttributes:(NSDictionary *)attributes
@@ -338,6 +358,10 @@ do {\
 {
     __weak typeof(self) weakSelf = self;
     return ^CGSize (CGSize constrainedSize) {
+        NSLog(@"test -> measureblock %@, constrainedSize:%@",
+              self.type,
+              NSStringFromCGSize(constrainedSize)
+              );
         CGSize computedSize = CGSizeZero;
         NSTextStorage *textStorage = nil;
         
@@ -358,6 +382,15 @@ do {\
         } else {
             computedSize = [weakSelf calculateTextHeightWithWidth:constrainedSize.width];
         }
+#ifndef USE_FLEX
+        //TODO:more elegant way to use max and min constrained size
+        if (!isnan(weakSelf.cssNode->style.minDimensions[CSS_WIDTH])) {
+            computedSize.width = MAX(computedSize.width, weakSelf.cssNode->style.minDimensions[CSS_WIDTH]);
+        }
+        
+        if (!isnan(weakSelf.cssNode->style.maxDimensions[CSS_WIDTH])) {
+            computedSize.width = MIN(computedSize.width, weakSelf.cssNode->style.maxDimensions[CSS_WIDTH]);
+        }
         
         if (!isnan(weakSelf.cssNode->style.minDimensions[CSS_HEIGHT])) {
             computedSize.height = MAX(computedSize.height, weakSelf.cssNode->style.minDimensions[CSS_HEIGHT]);
@@ -366,6 +399,23 @@ do {\
         if (!isnan(weakSelf.cssNode->style.maxDimensions[CSS_HEIGHT])) {
             computedSize.height = MIN(computedSize.height, weakSelf.cssNode->style.maxDimensions[CSS_HEIGHT]);
         }
+#else
+        if (!isnan(weakSelf.flexCssNode->getMinWidth())) {
+            computedSize.width = MAX(computedSize.width, weakSelf.flexCssNode->getMinWidth());
+        }
+        
+        if (!isnan(weakSelf.flexCssNode->getMaxWidth())) {
+            computedSize.width = MIN(computedSize.width, weakSelf.flexCssNode->getMaxWidth());
+        }
+        
+        if (!isnan(weakSelf.flexCssNode->getMinHeight())) {
+            computedSize.height = MAX(computedSize.height, weakSelf.flexCssNode->getMinHeight());
+        }
+        
+        if (!isnan(weakSelf.flexCssNode->getMaxHeight())) {
+            computedSize.height = MIN(computedSize.height, weakSelf.flexCssNode->getMaxHeight());
+        }
+#endif
         if (textStorage && [WXUtility isBlankString:textStorage.string]) {
             //  if the text value is empty or nil, then set the height is 0.
             computedSize.height = 0;
@@ -719,7 +769,7 @@ do {\
         CTFrameGetLineOrigins(_coreTextFrameRef, CFRangeMake(0, 0), lineOrigins);
         for (CFIndex lineIndex = 0;(!_lines || _lines > lineIndex) && lineIndex < lineCount; lineIndex ++) {
             CTLineRef lineRef = NULL;
-            lineRef = CFArrayGetValueAtIndex(ctLines, lineIndex);
+            lineRef = (CTLineRef)CFArrayGetValueAtIndex(ctLines, lineIndex);
             if (!lineRef) {
                 break;
             }
@@ -777,11 +827,11 @@ do {\
 {
     for (CFIndex runIndex = 0; runIndex < CFArrayGetCount(runs); runIndex ++) {
         CTRunRef run = NULL;
-        run = CFArrayGetValueAtIndex(runs, runIndex);
+        run = (CTRunRef)CFArrayGetValueAtIndex(runs, runIndex);
         CFDictionaryRef attr = NULL;
         attr = CTRunGetAttributes(run);
         if (0 == runIndex) {
-            NSNumber *baselineOffset = (NSNumber*)CFDictionaryGetValue(attr, NSBaselineOffsetAttributeName);
+            NSNumber *baselineOffset = (NSNumber*)CFDictionaryGetValue(attr, (__bridge void *)NSBaselineOffsetAttributeName);
             if (baselineOffset) {
                 lineOrigin.y += [baselineOffset doubleValue];
             }
@@ -791,7 +841,8 @@ do {\
         CFIndex glyphCount = CTRunGetGlyphCount(run);
         if (glyphCount <= 0) continue;
         
-        NSUnderlineStyle strikethrough = (NSUnderlineStyle)CFDictionaryGetValue(attr, NSStrikethroughStyleAttributeName);
+        long longForStrikethroughStyleAttributeName= (long)CFDictionaryGetValue(attr, (__bridge void *)NSStrikethroughStyleAttributeName);
+        NSUnderlineStyle strikethrough = (NSUnderlineStyle)longForStrikethroughStyleAttributeName;
         
         if (strikethrough) {
             // draw strikethrough
@@ -812,7 +863,7 @@ do {\
     CTLineRef truncationTokenLine = NULL;
     NSMutableDictionary *attrs = nil;
     if (lastLineRunCount > 0) {
-        CTRunRef run = CFArrayGetValueAtIndex(runs, lastLineRunCount - 1);
+        CTRunRef run = (CTRunRef)CFArrayGetValueAtIndex(runs, lastLineRunCount - 1);
         attrs = (id)CTRunGetAttributes(run);
         attrs = attrs ? attrs.mutableCopy : [NSMutableDictionary new];
         CTFontRef font = (__bridge CTFontRef)(attrs[(id)kCTFontAttributeName]);
@@ -879,7 +930,7 @@ do {\
     
     CGContextSaveGState(context);
     CGFloat xHeight = 0, underLinePosition = 0, lineThickness = 0;
-    CTRunRef run = CFArrayGetValueAtIndex(runs, runIndex);
+    CTRunRef run = (CTRunRef)CFArrayGetValueAtIndex(runs, runIndex);
     WXTextGetRunsMaxMetric(runs, &xHeight, &underLinePosition, &lineThickness);
     
     CGPoint strikethroughStart;
@@ -942,7 +993,7 @@ do {\
     for (CFIndex lineIndex = 0; (!_lines|| lineIndex < _lines) && lineIndex < lineCount; lineIndex ++)
     {
         CTLineRef lineRef = NULL;
-        lineRef = CFArrayGetValueAtIndex(lines, lineIndex);
+        lineRef = (CTLineRef)CFArrayGetValueAtIndex(lines, lineIndex);
         CTLineGetTypographicBounds(lineRef, &ascent, &descent, &leading);
         totalHeight += ascent + descent;
         actualLineCount ++;
@@ -969,10 +1020,10 @@ static void WXTextGetRunsMaxMetric(CFArrayRef runs, CGFloat *xHeight, CGFloat *u
     CGFloat maxUnderlinePos = 0;
     CGFloat maxLineThickness = 0;
     for (NSUInteger index = 0, runsCount = CFArrayGetCount(runs); index < runsCount; index ++) {
-        CTRunRef run = CFArrayGetValueAtIndex(runs, index);
+        CTRunRef run = (CTRunRef)CFArrayGetValueAtIndex(runs, index);
         CFDictionaryRef attrs = CTRunGetAttributes(run);
         if (attrs) {
-            CTFontRef font = CFDictionaryGetValue(attrs, kCTFontAttributeName);
+            CTFontRef font = (CTFontRef)CFDictionaryGetValue(attrs, kCTFontAttributeName);
             if (font) {
                 CGFloat xHeight = CTFontGetXHeight(font);
                 if (xHeight > maxXHeight) {

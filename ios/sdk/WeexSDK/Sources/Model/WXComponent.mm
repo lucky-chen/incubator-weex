@@ -39,6 +39,7 @@
 #import "WXComponent+BoxShadow.h"
 #import "WXTracingManager.h"
 #import "WXComponent+Events.h"
+#import "WXComponent+Layout.h"
 
 #pragma clang diagnostic ignored "-Wincomplete-implementation"
 #pragma clang diagnostic ignored "-Wobjc-protocol-method-implementation"
@@ -65,6 +66,8 @@
 }
 
 #pragma mark Life Cycle
+
+
 
 - (instancetype)initWithRef:(NSString *)ref
                        type:(NSString *)type
@@ -138,11 +141,11 @@
         }
         
         [self _setupNavBarWithStyles:_styles attributes:_attributes];
+
         [self _initCSSNodeWithStyles:_styles];
         [self _initViewPropertyWithStyles:_styles];
         [self _initCompositingAttribute:_attributes];
         [self _handleBorders:styles isUpdating:NO];
-        
     }
     
     return self;
@@ -163,8 +166,13 @@
     } else {
         component->_templateComponent = self->_templateComponent;
     }
+#ifndef USE_FLEX
     memcpy(component->_cssNode, self.cssNode, sizeof(css_node_t));
     component->_cssNode->context = (__bridge void *)component;
+#else
+    memcpy(component->_flexCssNode,self.flexCssNode,sizeof(WeexCore::WXCoreLayoutNode));
+    component->_flexCssNode->setContext((__bridge void *)component);
+#endif
     component->_calculatedFrame = self.calculatedFrame;
     
     NSMutableArray *subcomponentsCopy = [NSMutableArray array];
@@ -195,9 +203,22 @@
 
 - (void)dealloc
 {
+#ifndef USE_FLEX
     free_css_node(_cssNode);
-
-//    [self _removeAllEvents];
+#else
+    if(self.flexCssNode){
+        
+        
+        
+        NSLog(@"test -> dealloc %@",self.ref);
+        
+        delete self.flexCssNode;
+    
+      //  WeexCore::WXCoreLayoutNode::freeNodeTree(self.flexCssNode);
+        //self.flexCssNode = nullptr;
+    }
+#endif
+    
     // remove all gesture and all
     if (_tapGesture) {
         [_tapGesture removeTarget:nil action:NULL];
@@ -305,7 +326,10 @@
 
 - (UIView *)view
 {
+    
     if (_componentType != WXComponentTypeCommon) {
+        
+        
         return nil;
     }
     if ([self isViewLoaded]) {
@@ -323,7 +347,12 @@
         _view = [self loadView];
         
         _layer = _view.layer;
+        
+        if ([_view isKindOfClass:[UITextField class]]) {
+            NSLog(@"%s", __PRETTY_FUNCTION__);
+        }
         _view.frame = _calculatedFrame;
+        
         _view.hidden = _visibility == WXVisibilityShow ? NO : YES;
         _view.clipsToBounds = _clipToBounds;
         if (![self _needsDrawBorder]) {
@@ -451,10 +480,13 @@
     return _absolutePosition;
 }
 
+#ifndef USE_FLEX
 - (css_node_t *)cssNode
 {
     return _cssNode;
 }
+#else
+#endif
 
 - (void)_addEventParams:(NSDictionary *)params
 {
@@ -515,6 +547,17 @@
     if (_useCompositing || _isCompositingChild) {
         subcomponent->_isCompositingChild = YES;
     }
+#ifndef USE_FLEX
+#else
+    if (subcomponent->_isNeedJoinLayoutSystem) {
+        [self _insertChildCssNode:subcomponent atIndex:index];
+    }else{
+        NSLog(@"test -> no need JoinLayoutSystem parent :%@, self :%@ ",
+              self.type,
+              subcomponent.type
+              );
+    }
+#endif
     
     [self _recomputeCSSNodeChildren];
     [self setNeedsLayout];
@@ -524,6 +567,11 @@
 {
     pthread_mutex_lock(&_propertyMutex);
     [_subcomponents removeObject:subcomponent];
+#ifndef USE_FLEX
+#else
+    subcomponent->_isNeedJoinLayoutSystem = NO;
+    self.flexCssNode->removeChild(subcomponent.flexCssNode);
+#endif
     pthread_mutex_unlock(&_propertyMutex);
 }
 
@@ -701,7 +749,7 @@
         if(strongSelf) {
             UIColor * startColor = (UIColor*)linearGradient[@"startColor"];
             UIColor * endColor = (UIColor*)linearGradient[@"endColor"];
-            CAGradientLayer * gradientLayer = [WXUtility gradientLayerFromColors:@[startColor, endColor] locations:nil frame:strongSelf.view.bounds gradientType:[linearGradient[@"gradientType"] integerValue]];
+            CAGradientLayer * gradientLayer = [WXUtility gradientLayerFromColors:@[startColor, endColor] locations:nil frame:strongSelf.view.bounds gradientType:(WXGradientType)[linearGradient[@"gradientType"] integerValue]];
             if (gradientLayer) {
                 _backgroundColor = [UIColor colorWithPatternImage:[strongSelf imageFromLayer:gradientLayer]];
                 strongSelf.view.backgroundColor = _backgroundColor;

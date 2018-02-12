@@ -26,6 +26,7 @@
 #import "WXAssert.h"
 #import "WXComponent_internal.h"
 #import "WXComponent+PseudoClassManagement.h"
+#import "WXComponent+Layout.h"
 
 @interface WXEditComponent()
 
@@ -433,6 +434,7 @@ WX_EXPORT_METHOD(@selector(getSelectionRange:))
 
 -(void)updatePattern
 {
+#ifndef USE_FLEX
     UIEdgeInsets padding = UIEdgeInsetsMake(self.cssNode->style.padding[CSS_TOP], self.cssNode->style.padding[CSS_LEFT], self.cssNode->style.padding[CSS_BOTTOM], self.cssNode->style.padding[CSS_RIGHT]);
     if (!UIEdgeInsetsEqualToEdgeInsets(padding, _padding)) {
         [self setPadding:padding];
@@ -442,6 +444,29 @@ WX_EXPORT_METHOD(@selector(getSelectionRange:))
     if (!UIEdgeInsetsEqualToEdgeInsets(border, _border)) {
         [self setBorder:border];
     }
+    
+#else
+    UIEdgeInsets padding_flex = UIEdgeInsetsMake(
+                                                 self.flexCssNode->getPaddingTop(),
+                                                 self.flexCssNode->getPaddingLeft(),
+                                                 self.flexCssNode->getPaddingBottom(),
+                                                 self.flexCssNode->getPaddingRight()
+    );
+    
+    if (!UIEdgeInsetsEqualToEdgeInsets(padding_flex, _padding)) {
+        [self setPadding:padding_flex];
+    }
+  
+    
+    UIEdgeInsets border_flex = UIEdgeInsetsMake(self.flexCssNode->getBorderWidthTop(), self.flexCssNode->getBorderWidthLeft(), self.flexCssNode->getBorderWidthBottom(), self.flexCssNode->getBorderWidthRight());
+    
+
+    
+    
+    if (!UIEdgeInsetsEqualToEdgeInsets(border_flex, _border)) {
+        [self setBorder:border_flex];
+    }
+#endif
 }
 
 - (CGSize (^)(CGSize))measureBlock
@@ -450,6 +475,7 @@ WX_EXPORT_METHOD(@selector(getSelectionRange:))
     return ^CGSize (CGSize constrainedSize) {
         
         CGSize computedSize = [[[NSString alloc] init]sizeWithAttributes:nil];
+#ifndef USE_FLEX
         //TODO:more elegant way to use max and min constrained size
         if (!isnan(weakSelf.cssNode->style.minDimensions[CSS_WIDTH])) {
             computedSize.width = MAX(computedSize.width, weakSelf.cssNode->style.minDimensions[CSS_WIDTH]);
@@ -467,6 +493,23 @@ WX_EXPORT_METHOD(@selector(getSelectionRange:))
             computedSize.height = MIN(computedSize.height, weakSelf.cssNode->style.maxDimensions[CSS_HEIGHT]);
         }
         
+#else
+        if (!isnan(weakSelf.flexCssNode->getMinWidth())) {
+            computedSize.width = MAX(computedSize.width, weakSelf.flexCssNode->getMinWidth());
+        }
+        
+        if (!isnan(weakSelf.flexCssNode->getMaxWidth())) {
+            computedSize.width = MIN(computedSize.width, weakSelf.flexCssNode->getMaxWidth());
+        }
+        
+        if (!isnan(weakSelf.flexCssNode->getMinHeight())) {
+            computedSize.height = MAX(computedSize.height, weakSelf.flexCssNode->getMinHeight());
+        }
+        
+        if (!isnan(weakSelf.flexCssNode->getMaxHeight())) {
+            computedSize.height = MIN(computedSize.height, weakSelf.flexCssNode->getMaxHeight());
+        }
+#endif
         return (CGSize) {
             WXCeilPixelValue(computedSize.width),
             WXCeilPixelValue(computedSize.height)

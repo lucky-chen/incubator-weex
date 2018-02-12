@@ -17,22 +17,27 @@
  * under the License.
  */
 
-#import "WXScrollerProtocol.h"
-#import "WXComponent.h"
+#import "WXScrollerComponent+Layout.h"
 
-@interface WXScrollerComponent : WXComponent <WXScrollerProtocol, UIScrollViewDelegate>
+@implementation WXScrollerComponent (FlexLayout)
 
-@property (nonatomic, copy) void (^onScroll)(UIScrollView *);
+#ifndef USE_FLEX
+- (css_node_t *)scrollerCSSNode
+{
+    return _scrollerCSSNode;
+}
+#else
+- (WeexCore::WXCoreLayoutNode *)flexScrollerCSSNode{
+    return _flexScrollerCSSNode;
+}
 
-@property (nonatomic, assign) NSUInteger loadmoreretry;
+- (void)_insertChildCssNode:(WXComponent *)subcomponent atIndex:(NSInteger)index
+{
+    //[super _insertChildCssNode:subcomponent atIndex:(uint32_t)index];
+    
+    self.flexScrollerCSSNode->addChildAt(subcomponent.flexCssNode, (uint32_t) index);
+//    WXLogInfo(@"FlexLayout -- P:%@ -> C:%@",self,subcomponent);
+}
 
-@property (nonatomic, assign) CGSize contentSize;
-
-- (NSUInteger)childrenCountForScrollerLayout;
-
-- (void)handleAppear;
-
-- (CGPoint)absolutePositionForComponent:(WXComponent *)component;
-
+#endif
 @end
-

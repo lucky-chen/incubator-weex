@@ -30,6 +30,7 @@
 #import "WXSDKInstance_private.h"
 #import "WXRefreshComponent.h"
 #import "WXLoadingComponent.h"
+#import "WXScrollerComponent+Layout.h"
 
 @interface WXTableView : UITableView
 
@@ -148,6 +149,11 @@
 - (UIView *)loadView
 {
     return [[WXTableView alloc] init];
+}
+
+- (void)_insertChildCssNode:(WXComponent *)subcomponent atIndex:(NSInteger)index
+{
+//    [super _insertChildCssNode:subcomponent atIndex:(uint32_t)index];
 }
 
 - (void)viewDidLoad
@@ -334,7 +340,11 @@
 
 - (float)headerWidthForLayout:(WXHeaderComponent *)cell
 {
+#ifndef USE_FLEX
     return self.scrollerCSSNode->style.dimensions[CSS_WIDTH];
+#else
+    return self.flexScrollerCSSNode->getStyleWidth();
+#endif
 }
 
 - (void)headerDidLayout:(WXHeaderComponent *)header
@@ -422,7 +432,11 @@
 
 - (float)containerWidthForLayout:(WXCellComponent *)cell
 {
+#ifndef USE_FLEX
     return self.scrollerCSSNode->style.dimensions[CSS_WIDTH];
+#else
+    return self.flexScrollerCSSNode->getStyleWidth();
+#endif
 }
 
 - (void)cellDidRemove:(WXCellComponent *)cell
