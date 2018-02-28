@@ -37,6 +37,7 @@ bool flexIsUndefined(float value) {
 - (void)setNeedsLayout
 {
     _isLayoutDirty = YES;
+    self.flexCssNode->markDirty();
     WXComponent *supercomponent = [self supercomponent];
     if(supercomponent){
         [supercomponent setNeedsLayout];
@@ -746,11 +747,6 @@ static WeexCore::WXCoreSize flexCssNodeMeasure(WeexCore::WXCoreLayoutNode *node,
 
 - (void)_insertChildCssNode:(WXComponent*)subcomponent atIndex:(NSInteger)index
 {
-  
-    if ([subcomponent.supercomponent.ref isEqualToString:@"_root"]) {
-        NSLog(@"test -> index:%d,subType:%@",index,subcomponent.type);
-    }
-
     NSInteger actualIndex = 0; //实际除去不需要布局的subComponent，此时所在的正确位置
     for (WXComponent *child in _subcomponents) {
         if ([child.ref isEqualToString:subcomponent.ref]) {
@@ -761,6 +757,13 @@ static WeexCore::WXCoreSize flexCssNodeMeasure(WeexCore::WXCoreLayoutNode *node,
         }
     }
     
+    NSInteger count = self.flexCssNode->getChildCount();
+    if (index<0) {
+        index = 0;
+    }else if (index >= count){
+        index = count;
+    }
+    
     if(index != self.flexCssNode->getChildCount()){
         NSLog(@"test -> _insertChildCssNode [%@<-%@],index :[%ld,%ld]",
               self.type,
@@ -769,16 +772,9 @@ static WeexCore::WXCoreSize flexCssNodeMeasure(WeexCore::WXCoreLayoutNode *node,
               self.flexCssNode->getChildCount()
               );
     }
-    
-    NSInteger count = self.flexCssNode->getChildCount();
-    if (index<0) {
-        index = 0;
-    }else if (index >= count){
-        index = count;
-    }
 
     self.flexCssNode->addChildAt(subcomponent.flexCssNode, (uint32_t)index);
-  //    WXLogInfo(@"FlexLayout -- P:%@ -> C:%@",self,subcomponent);
+  
 }
 
 #endif
