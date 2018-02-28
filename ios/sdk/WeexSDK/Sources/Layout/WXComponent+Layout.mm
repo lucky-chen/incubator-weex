@@ -747,13 +747,17 @@ static WeexCore::WXCoreSize flexCssNodeMeasure(WeexCore::WXCoreLayoutNode *node,
 - (void)_insertChildCssNode:(WXComponent*)subcomponent atIndex:(NSInteger)index
 {
   
-    
-    bool hasOutLayoutChild =false;
-    
+    if ([subcomponent.supercomponent.ref isEqualToString:@"_root"]) {
+        NSLog(@"test -> index:%d,subType:%@",index,subcomponent.type);
+    }
+
+    NSInteger actualIndex = 0; //实际除去不需要布局的subComponent，此时所在的正确位置
     for (WXComponent *child in _subcomponents) {
-        if (!child->_isNeedJoinLayoutSystem) {
-            hasOutLayoutChild = true;
+        if ([child.ref isEqualToString:subcomponent.ref]) {
             break;
+        }
+        if (child->_isNeedJoinLayoutSystem) {
+            actualIndex ++;
         }
     }
     
@@ -766,7 +770,12 @@ static WeexCore::WXCoreSize flexCssNodeMeasure(WeexCore::WXCoreLayoutNode *node,
               );
     }
     
-    index = self.flexCssNode->getChildCount();
+    NSInteger count = self.flexCssNode->getChildCount();
+    if (index<0) {
+        index = 0;
+    }else if (index >= count){
+        index = count;
+    }
 
     self.flexCssNode->addChildAt(subcomponent.flexCssNode, (uint32_t)index);
   //    WXLogInfo(@"FlexLayout -- P:%@ -> C:%@",self,subcomponent);
