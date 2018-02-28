@@ -170,7 +170,7 @@
     memcpy(component->_cssNode, self.cssNode, sizeof(css_node_t));
     component->_cssNode->context = (__bridge void *)component;
 #else
-    memcpy(component->_flexCssNode,self.flexCssNode,sizeof(WeexCore::WXCoreLayoutNode));
+    memcpy((void*)component->_flexCssNode,self.flexCssNode,sizeof(WeexCore::WXCoreLayoutNode));
     component->_flexCssNode->setContext((__bridge void *)component);
 #endif
     component->_calculatedFrame = self.calculatedFrame;

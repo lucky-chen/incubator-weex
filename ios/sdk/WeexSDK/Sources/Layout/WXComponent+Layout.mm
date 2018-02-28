@@ -765,7 +765,7 @@ static WeexCore::WXCoreSize flexCssNodeMeasure(WeexCore::WXCoreLayoutNode *node,
         NSLog(@"test -> _insertChildCssNode [%@<-%@],index :[%ld,%ld]",
               self.type,
               subcomponent.type,
-              index,
+              (long)index,
               self.flexCssNode->getChildCount()
               );
     }
