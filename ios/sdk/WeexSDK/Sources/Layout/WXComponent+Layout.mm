@@ -37,7 +37,9 @@ bool flexIsUndefined(float value) {
 - (void)setNeedsLayout
 {
     _isLayoutDirty = YES;
+#ifdef USE_FLEX
     self.flexCssNode->markDirty();
+#endif
     WXComponent *supercomponent = [self supercomponent];
     if(supercomponent){
         [supercomponent setNeedsLayout];
