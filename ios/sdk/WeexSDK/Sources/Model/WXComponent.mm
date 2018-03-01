@@ -140,6 +140,10 @@
             _testId = [WXConvert NSString:attributes[@"testId"]];
         }
         
+
+        NSLog(@"test -> init component: ref : %@ , styles: %@",ref,styles);
+        NSLog(@"test -> init component: ref : %@ , attributes: %@",ref,attributes);
+        
         [self _setupNavBarWithStyles:_styles attributes:_attributes];
 
         [self _initCSSNodeWithStyles:_styles];
@@ -345,6 +349,9 @@
         [self viewWillLoad];
         
         _view = [self loadView];
+
+        NSLog(@"test -> loadView:addr-(%p),componentRef-(%@)",_view,self.ref);
+
         
         _layer = _view.layer;
         

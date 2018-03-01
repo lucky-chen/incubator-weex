@@ -332,7 +332,12 @@ static css_node_t * rootNodeGetChild(void *context, int i)
     } else {
         index = (index == -1 ? supercomponent->_subcomponents.count : index);
     }
-    NSLog(@"test -> _recursivelyAddComponent : super:(%@,%@):[%f,%f] ,child:(%@,%@):[%f,%f]",
+    
+    if([component.type isEqualToString:@"parallax"]){
+        NSLog(@"test -> appbar");
+    }
+    
+    NSLog(@"test -> _recursivelyAddComponent : super:(%@,%@):[%f,%f] ,child:(%@,%@):[%f,%f],childClass:%@",
           supercomponent.type,
           supercomponent.ref,
 #ifdef USE_FLEX
@@ -350,10 +355,11 @@ static css_node_t * rootNodeGetChild(void *context, int i)
           component.cssNode->style.dimensions[CSS_WIDTH],
           component.cssNode->style.dimensions[CSS_HEIGHT]
 #endif
+          ,NSStringFromClass([component class])
           );
     
-    
     [supercomponent _insertSubcomponent:component atIndex:index];
+    
     // use _lazyCreateView to forbid component like cell's view creating
     if(supercomponent && component && supercomponent->_lazyCreateView) {
         component->_lazyCreateView = YES;

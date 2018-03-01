@@ -37,6 +37,9 @@ bool flexIsUndefined(float value) {
 - (void)setNeedsLayout
 {
     _isLayoutDirty = YES;
+#ifdef USE_FLEX
+    self.flexCssNode->markDirty();
+#endif
     WXComponent *supercomponent = [self supercomponent];
     if(supercomponent){
         [supercomponent setNeedsLayout];
@@ -615,7 +618,11 @@ static css_dim_t cssNodeMeasure(void *context, float width, css_measure_mode_t w
 
 static WeexCore::WXCoreSize flexCssNodeMeasure(WeexCore::WXCoreLayoutNode *node, float width, WeexCore::MeasureMode widthMeasureMode,float height, WeexCore::MeasureMode heightMeasureMode){
     WXComponent *component = (__bridge WXComponent *)(node->getContext());
-    NSLog(@"~~~~~~ text->%@, flexCssNodeMeasure start",[component valueForKey:@"_text"]);
+    
+    if ([component valueForKey:@"_text"]) {
+        NSLog(@"test -> measure Text ref:%@ text->%@, flexCssNodeMeasure start",component.ref,[component valueForKey:@"_text"]);
+    }
+    
     CGSize (^measureBlock)(CGSize) = [component measureBlock];
     
     if (!measureBlock) {
@@ -746,15 +753,21 @@ static WeexCore::WXCoreSize flexCssNodeMeasure(WeexCore::WXCoreLayoutNode *node,
 
 - (void)_insertChildCssNode:(WXComponent*)subcomponent atIndex:(NSInteger)index
 {
-  
-    
-    bool hasOutLayoutChild =false;
-    
+    NSInteger actualIndex = 0; //实际除去不需要布局的subComponent，此时所在的正确位置
     for (WXComponent *child in _subcomponents) {
-        if (!child->_isNeedJoinLayoutSystem) {
-            hasOutLayoutChild = true;
+        if ([child.ref isEqualToString:subcomponent.ref]) {
             break;
         }
+        if (child->_isNeedJoinLayoutSystem) {
+            actualIndex ++;
+        }
+    }
+    
+    NSInteger count = self.flexCssNode->getChildCount();
+    if (index<0) {
+        index = 0;
+    }else if (index >= count){
+        index = count;
     }
     
     if(index != self.flexCssNode->getChildCount()){
@@ -765,11 +778,9 @@ static WeexCore::WXCoreSize flexCssNodeMeasure(WeexCore::WXCoreLayoutNode *node,
               self.flexCssNode->getChildCount()
               );
     }
-    
-    index = self.flexCssNode->getChildCount();
 
     self.flexCssNode->addChildAt(subcomponent.flexCssNode, (uint32_t)index);
-  //    WXLogInfo(@"FlexLayout -- P:%@ -> C:%@",self,subcomponent);
+  
 }
 
 #endif
