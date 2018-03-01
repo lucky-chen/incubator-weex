@@ -7,64 +7,113 @@ namespace WeexCore {
   /**
    * Entry function to calculate layout
    */
-  void WXCoreLayoutNode::calculateLayout() {
+  void WXCoreLayoutNode::calculateLayout(const std::pair<float,float> &renderPageSize) {
     BFCs.clear();
     initFormatingContext(BFCs);
-    auto bfcDimension = calculateBFCDimension();
+    auto bfcDimension = calculateBFCDimension(renderPageSize);
     if (std::get<0>(bfcDimension) || isDirty()) {
+      for(int i=0;i<getChildCount(kNonBFC);i++){
+        mChildrenFrozen[i] = false;
+      }
       measure(std::get<1>(bfcDimension), std::get<2>(bfcDimension), true);
     }
     layout(mCssStyle->mMargin.getMargin(kMarginLeft),
            mCssStyle->mMargin.getMargin(kMarginTop),
            mCssStyle->mMargin.getMargin(kMarginLeft) + getLayoutWidth(),
-           mCssStyle->mMargin.getMargin(kMarginTop) + getLayoutHeight());
+           mCssStyle->mMargin.getMargin(kMarginTop) + getLayoutHeight(), &renderPageSize);
     for (Index i = 0; i < getChildCount(kBFC); ++i) {
       WXCoreLayoutNode *child = getChildAt(kBFC, i);
-      child->calculateLayout();
+      child->calculateLayout(renderPageSize);
     }
   }
 
   void WXCoreLayoutNode::initFormatingContext(std::vector<WXCoreLayoutNode *> &BFCs) {
     NonBFCs.clear();
-    for (Index i = 0; i < getChildCount(); i++) {
-      WXCoreLayoutNode *child = getChildAt(i);
-      if (isBFC(child)) {
-        BFCs.push_back(child);
-      } else {
-        NonBFCs.push_back(child);
-        child->initFormatingContext(BFCs);
+    for(auto it = ChildListIterBegin(); it != ChildListIterEnd(); it++) {
+      WXCoreLayoutNode* child = *it;
+      if (child != nullptr) {
+        if (isBFC(child)) {
+          BFCs.push_back(child);
+        } else {
+          NonBFCs.push_back(child);
+          child->initFormatingContext(BFCs);
+        }
       }
     }
     reset();
   }
 
-  std::tuple<bool, float, float> WXCoreLayoutNode::calculateBFCDimension() {
+  std::tuple<bool, float, float> WXCoreLayoutNode::calculateBFCDimension(const std::pair<float,float>& renderPageSize) {
     bool sizeChanged = false;
-    float width=mCssStyle->mStyleWidth, height=mCssStyle->mStyleHeight;
-    if (mCssStyle->mPositionType == kAbsolute) {
-      if (isnan(width) &&
-          mParent != nullptr &&
-          !isnan(mCssStyle->mStylePosition.getPosition(kPositionEdgeLeft)) &&
-          !isnan(mCssStyle->mStylePosition.getPosition(kPositionEdgeRight))) {
-        width = mParent->mLayoutResult->mLayoutSize.width -
-                mCssStyle->mStylePosition.getPosition(kPositionEdgeLeft) -
-                mCssStyle->mStylePosition.getPosition(kPositionEdgeRight);
+    float width = mCssStyle->mStyleWidth, height = mCssStyle->mStyleHeight;
+    std::pair<bool,float> ret;
+    if (isBFC(this)) {
+      ret = calculateBFCWidth(width, renderPageSize.first);
+      sizeChanged |=ret.first;
+      width = ret.second;
+
+      ret = calculateBFCHeight(height,renderPageSize.second);
+      sizeChanged |=ret.first;
+      height = ret.second;
+    }
+    return std::make_tuple(sizeChanged, width, height);
+  }
+
+  std::pair<bool,float> WXCoreLayoutNode::calculateBFCWidth(float width, const float renderPageWidth){
+    bool sizeChanged = false;
+    if (isnan(width) &&
+        mParent != nullptr &&
+        !isnan(mCssStyle->mStylePosition.getPosition(kPositionEdgeLeft)) &&
+        !isnan(mCssStyle->mStylePosition.getPosition(kPositionEdgeRight))) {
+      float containingBlockWidth = NAN;
+      switch (mCssStyle->mPositionType) {
+        case kAbsolute:
+          containingBlockWidth = mParent->mLayoutResult->mLayoutSize.width;
+          break;
+        case kFixed:
+          if (!isnan(renderPageWidth)) {
+            containingBlockWidth = renderPageWidth;
+          }
+          break;
+      }
+      if (!isnan(containingBlockWidth)) {
+        width = containingBlockWidth -
+            mCssStyle->mStylePosition.getPosition(kPositionEdgeLeft) -
+            mCssStyle->mStylePosition.getPosition(kPositionEdgeRight);
         setWidthMeasureMode(kExactly);
         sizeChanged = true;
       }
+    }
+    return std::make_pair(sizeChanged, width);
+  }
 
-      if (isnan(mCssStyle->mStyleHeight) &&
-          mParent != nullptr &&
-          !isnan(mCssStyle->mStylePosition.getPosition(kPositionEdgeTop)) &&
-          !isnan(mCssStyle->mStylePosition.getPosition(kPositionEdgeBottom))) {
-        height = mParent->mLayoutResult->mLayoutSize.height -
-                 mCssStyle->mStylePosition.getPosition(kPositionEdgeTop) -
-                 mCssStyle->mStylePosition.getPosition(kPositionEdgeBottom);
+
+  std::pair<bool,float> WXCoreLayoutNode::calculateBFCHeight(float height, const float renderPageHeight){
+    bool sizeChanged = false;
+    if (isnan(mCssStyle->mStyleHeight) &&
+        mParent != nullptr &&
+        !isnan(mCssStyle->mStylePosition.getPosition(kPositionEdgeTop)) &&
+        !isnan(mCssStyle->mStylePosition.getPosition(kPositionEdgeBottom))) {
+      float containingBlockHeight = NAN;
+      switch (mCssStyle->mPositionType) {
+        case kAbsolute:
+          containingBlockHeight = mParent->mLayoutResult->mLayoutSize.height;
+          break;
+        case kFixed:
+          if (!isnan(renderPageHeight)) {
+            containingBlockHeight = renderPageHeight;
+          }
+          break;
+      }
+      if (!isnan(containingBlockHeight)) {
+        height = containingBlockHeight -
+            mCssStyle->mStylePosition.getPosition(kPositionEdgeTop) -
+            mCssStyle->mStylePosition.getPosition(kPositionEdgeBottom);
         setHeightMeasureMode(kExactly);
         sizeChanged = true;
       }
     }
-    return std::make_tuple(sizeChanged, width, height);
+    return std::make_pair(sizeChanged, height);
   }
 
   void WXCoreLayoutNode::measure(const float width, const float height, const bool hypotheticalMeasurment){
@@ -84,17 +133,17 @@ namespace WeexCore {
     }
     else {
       if (widthDirty || heightDirty) {
-        measureLeafNode(width, height, hypotheticalMeasurment);
+        measureLeafNode(width, height, hypotheticalMeasurment, false);
       }
     }
     clearDirty();
   }
 
-  void WXCoreLayoutNode::hypotheticalMeasure(const float width, const float height){
+  void WXCoreLayoutNode::hypotheticalMeasure(const float width, const float height, const bool stretch){
     if (getChildCount(kNonBFC) > 0) {
       measureInternalNode(width, height, true, true);
     } else {
-      measureLeafNode(width, height, true);
+      measureLeafNode(width, height, true, stretch);
     }
 
     widthDirty = false;
@@ -103,25 +152,35 @@ namespace WeexCore {
     mLayoutResult->mLayoutSize.hypotheticalHeight = mLayoutResult->mLayoutSize.height;
   }
 
-    void WXCoreLayoutNode::measureLeafNode(float width, float height, const bool hypothetical) {
-      if ((measureFunc != nullptr) &&
-          (widthMeasureMode == kUnspecified
-           || heightMeasureMode == kUnspecified)) {
-        WXCoreSize dimension = measureFunc(this, width, widthMeasureMode, height, heightMeasureMode);
-        if(widthMeasureMode == kUnspecified && isnan(width)){
-          width = dimension.width + sumPaddingBorderAlongAxis(this, true);
+  void WXCoreLayoutNode::measureLeafNode(float width, float height, const bool hypothetical, const bool stretch) {
+    if ((measureFunc != nullptr) &&
+        (widthMeasureMode == kUnspecified
+            || heightMeasureMode == kUnspecified)) {
+      WXCoreSize dimension = measureFunc(this, width, widthMeasureMode, height, heightMeasureMode);
+      if (widthMeasureMode == kUnspecified) {
+        float actualWidth = dimension.width + sumPaddingBorderAlongAxis(this, true);
+        if (isnan(width)) {
+          width = actualWidth;
+        } else if (!stretch) {
+          width = std::min(width, actualWidth);
         }
-        if(heightMeasureMode == kUnspecified && isnan(height)){
-          height = dimension.height + sumPaddingBorderAlongAxis(this, false);
-        }
-      } else {
-        width = widthMeasureMode == kUnspecified ? sumPaddingBorderAlongAxis(this, true)
-                                                            : width;
-        height = heightMeasureMode == kUnspecified ? sumPaddingBorderAlongAxis(this, false)
-                                                              : height;
       }
-      setMeasuredDimension(width, height);
+      if (heightMeasureMode == kUnspecified) {
+        float actualHeight = dimension.height + sumPaddingBorderAlongAxis(this, false);
+        if (isnan(height)) {
+          height = actualHeight;
+        } else if (!stretch) {
+          height = std::min(height, actualHeight);
+        }
+      }
+    } else {
+      width = widthMeasureMode == kUnspecified ? sumPaddingBorderAlongAxis(this, true)
+                                               : width;
+      height = heightMeasureMode == kUnspecified ? sumPaddingBorderAlongAxis(this, false)
+                                                 : height;
     }
+    setMeasuredDimension(width, height);
+  }
 
 
   /**
@@ -130,16 +189,16 @@ namespace WeexCore {
   void WXCoreLayoutNode::determineMainSize(const float width, const float height) {
       float maxMainSize;
       bool horizontal = isMainAxisHorizontal(this);
-      float paddingAlongMainAxis = sumPaddingBorderAlongAxis(this, horizontal);
       if (horizontal) {
         maxMainSize = widthMeasureMode == kUnspecified ? getLargestMainSize() : width;
       } else {
         maxMainSize = heightMeasureMode == kUnspecified ? getLargestMainSize() : height;
       }
 
+      maxMainSize -= sumPaddingBorderAlongAxis(this, isMainAxisHorizontal(this));
       Index childIndex = 0;
-      for (auto flexLine : mFlexLines) {
-        childIndex = expandItemsInFlexLine(flexLine, maxMainSize, paddingAlongMainAxis, childIndex);
+      for (WXCoreFlexLine *flexLine : mFlexLines) {
+        childIndex = expandItemsInFlexLine(flexLine, maxMainSize, childIndex);
       }
     }
 
@@ -174,7 +233,7 @@ namespace WeexCore {
 
     void WXCoreLayoutNode::measureInternalNode(const float width, const float height, const bool needMeasure,
                                                const bool hypotheticalMeasurment) {
-      for (auto *flexLine : mFlexLines) {
+      for (WXCoreFlexLine *flexLine : mFlexLines) {
         if(flexLine!= nullptr) {
           delete flexLine;
         }
@@ -182,8 +241,7 @@ namespace WeexCore {
       }
       mFlexLines.clear();
       Index childCount = getChildCount(kNonBFC);
-      auto *flexLine = new WXCoreFlexLine();
-      flexLine->mMainSize = sumPaddingBorderAlongAxis(this, isMainAxisHorizontal(this));
+      WXCoreFlexLine *flexLine = new WXCoreFlexLine();
 
       // The index of the view in a same flex line.
       for (Index i = 0; i < childCount; i++) {
@@ -200,7 +258,6 @@ namespace WeexCore {
           }
           flexLine = new WXCoreFlexLine();
           flexLine->mItemCount = 1;
-          flexLine->mMainSize = sumPaddingBorderAlongAxis(this, isMainAxisHorizontal(this));
         } else {
           flexLine->mItemCount++;
         }
@@ -211,15 +268,7 @@ namespace WeexCore {
 
     void WXCoreLayoutNode::updateCurrentFlexline(const Index childCount, WXCoreFlexLine* const flexLine, const Index i,
                                                  const WXCoreLayoutNode* const child, const bool useHypotheticalSize){
-      if (useHypotheticalSize) {
-        if (isMainAxisHorizontal(this)) {
-          flexLine->mMainSize += child->mLayoutResult->mLayoutSize.hypotheticalWidth;
-        } else {
-          flexLine->mMainSize += child->mLayoutResult->mLayoutSize.hypotheticalHeight;
-        }
-      } else {
-        flexLine->mMainSize += calcItemSizeAlongAxis(child, isMainAxisHorizontal(this));
-      }
+      flexLine->mMainSize += calcItemSizeAlongAxis(child, isMainAxisHorizontal(this), useHypotheticalSize);
       sumFlexGrow(child, flexLine, i);
       flexLine->mCrossSize =
           std::max(flexLine->mCrossSize, calcItemSizeAlongAxis(child, !isMainAxisHorizontal(this)));
@@ -231,13 +280,18 @@ namespace WeexCore {
     void WXCoreLayoutNode::measureChild(WXCoreLayoutNode* const child, const float parentWidth, const float parentHeight,
                                      const bool needMeasure, const bool hypotheticalMeasurment) {
       if (needMeasure && child->isDirty()) {
+        bool stretch = false;
         if (hypotheticalMeasurment) {
           float childWidth = child->mCssStyle->mStyleWidth;
           float childHeight = child->mCssStyle->mStyleHeight;
-          if (isSingleFlexLine(isMainAxisHorizontal(this) ? parentWidth : parentHeight)
-              && mCssStyle->mAlignItems == kAlignItemsStretch) {
+          if(!isMainAxisHorizontal(this) && child->measureFunc != nullptr){
+            stretch = isSingleFlexLine(parentHeight) && (mCssStyle->mAlignItems == kAlignItemsStretch);
+          }
+
+          if(isSingleFlexLine(isMainAxisHorizontal(this) ? parentWidth : parentHeight)) {
             if (isMainAxisHorizontal(this)) {
-              if (!isnan(parentHeight) && isnan(child->mCssStyle->mStyleHeight)) {
+              if (!isnan(parentHeight) && isnan(child->mCssStyle->mStyleHeight)
+                  && child->mCssStyle->mAlignSelf == kAlignSelfAuto && mCssStyle->mAlignItems == kAlignItemsStretch) {
                 childHeight = parentHeight - sumPaddingBorderAlongAxis(this, false) -
                     child->mCssStyle->mMargin.getMargin(kMarginTop) -
                     child->mCssStyle->mMargin.getMargin(kMarginBottom);
@@ -250,7 +304,7 @@ namespace WeexCore {
               }
             }
           }
-          child->hypotheticalMeasure(childWidth, childHeight);
+          child->hypotheticalMeasure(childWidth, childHeight, stretch);
         } else {
           child->measure(child->mLayoutResult->mLayoutSize.width,
                          child->mLayoutResult->mLayoutSize.height, hypotheticalMeasurment);
@@ -302,7 +356,7 @@ namespace WeexCore {
     }
 
     Index WXCoreLayoutNode::expandItemsInFlexLine(WXCoreFlexLine* const flexLine,
-                                      const float maxMainSize, const float paddingBorderAlongMainAxis,
+                                      const float maxMainSize,
                                       const Index startIndex) {
       Index childIndex = startIndex;
       if (flexLine->mTotalFlexGrow <= 0) {
@@ -312,7 +366,7 @@ namespace WeexCore {
         const float unitSpace = (maxMainSize - flexLine->mMainSize + flexLine->mTotalFlexibleSize) /
                                 (flexLine->mTotalFlexGrow > 1 ? flexLine->mTotalFlexGrow : 1);
         float sizeBeforeExpand = flexLine->mMainSize;
-        flexLine->mMainSize = paddingBorderAlongMainAxis;
+        flexLine->mMainSize = 0;
 
         for (Index i = 0; i < flexLine->mItemCount; i++) {
           WXCoreLayoutNode *child = getChildAt(kNonBFC, childIndex);
@@ -330,7 +384,7 @@ namespace WeexCore {
         if (needsReexpand && sizeBeforeExpand != flexLine->mMainSize) {
           // Re-invoke the method with the same startIndex to distribute the positive free space
           // that wasn't fully distributed (because of maximum/minimum length constraint)
-          expandItemsInFlexLine(flexLine, maxMainSize, paddingBorderAlongMainAxis, startIndex);
+          expandItemsInFlexLine(flexLine, maxMainSize, startIndex);
         }
       }
       return childIndex;
@@ -350,7 +404,7 @@ namespace WeexCore {
       if (mCssStyle->mAlignItems == kAlignItemsStretch) {
         Index viewIndex = 0;
         for (Index i = 0; i< mFlexLines.size(); i++ ) {
-            auto flexLine = mFlexLines.at(i);
+            WXCoreFlexLine *flexLine = mFlexLines.at(i);
             for (Index j = 0; j < flexLine->mItemCount; j++, viewIndex++) {
                 WXCoreLayoutNode* child = getChildAt(kNonBFC, viewIndex);
               if (child->mCssStyle->mAlignSelf == kAlignSelfAuto ||
@@ -360,7 +414,7 @@ namespace WeexCore {
           }
         }
       } else {
-        for (auto flexLine : mFlexLines) {
+        for (WXCoreFlexLine *flexLine : mFlexLines) {
           for (auto index : flexLine->mIndicesAlignSelfStretch) {
             stretchViewCrossSize(getChildAt(kNonBFC, index), flexLine->mCrossSize);
           }
@@ -371,21 +425,17 @@ namespace WeexCore {
     void WXCoreLayoutNode::stretchViewCrossSize(WXCoreLayoutNode* const child, float crossSize){
       if (isMainAxisHorizontal(this)) {
         if (child->heightMeasureMode != kExactly) {
-          if (heightMeasureMode == kExactly) {
             crossSize -=
                 child->mCssStyle->mMargin.getMargin(kMarginTop) +
                     child->mCssStyle->mMargin.getMargin(kMarginBottom);
-          }
           child->setHeightMeasureMode(kExactly);
           child->setLayoutHeight(std::max(0.f, crossSize));
         }
       } else {
         if (child->widthMeasureMode != kExactly) {
-          if (widthMeasureMode == kExactly) {
             crossSize -=
                 child->mCssStyle->mMargin.getMargin(kMarginLeft) +
                     child->mCssStyle->mMargin.getMargin(kMarginRight);
-          }
           child->setWidthMeasureMode(kExactly);
           child->setLayoutWidth(std::max(0.f, crossSize));
         }
@@ -405,10 +455,11 @@ namespace WeexCore {
       }
     }
 
-  void WXCoreLayoutNode::layout(float left, float top, float right, float bottom) {
+  void WXCoreLayoutNode::layout(float left, float top, float right, float bottom, const std::pair<float,float>* const renderPageSize) {
     switch (mCssStyle->mPositionType) {
+      case kFixed:
       case kAbsolute:
-        calcAbsoluteOffset(left, top, right, bottom);
+        calcAbsoluteOffset(left, top, right, bottom, renderPageSize);
         break;
       default:
       case kRelative:
@@ -437,15 +488,18 @@ namespace WeexCore {
     }
   }
 
-  void WXCoreLayoutNode::calcAbsoluteOffset(float &left, float &top, float &right, float &bottom) const {
+  void WXCoreLayoutNode::calcAbsoluteOffset(float &left, float &top, float &right, float &bottom, const std::pair<float,float>* const renderPageSize) const {
     WXCorePadding parentPadding;
     WXCoreBorderWidth parentBorder;
     WXCoreSize parentSize;
 
-    if (mParent != nullptr) {
+    if (mCssStyle->mPositionType == kAbsolute && mParent != nullptr) {
       parentPadding = mParent->mCssStyle->mPadding;
       parentBorder = mParent->mCssStyle->mBorderWidth;
       parentSize = mParent->mLayoutResult->mLayoutSize;
+    } else if(mCssStyle->mPositionType == kFixed && renderPageSize!= nullptr){
+      parentSize.width = renderPageSize->first;
+      parentSize.height = renderPageSize->second;
     }
 
     if (isnan(mCssStyle->mStylePosition.getPosition(kPositionEdgeLeft))) {
@@ -525,7 +579,6 @@ namespace WeexCore {
    */
   void WXCoreLayoutNode::layoutHorizontal(const bool isRtl, const float left, const float top, const float right, const float bottom) {
 
-    float childLeft;
     Index currentViewIndex = 0;
 
     float height = bottom - top;
@@ -539,42 +592,35 @@ namespace WeexCore {
     // Used only for RTL layout
     // Use float to reduce the round error that may happen in when justifyContent ==
     // SPACE_BETWEEN or SPACE_AROUND
-    float childRight;
-    for (auto flexLine: mFlexLines) {
+    float childLeft, childRight, denominator;
+    Index visibleCount, visibleItem;
+    for (WXCoreFlexLine *flexLine: mFlexLines) {
       float spaceBetweenItem = 0.f;
-
       switch (mCssStyle->mJustifyContent) {
-        case kJustifyFlexStart:
-          childLeft = getPaddingLeft() + getBorderWidthLeft();
-          childRight = width - getPaddingRight() - getBorderWidthRight();
-          break;
         case kJustifyFlexEnd:
           childLeft = width - flexLine->mMainSize + getPaddingRight() + getBorderWidthRight();
-          childRight = flexLine->mMainSize - getPaddingLeft() - getBorderWidthLeft();
+          childRight = width - getPaddingLeft() - getBorderWidthLeft();
           break;
         case kJustifyCenter:
-          childLeft = getPaddingLeft() + getBorderWidthLeft() + (width - flexLine->mMainSize) / 2.f;
-          childRight = width - getPaddingRight() - getBorderWidthRight() - (width - flexLine->mMainSize) / 2.f;
+          childLeft = (width - flexLine->mMainSize - mCssStyle->sumPaddingBorderOfEdge(kRight) + mCssStyle->sumPaddingBorderOfEdge(kLeft)) / 2;
+          childRight = childLeft + flexLine->mMainSize;
           break;
         case kJustifySpaceAround:
-          Index visibleCount;
           visibleCount = flexLine->mItemCount;
           if (visibleCount != 0) {
-            spaceBetweenItem = (width - flexLine->mMainSize)
-                               / (float) visibleCount;
+            spaceBetweenItem = (width - flexLine->mMainSize) / visibleCount;
           }
           childLeft = getPaddingLeft() + getBorderWidthLeft() + spaceBetweenItem / 2.f;
           childRight = width - getPaddingRight() - getBorderWidthRight() - spaceBetweenItem / 2.f;
           break;
         case kJustifySpaceBetween:
           childLeft = getPaddingLeft() + getBorderWidthLeft();
-          Index visibleItem;
           visibleItem = flexLine->mItemCount;
-          float denominator;
           denominator = visibleItem != 1 ? visibleItem - 1 : 1.f;
-          spaceBetweenItem = (width - flexLine->mMainSize) / denominator;
+          spaceBetweenItem = (width - flexLine->mMainSize - sumPaddingBorderAlongAxis(this, true)) / denominator;
           childRight = width - getPaddingRight() - getBorderWidthRight();
           break;
+        case kJustifyFlexStart:
         default:
           childLeft = getPaddingLeft() + getBorderWidthLeft();
           childRight = width - getPaddingRight() - getBorderWidthRight();
@@ -715,7 +761,7 @@ namespace WeexCore {
                                    const bool fromBottomToTop,
                                    const float left, const float top,
                                    const float right, const float bottom) {
-    float childLeft = getPaddingLeft();
+    float childLeft = getPaddingLeft() + getBorderWidthLeft();
     Index currentViewIndex = 0;
 
     float width = right - left;
@@ -727,46 +773,36 @@ namespace WeexCore {
 
     // Use float to reduce the round error that may happen in when justifyContent ==
     // SPACE_BETWEEN or SPACE_AROUND
-    float childTop;
-
-    // Used only for if the direction is from mStyleBottom to mStyleTop
-    float childBottom;
-
-    for (auto flexLine:mFlexLines) {
+    float childTop, childBottom, denominator;
+    Index visibleCount,visibleItem;
+    for (WXCoreFlexLine *flexLine : mFlexLines) {
       float spaceBetweenItem = 0.f;
 
       switch (mCssStyle->mJustifyContent) {
-        case kJustifyFlexStart:
-          childTop = getPaddingTop() + getBorderWidthTop();
-          childBottom = height - getPaddingBottom() - getBorderWidthBottom();
-          break;
         case kJustifyFlexEnd:
           childTop = height - flexLine->mMainSize + getPaddingBottom() + getBorderWidthBottom();
-          childBottom = flexLine->mMainSize - getPaddingTop() - getBorderWidthTop();
+          childBottom = height - getPaddingTop() - getBorderWidthTop();
           break;
         case kJustifyCenter:
-          childTop = getPaddingTop() + getBorderWidthTop() + (height - flexLine->mMainSize) / 2;
-          childBottom = height - getPaddingBottom() - getBorderWidthBottom() - (height - flexLine->mMainSize) / 2;
+          childTop = (height - flexLine->mMainSize - mCssStyle->sumPaddingBorderOfEdge(kBottom) + mCssStyle->sumPaddingBorderOfEdge(kTop)) / 2;
+          childBottom = childTop + flexLine->mMainSize;
           break;
         case kJustifySpaceAround:
-          Index visibleCount;
           visibleCount = flexLine->mItemCount;
           if (visibleCount != 0) {
-            spaceBetweenItem = (height - flexLine->mMainSize)
-                               / (float) visibleCount;
+            spaceBetweenItem = (height - flexLine->mMainSize) / visibleCount;
           }
           childTop = getPaddingTop() + getBorderWidthTop() + spaceBetweenItem / 2;
           childBottom = height - getPaddingBottom() - getBorderWidthBottom() - spaceBetweenItem / 2;
           break;
         case kJustifySpaceBetween:
           childTop = getPaddingTop() + getBorderWidthTop();
-          Index visibleItem;
           visibleItem = flexLine->mItemCount;
-          float denominator;
           denominator = visibleItem != 1 ? visibleItem - 1 : 1.f;
-          spaceBetweenItem = (height - flexLine->mMainSize) / denominator;
+          spaceBetweenItem = (height - flexLine->mMainSize - sumPaddingBorderAlongAxis(this, false)) / denominator;
           childBottom = height - getPaddingBottom() - getBorderWidthBottom();
           break;
+        case kJustifyFlexStart:
         default:
           childTop = getPaddingTop() + getBorderWidthTop();
           childBottom = height - getPaddingBottom() - getBorderWidthBottom();
