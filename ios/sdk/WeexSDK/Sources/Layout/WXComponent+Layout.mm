@@ -618,7 +618,11 @@ static css_dim_t cssNodeMeasure(void *context, float width, css_measure_mode_t w
 
 static WeexCore::WXCoreSize flexCssNodeMeasure(WeexCore::WXCoreLayoutNode *node, float width, WeexCore::MeasureMode widthMeasureMode,float height, WeexCore::MeasureMode heightMeasureMode){
     WXComponent *component = (__bridge WXComponent *)(node->getContext());
-    NSLog(@"~~~~~~ text->%@, flexCssNodeMeasure start",[component valueForKey:@"_text"]);
+    
+    if ([component valueForKey:@"_text"]) {
+        NSLog(@"test -> measure Text ref:%@ text->%@, flexCssNodeMeasure start",component.ref,[component valueForKey:@"_text"]);
+    }
+    
     CGSize (^measureBlock)(CGSize) = [component measureBlock];
     
     if (!measureBlock) {
