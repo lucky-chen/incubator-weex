@@ -60,7 +60,7 @@ namespace WeexCore {
   enum WXCorePositionType {
     kRelative,
     kAbsolute,
-    kFixed = kAbsolute,
+    kFixed,
     kSticky = kRelative
   };
 
@@ -93,6 +93,13 @@ namespace WeexCore {
     kBorderWidthBottom,
     kBorderWidthLeft,
     kBorderWidthRight,
+  };
+
+  enum WXCoreEdge{
+    kTop,
+    kRight,
+    kBottom,
+    kLeft,
   };
 
 }

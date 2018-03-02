@@ -73,7 +73,7 @@ namespace WeexCore {
                                          MeasureMode widthMeasureMode,
                                          float height, MeasureMode heightMeasureMode);
 
-  using Index = std::vector<WXCoreFlexLine *>::size_type;
+  using Index = std::vector<WXCoreLayoutNode *>::size_type;
 
   /**
    * flie line
@@ -141,6 +141,8 @@ namespace WeexCore {
         measureFunc = nullptr;
         mParent = nullptr;
         mChildList.clear();
+        BFCs.clear();
+        NonBFCs.clear();
 
         if (mChildrenFrozen != nullptr) {
           delete mChildrenFrozen;
@@ -210,7 +212,7 @@ namespace WeexCore {
 
     /** ================================ Engine Entry Function =================================== **/
 
-    void calculateLayout();
+    void calculateLayout(const std::pair<float,float>&);
 
     /** ================================ measureFunc =================================== **/
 
@@ -238,16 +240,27 @@ namespace WeexCore {
       this->context = context;
     }
 
+    void copyStyle(WXCoreLayoutNode *srcNode) {
+      if (memcmp(mCssStyle, srcNode->mCssStyle, sizeof(WXCoreCSSStyle)) != 0) {
+        memcpy(mCssStyle, srcNode->mCssStyle, sizeof(WXCoreCSSStyle));
+        markDirty();
+      }
+    }
+
+    void copyMeasureFunc(WXCoreLayoutNode *srcNode) {
+      if (memcmp(&measureFunc, &srcNode->measureFunc, sizeof(WXCoreMeasureFunc)) != 0) {
+        memcpy(&measureFunc, &srcNode->measureFunc, sizeof(WXCoreMeasureFunc));
+        markDirty();
+      }
+    }
+
   private:
 
     /** ================================ measure =================================== **/
 
     void reset() {
-      widthMeasureMode = isnan(mCssStyle->mStyleWidth) ? kUnspecified : kExactly;
-      heightMeasureMode = isnan(mCssStyle->mStyleHeight) ? kUnspecified : kExactly;
       if (isDirty()) {
         mLayoutResult->reset();
-
         for (WXCoreFlexLine *flexLine : mFlexLines) {
           if (flexLine != nullptr) {
             delete flexLine;
@@ -265,6 +278,8 @@ namespace WeexCore {
           mChildrenFrozen[i] = false;
         }
       }
+      widthMeasureMode = isnan(mCssStyle->mStyleWidth) ? kUnspecified : kExactly;
+      heightMeasureMode = isnan(mCssStyle->mStyleHeight) ? kUnspecified : kExactly;
     }
 
     void setLayoutWidth(const float width) {
@@ -358,6 +373,7 @@ namespace WeexCore {
     void sumFlexGrow(const WXCoreLayoutNode* const child, WXCoreFlexLine* const flexLine, const Index i) const {
       if (child->mCssStyle->mFlexGrow > 0) {
         flexLine->mTotalFlexGrow += child->mCssStyle->mFlexGrow;
+        mChildrenFrozen[i] = false;
         if (isMainAxisHorizontal(this)) {
           if (!isnan(child->mLayoutResult->mLayoutSize.hypotheticalWidth)) {
             flexLine->mTotalFlexibleSize += child->mLayoutResult->mLayoutSize.hypotheticalWidth;
@@ -386,16 +402,18 @@ namespace WeexCore {
       setMeasuredDimension(actualWidth, actualHeight);
     }
 
-    float calcItemSizeAlongAxis(const WXCoreLayoutNode* const node, const bool horizontal) const {
+    float calcItemSizeAlongAxis(const WXCoreLayoutNode* const node, const bool horizontal, const bool useHypotheticalSize = false) const {
       float ret;
       if (horizontal) {
         ret = node->mCssStyle->mMargin.getMargin(kMarginLeft) +
-              node->mCssStyle->mMargin.getMargin(kMarginRight);
-        ret += node->mLayoutResult->mLayoutSize.width;
+            node->mCssStyle->mMargin.getMargin(kMarginRight);
+        ret += useHypotheticalSize ? node->mLayoutResult->mLayoutSize.hypotheticalWidth
+                                   : node->mLayoutResult->mLayoutSize.width;
       } else {
         ret = node->mCssStyle->mMargin.getMargin(kMarginTop) +
-              node->mCssStyle->mMargin.getMargin(kMarginBottom);
-        ret += node->mLayoutResult->mLayoutSize.height;
+            node->mCssStyle->mMargin.getMargin(kMarginBottom);
+        ret += useHypotheticalSize ? node->mLayoutResult->mLayoutSize.hypotheticalHeight
+                                   : node->mLayoutResult->mLayoutSize.height;
       }
       return ret;
     }
@@ -416,8 +434,6 @@ namespace WeexCore {
                                                                        float childSizeAlongMainAxis, const Index childIndex){
       bool needsReexpand = false;
       if (isMainAxisHorizontal(this)) {
-        childSizeAlongMainAxis -= child->mCssStyle->mMargin.getMargin(kMarginLeft) +
-            child->mCssStyle->mMargin.getMargin(kMarginRight);
         if (childSizeAlongMainAxis > child->mCssStyle->mMaxWidth) {
           needsReexpand = limitMainSizeForFlexGrow(flexLine, childIndex, child->mCssStyle->mFlexGrow);
           childSizeAlongMainAxis = child->mCssStyle->mMaxWidth;
@@ -426,8 +442,6 @@ namespace WeexCore {
           childSizeAlongMainAxis = child->mCssStyle->mMinWidth;
         }
       } else {
-        childSizeAlongMainAxis -= child->mCssStyle->mMargin.getMargin(kMarginTop) +
-            child->mCssStyle->mMargin.getMargin(kMarginBottom);
         if (childSizeAlongMainAxis > child->mCssStyle->mMaxHeight) {
           needsReexpand = limitMainSizeForFlexGrow(flexLine, childIndex, child->mCssStyle->mFlexGrow);
           childSizeAlongMainAxis = child->mCssStyle->mMaxHeight;
@@ -450,9 +464,9 @@ namespace WeexCore {
     void
     measure(float, float, bool);
 
-    void hypotheticalMeasure(float, float);
+    void hypotheticalMeasure(float, float, bool = false);
 
-    void measureLeafNode(float, float, bool);
+    void measureLeafNode(float, float, bool, bool);
 
     void measureInternalNode(float, float, bool, bool);
 
@@ -466,7 +480,7 @@ namespace WeexCore {
 
     void stretchViewCrossSize(WXCoreLayoutNode *, float);
 
-    Index expandItemsInFlexLine(WXCoreFlexLine *, float, float, Index);
+    Index expandItemsInFlexLine(WXCoreFlexLine *, float, Index);
 
     void checkSizeConstraints(WXCoreLayoutNode *, bool);
 
@@ -480,11 +494,11 @@ namespace WeexCore {
 
     /** ================================ layout =================================== **/
 
-    void layout(float left, float top, float right, float bottom);
+    void layout(float left, float top, float right, float bottom, const std::pair<float,float>* = nullptr);
 
     void calcRelativeOffset(float &left, float &top, float &right, float &bottom) const ;
 
-    void calcAbsoluteOffset(float &left, float &top, float &right, float &bottom) const ;
+    void calcAbsoluteOffset(float &left, float &top, float &right, float &bottom, const std::pair<float,float>* = nullptr) const ;
 
     void onLayout(float left, float top, float right, float bottom);
 
@@ -505,7 +519,11 @@ namespace WeexCore {
 
     void initFormatingContext(std::vector<WXCoreLayoutNode *> &BFCs);
 
-    std::tuple<bool, float, float> calculateBFCDimension();
+    std::pair<bool,float> calculateBFCWidth(float, float);
+
+    std::pair<bool,float> calculateBFCHeight(float, float);
+
+    std::tuple<bool, float, float> calculateBFCDimension(const std::pair<float,float>&);
 
     virtual void onLayoutBefore() {
 
@@ -535,9 +553,12 @@ namespace WeexCore {
       return mChildList.size();
     }
 
-    void removeChildAt(const Index index) {
-      mChildList.erase(mChildList.begin() + index);
-      markDirty();
+    inline std::vector<WXCoreLayoutNode *>::const_iterator ChildListIterBegin() {
+      return mChildList.cbegin();
+    }
+
+    inline std::vector<WXCoreLayoutNode *>::const_iterator ChildListIterEnd() {
+      return mChildList.cend();
     }
 
     void removeChild(const WXCoreLayoutNode* const child) {
@@ -552,12 +573,6 @@ namespace WeexCore {
 
     void addChildAt(WXCoreLayoutNode* const child, Index index) {
       mChildList.insert(mChildList.begin() + index, child);
-      child->mParent = this;
-      markDirty();
-    }
-
-    void appendChild(WXCoreLayoutNode* const child) {
-      mChildList.push_back(child);
       child->mParent = this;
       markDirty();
     }
@@ -582,7 +597,7 @@ namespace WeexCore {
     }
 
     bool isBFC(WXCoreLayoutNode* const node) const {
-      return node->mCssStyle->mPositionType == kAbsolute;
+      return node->mCssStyle->mPositionType == kAbsolute || node->mCssStyle->mPositionType == kFixed;
     }
 
 
@@ -906,7 +921,7 @@ namespace WeexCore {
       for (WXCoreFlexLine *flexLine : mFlexLines) {
         largestSize = std::max(largestSize, flexLine->mMainSize);
       }
-      return largestSize;
+      return largestSize + sumPaddingBorderAlongAxis(this, isMainAxisHorizontal(this));
     }
 
   };

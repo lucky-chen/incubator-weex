@@ -32,7 +32,7 @@ namespace WeexCore {
       mMarginRight = 0;
     }
 
-    bool setMargin(const WXCoreMarginEdge &edge, const float &margin);
+    bool setMargin(const WXCoreMarginEdge &edge, float margin);
 
     float getMargin(const WXCoreMarginEdge &edge);
   };
@@ -61,7 +61,7 @@ namespace WeexCore {
       mPaddingRight = 0;
     }
 
-    bool setPadding(const WXCorePaddingEdge &edge, const float &padding);
+    bool setPadding(const WXCorePaddingEdge &edge, float padding);
 
     float getPadding(const WXCorePaddingEdge &edge);
   };
@@ -90,7 +90,7 @@ namespace WeexCore {
       mBorderWidthRight = 0;
     }
 
-    bool setBorderWidth(const WXCoreBorderWidthEdge &edge, const float &borderWidth);
+    bool setBorderWidth(const WXCoreBorderWidthEdge &edge, float borderWidth);
 
     float getBorderWidth(const WXCoreBorderWidthEdge &edge);
   };
@@ -127,7 +127,7 @@ namespace WeexCore {
       mRight = 0;
     }
 
-    bool setPosition(const WXCorePositionEdge &edge, const float &position);
+    bool setPosition(const WXCorePositionEdge &edge, float position);
 
     float getPosition(const WXCorePositionEdge &edge);
   };
@@ -252,6 +252,23 @@ namespace WeexCore {
       mMaxHeight = MAXFLOAT;
       mMinWidth = NAN;
       mMinHeight = NAN;
+    }
+
+    float sumPaddingBorderOfEdge(const WXCoreEdge edge){
+      switch (edge) {
+        case kTop:
+          return mPadding.getPadding(kPaddingTop)
+              + mBorderWidth.getBorderWidth(kBorderWidthTop);
+        case kRight:
+          return mPadding.getPadding(kPaddingRight)
+              + mBorderWidth.getBorderWidth(kBorderWidthRight);
+        case kBottom:
+          return mPadding.getPadding(kPaddingBottom)
+              + mBorderWidth.getBorderWidth(kBorderWidthBottom);
+        case kLeft:
+          return mPadding.getPadding(kPaddingLeft)
+              + mBorderWidth.getBorderWidth(kBorderWidthLeft);
+      }
     }
   };
 }
