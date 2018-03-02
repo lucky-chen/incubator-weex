@@ -1720,7 +1720,7 @@ public class WXSDKInstance implements IWXActivityStateListener,DomContext, View.
         Object requestType=response.extendParams.get("requestType");
         mWXPerformance.requestType=requestType instanceof String?(String)requestType:"";
 
-        if(isNet(mWXPerformance.requestType) && mUserTrackAdapter!=null){
+        if("network".equals(requestType) && mUserTrackAdapter!=null){
           WXPerformance performance=new WXPerformance();
           if(!TextUtils.isEmpty(mBundleUrl)){
             try {
@@ -1796,14 +1796,6 @@ public class WXSDKInstance implements IWXActivityStateListener,DomContext, View.
       }
     }
   }
-
-  private boolean isNet(String requestType){
-
-    return "network".equals(requestType) || "2g".equals(requestType) || "3g".equals(requestType)
-           || "4g".equals(requestType) || "wifi".equals(requestType) || "other".equals(requestType)
-           || "unknown".equals(requestType);
-  }
-
 
   /**
    * return md5, and bytes length
