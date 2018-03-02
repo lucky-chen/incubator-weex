@@ -87,7 +87,10 @@ static const NSString *WXDefaultRecycleTemplateType = @"WXDefaultRecycleTemplate
     }
     
     if ([self needsLayout]) {
-        self.flexCssNode->calculateLayout();
+        std::pair<float, float> renderPageSize;
+        renderPageSize.first = self.weexInstance.frame.size.width;
+        renderPageSize.second = self.weexInstance.frame.size.height;
+        self.flexCssNode->calculateLayout(renderPageSize);
         if ([WXLog logLevel] >= WXLogLevelDebug) {
             
         }

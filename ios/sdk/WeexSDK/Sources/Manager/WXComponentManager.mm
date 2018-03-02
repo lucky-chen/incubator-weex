@@ -902,7 +902,10 @@ static css_node_t * rootNodeGetChild(void *context, int i)
 #ifndef USE_FLEX
     layoutNode(_rootCSSNode, _rootCSSNode->style.dimensions[CSS_WIDTH], _rootCSSNode->style.dimensions[CSS_HEIGHT], CSS_DIRECTION_INHERIT);
 #else
-    _rootFlexCSSNode->calculateLayout();
+    std::pair<float, float> renderPageSize;
+    renderPageSize.first = WXRoundPixelValue(_rootFlexCSSNode->getLayoutWidth());
+    renderPageSize.second = WXRoundPixelValue(_rootFlexCSSNode->getLayoutHeight());
+    _rootFlexCSSNode->calculateLayout(renderPageSize);
 #endif
     
     if ([_rootComponent needsLayout]) {

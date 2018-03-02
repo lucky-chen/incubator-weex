@@ -825,7 +825,10 @@ WX_EXPORT_METHOD(@selector(resetLoadmore))
         
        // _flexScrollerCSSNode->resetLayolsutResult();
         _flexScrollerCSSNode->markDirty();
-        _flexScrollerCSSNode->calculateLayout();
+        std::pair<float, float> renderPageSize;
+        renderPageSize.first = self.weexInstance.frame.size.width;
+        renderPageSize.second = self.weexInstance.frame.size.height;
+        _flexScrollerCSSNode->calculateLayout(renderPageSize);
         if ([WXLog logLevel] >= WXLogLevelDebug) {
             
         }
