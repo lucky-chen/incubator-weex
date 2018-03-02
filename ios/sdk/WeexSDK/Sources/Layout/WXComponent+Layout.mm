@@ -494,10 +494,39 @@ do {\
 } while(0);
 
 #else
+
+#define WX_FLEX_STYLE_RESET_CSS_NODE(key, defaultValue)\
+do {\
+    WX_FLEX_STYLE_RESET_CSS_NODE_GIVEN_KEY(key,key,defaultValue)\
+} while(0);
+
+#define WX_FLEX_STYLE_RESET_CSS_NODE_GIVEN_KEY(judgeKey, propKey, defaultValue)\
+do {\
+    if (styles && [styles containsObject:@#judgeKey]) {\
+        NSMutableDictionary *resetStyleDic = [[NSMutableDictionary alloc] init];\
+        [resetStyleDic setValue:defaultValue forKey:@#propKey];\
+        [self _updateCSSNodeStyles:resetStyleDic];\
+        [self setNeedsLayout];\
+    }\
+} while(0);
+
+#define WX_FLEX_STYLE_RESET_CSS_NODE_GIVEN_DIRECTION_KEY(judgeKey, propTopKey,propLeftKey,propRightKey,propBottomKey, defaultValue)\
+do {\
+    if (styles && [styles containsObject:@#judgeKey]) {\
+        NSMutableDictionary *resetStyleDic = [[NSMutableDictionary alloc] init];\
+        [resetStyleDic setValue:defaultValue forKey:@#propTopKey];\
+        [resetStyleDic setValue:defaultValue forKey:@#propLeftKey];\
+        [resetStyleDic setValue:defaultValue forKey:@#propRightKey];\
+        [resetStyleDic setValue:defaultValue forKey:@#propBottomKey];\
+        [self _updateCSSNodeStyles:resetStyleDic];\
+        [self setNeedsLayout];\
+    }\
+} while(0);
+
 #endif
 
 
-- (void)_resetCSSNode:(NSArray *)styles;
+- (void)_resetCSSNode:(NSArray *)styles
 {
 #ifndef USE_FLEX
     // flex
@@ -544,6 +573,69 @@ do {\
     WX_STYLE_RESET_CSS_NODE(paddingRight, padding[CSS_RIGHT], 0.0)
     WX_STYLE_RESET_CSS_NODE(paddingBottom, padding[CSS_BOTTOM], 0.0)
 #else
+
+    if (styles.count<=0) {
+        return;
+    }
+    
+    WX_FLEX_STYLE_RESET_CSS_NODE(flex, @0.0)
+    WX_FLEX_STYLE_RESET_CSS_NODE(flexDirection, @(CSS_FLEX_DIRECTION_COLUMN))
+    WX_FLEX_STYLE_RESET_CSS_NODE(alignItems, @(CSS_ALIGN_STRETCH))
+    WX_FLEX_STYLE_RESET_CSS_NODE(alignSelf, @(CSS_ALIGN_AUTO))
+    WX_FLEX_STYLE_RESET_CSS_NODE(flexWrap, @(CSS_NOWRAP))
+    WX_FLEX_STYLE_RESET_CSS_NODE(justifyContent, @(CSS_JUSTIFY_FLEX_START))
+    
+    // position
+    WX_FLEX_STYLE_RESET_CSS_NODE(position, @(CSS_POSITION_RELATIVE))
+    WX_FLEX_STYLE_RESET_CSS_NODE(top, @(CSS_UNDEFINED))
+    WX_FLEX_STYLE_RESET_CSS_NODE(left, @(CSS_UNDEFINED))
+    WX_FLEX_STYLE_RESET_CSS_NODE(right, @(CSS_UNDEFINED))
+    WX_FLEX_STYLE_RESET_CSS_NODE(bottom, @(CSS_UNDEFINED))
+    
+    // dimension
+    WX_FLEX_STYLE_RESET_CSS_NODE(width, @(CSS_UNDEFINED))
+    WX_FLEX_STYLE_RESET_CSS_NODE(height, @(CSS_UNDEFINED))
+    WX_FLEX_STYLE_RESET_CSS_NODE(minWidth, @(CSS_UNDEFINED))
+    WX_FLEX_STYLE_RESET_CSS_NODE(minHeight, @(CSS_UNDEFINED))
+    WX_FLEX_STYLE_RESET_CSS_NODE(maxWidth, @(CSS_UNDEFINED))
+    WX_FLEX_STYLE_RESET_CSS_NODE(maxHeight, @(CSS_UNDEFINED))
+    
+    // margin
+    WX_FLEX_STYLE_RESET_CSS_NODE_GIVEN_DIRECTION_KEY(margin
+                                                     ,marginTop
+                                                     ,marginLeft
+                                                     ,marginRight
+                                                     ,marginBottom
+                                                     , @(0.0))
+    WX_FLEX_STYLE_RESET_CSS_NODE(marginTop, @(0.0))
+    WX_FLEX_STYLE_RESET_CSS_NODE(marginLeft, @(0.0))
+    WX_FLEX_STYLE_RESET_CSS_NODE(marginRight, @(0.0))
+    WX_FLEX_STYLE_RESET_CSS_NODE(marginBottom, @(0.0))
+    
+    // border
+    WX_FLEX_STYLE_RESET_CSS_NODE_GIVEN_DIRECTION_KEY(borderWidth
+                                                     , borderTopWidth
+                                                     , borderLeftWidth
+                                                     , borderRightWidth
+                                                     , borderBottomWidth
+                                                     , @(0.0))
+    WX_FLEX_STYLE_RESET_CSS_NODE(borderTopWidth, @(0.0))
+    WX_FLEX_STYLE_RESET_CSS_NODE(borderLeftWidth, @(0.0))
+    WX_FLEX_STYLE_RESET_CSS_NODE(borderRightWidth, @(0.0))
+    WX_FLEX_STYLE_RESET_CSS_NODE(borderBottomWidth, @(0.0))
+    
+    // padding
+    WX_FLEX_STYLE_RESET_CSS_NODE_GIVEN_DIRECTION_KEY(padding
+                                                     , paddingTop
+                                                     , paddingLeft
+                                                     , paddingRight
+                                                     , paddingBottom
+                                                     , @(0.0))
+    WX_FLEX_STYLE_RESET_CSS_NODE(paddingTop, @(0.0))
+    WX_FLEX_STYLE_RESET_CSS_NODE(paddingLeft, @(0.0))
+    WX_FLEX_STYLE_RESET_CSS_NODE(paddingRight, @(0.0))
+    WX_FLEX_STYLE_RESET_CSS_NODE(paddingBottom, @(0.0))
+    
 #endif
 }
 
