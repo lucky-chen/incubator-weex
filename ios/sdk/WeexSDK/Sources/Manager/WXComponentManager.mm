@@ -326,16 +326,15 @@ static css_node_t * rootNodeGetChild(void *context, int i)
 {
     WXComponent *component = [self _buildComponentForData:componentData supercomponent:supercomponent];
     
-
+    if ([supercomponent.ref isEqualToString:@"_root"]) {
+        NSLog(@"test -> _root add");
+    }
     if (!supercomponent.subcomponents) {
         index = 0;
     } else {
         index = (index == -1 ? supercomponent->_subcomponents.count : index);
     }
     
-    if([component.type isEqualToString:@"parallax"]){
-        NSLog(@"test -> appbar");
-    }
     
     NSLog(@"test -> _recursivelyAddComponent : super:(%@,%@):[%f,%f] ,child:(%@,%@):[%f,%f],childClass:%@",
           supercomponent.type,

@@ -220,7 +220,6 @@ bool flexIsUndefined(float value) {
     for (WXComponent *subcomponent in subcomponents) {
         [subcomponent _calculateFrameWithSuperAbsolutePosition:newAbsolutePosition gatherDirtyComponents:dirtyComponents];
     }
-    NSLog(@"test -> newFrame ,type:%@,ref:%@, size :%@",self.type,self.ref,NSStringFromCGRect(newFrame));
 #else
     _isLayoutDirty = NO;
     CGRect newFrame = CGRectMake(WXRoundPixelValue(_flexCssNode->getLayoutPositionLeft()),
@@ -245,9 +244,8 @@ bool flexIsUndefined(float value) {
     for (WXComponent *subcomponent in subcomponents) {
         [subcomponent _calculateFrameWithSuperAbsolutePosition:newAbsolutePosition gatherDirtyComponents:dirtyComponents];
     }
-    NSLog(@"test -> newFrame ,type:%@,ref:%@, size :%@",self.type,self.ref,NSStringFromCGRect(newFrame));
-    
 #endif
+    NSLog(@"test -> newFrame ,type:%@,ref:%@, parentRef:%@,size :%@",self.type,self.ref,self.supercomponent.ref,NSStringFromCGRect(newFrame));
     
     
 
