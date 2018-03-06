@@ -68,5 +68,7 @@ extern "C" {
 #ifndef USE_FLEX
 #else
 - (void)_insertChildCssNode:(WXComponent*)subcomponent atIndex:(NSInteger)index;
+
+- (void)_insertChildCssNode:(WXComponent*)subcomponent withParentNode:(WeexCore::WXCoreLayoutNode *)parentNode atIndex:(NSInteger)index;
 #endif
 @end

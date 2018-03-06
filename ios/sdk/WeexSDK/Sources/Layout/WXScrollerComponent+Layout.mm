@@ -35,8 +35,12 @@
 {
     //[super _insertChildCssNode:subcomponent atIndex:(uint32_t)index];
     
+//    [super _insertChildCssNode:subcomponent withParentNode:self.flexScrollerCSSNode atIndex:index];
+    
     self.flexScrollerCSSNode->addChildAt(subcomponent.flexCssNode, (uint32_t) index);
-//    WXLogInfo(@"FlexLayout -- P:%@ -> C:%@",self,subcomponent);
+
+    
+    //    WXLogInfo(@"FlexLayout -- P:%@ -> C:%@",self,subcomponent);
 }
 
 #endif

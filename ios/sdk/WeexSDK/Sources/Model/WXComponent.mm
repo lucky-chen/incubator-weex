@@ -624,6 +624,8 @@
 #pragma mark Updating
 - (void)_updateStylesOnComponentThread:(NSDictionary *)styles resetStyles:(NSMutableArray *)resetStyles isUpdateStyles:(BOOL)isUpdateStyles
 {
+    NSLog(@"tempTest updating");
+    
     BOOL isTransitionTag = _transition ? [self _isTransitionTag:styles] : NO;
     if (isTransitionTag) {
         [_transition _handleTransitionWithStyles:styles resetStyles:resetStyles target:self];
@@ -695,15 +697,28 @@
     } else {
         [self _transitionUpdateViewProperty:styles];
     }
+    NSLog(@"tempTest -> ref:%@ style before : %@",self.ref,self.styles);
+    
+    if (styles) {
+        NSLog(@"tempTest -> ref:%@ update styles : %@",self.ref,styles);
+    }
+    
+    if (resetStyles) {
+        NSLog(@"tempTest -> ref:%@ update resetStyles : %@",self.ref,resetStyles);
+    }
+    
     [self _resetStyles:resetStyles];
     [self _handleBorders:styles isUpdating:YES];
     [self updateStyles:styles];
     [self resetStyles:resetStyles];
+    
+    NSLog(@"tempTest -> ref:%@ style after : %@",self.ref,self.styles);
 }
 
 - (void)_updateAttributesOnMainThread:(NSDictionary *)attributes
 {
     WXAssertMainThread();
+
     
     [self _updateNavBarAttributes:attributes];
     
