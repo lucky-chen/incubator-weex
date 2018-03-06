@@ -39,7 +39,7 @@ bool flexIsUndefined(float value) {
     _isLayoutDirty = YES;
 #ifdef USE_FLEX
     self.flexCssNode->markDirty();
-#endif
+#endif 
     WXComponent *supercomponent = [self supercomponent];
     if(supercomponent){
         [supercomponent setNeedsLayout];
@@ -245,7 +245,7 @@ bool flexIsUndefined(float value) {
         [subcomponent _calculateFrameWithSuperAbsolutePosition:newAbsolutePosition gatherDirtyComponents:dirtyComponents];
     }
 #endif
-    NSLog(@"test -> newFrame ,type:%@,ref:%@, parentRef:%@,size :%@",self.type,self.ref,self.supercomponent.ref,NSStringFromCGRect(newFrame));
+    NSLog(@"test -> newFrame ,type:%@,ref:%@, parentRef:%@,size :%@ ,instance:%@",self.type,self.ref,self.supercomponent.ref,NSStringFromCGRect(newFrame),self.weexInstance.instanceId);
     
     
 
