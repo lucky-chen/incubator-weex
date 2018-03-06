@@ -557,12 +557,14 @@
 #ifndef USE_FLEX
 #else
     if (subcomponent->_isNeedJoinLayoutSystem) {
-        [self _insertChildCssNode:subcomponent atIndex:index];
+         NSInteger actualIndex = [self getActualNodeIndex:subcomponent atIndex:index];
+        [self _insertChildCssNode:subcomponent atIndex:actualIndex];
     }else{
         NSLog(@"test -> no need JoinLayoutSystem parent :%@, self :%@ ",
               self.type,
               subcomponent.type
               );
+        return;
     }
 #endif
     

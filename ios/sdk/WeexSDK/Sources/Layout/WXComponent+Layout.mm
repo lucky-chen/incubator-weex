@@ -709,9 +709,9 @@ static css_dim_t cssNodeMeasure(void *context, float width, css_measure_mode_t w
 static WeexCore::WXCoreSize flexCssNodeMeasure(WeexCore::WXCoreLayoutNode *node, float width, WeexCore::MeasureMode widthMeasureMode,float height, WeexCore::MeasureMode heightMeasureMode){
     WXComponent *component = (__bridge WXComponent *)(node->getContext());
     
-    if ([component valueForKey:@"_text"]) {
-        NSLog(@"test -> measure Text ref:%@ text->%@, flexCssNodeMeasure start",component.ref,[component valueForKey:@"_text"]);
-    }
+//    if ([component objectForKey:@"_text"]) {
+//        NSLog(@"test -> measure Text ref:%@ text->%@, flexCssNodeMeasure start",component.ref,[component objectForKey:@"_text"]);
+//    }
     
     CGSize (^measureBlock)(CGSize) = [component measureBlock];
     
@@ -841,7 +841,7 @@ static WeexCore::WXCoreSize flexCssNodeMeasure(WeexCore::WXCoreLayoutNode *node,
 }
 
 
-- (void)_insertChildCssNode:(WXComponent*)subcomponent atIndex:(NSInteger)index
+- (NSInteger) getActualNodeIndex:(WXComponent*)subcomponent atIndex:(NSInteger) index
 {
     NSInteger actualIndex = 0; //实际除去不需要布局的subComponent，此时所在的正确位置
     for (WXComponent *child in _subcomponents) {
@@ -852,25 +852,12 @@ static WeexCore::WXCoreSize flexCssNodeMeasure(WeexCore::WXCoreLayoutNode *node,
             actualIndex ++;
         }
     }
-    
-    NSInteger count = self.flexCssNode->getChildCount();
-    if (index<0) {
-        index = 0;
-    }else if (index >= count){
-        index = count;
-    }
-    
-    if(index != self.flexCssNode->getChildCount()){
-        NSLog(@"test -> _insertChildCssNode [%@<-%@],index :[%ld,%ld]",
-              self.type,
-              subcomponent.type,
-              (long)index,
-              self.flexCssNode->getChildCount()
-              );
-    }
+    return actualIndex;
+}
 
+- (void)_insertChildCssNode:(WXComponent*)subcomponent atIndex:(NSInteger)index
+{
     self.flexCssNode->addChildAt(subcomponent.flexCssNode, (uint32_t)index);
-  
 }
 
 #endif
