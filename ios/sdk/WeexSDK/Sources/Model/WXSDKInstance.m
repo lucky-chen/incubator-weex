@@ -124,6 +124,7 @@ typedef enum : NSUInteger {
 
 - (void)setFrame:(CGRect)frame
 {
+    NSLog(@"test -> setFrame :%@,instance :%@",NSStringFromCGRect(frame),self);
     if (!CGRectEqualToRect(frame, _frame)) {
         _frame = frame;
         WXPerformBlockOnMainThread(^{

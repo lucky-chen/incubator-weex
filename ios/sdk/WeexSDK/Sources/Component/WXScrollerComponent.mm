@@ -809,8 +809,10 @@ WX_EXPORT_METHOD(@selector(resetLoadmore))
 //        _flexScrollerCSSNode->copyStyle(self.flexCssNode);
 //        _flexScrollerCSSNode->copyMeasureFunc(self.flexCssNode);
         
-        [self copyStyle];
-        _flexScrollerCSSNode->setMeasureFunc(_flexCssNode->getMeasureFunc());
+        //[self copyStyle];
+        //_flexScrollerCSSNode->setMeasureFunc(_flexCssNode->getMeasureFunc());
+        _flexScrollerCSSNode->copyStyle(_flexCssNode);
+        _flexScrollerCSSNode->copyMeasureFunc(_flexCssNode);
         
         if (_scrollDirection == WXScrollDirectionVertical) {
             _flexScrollerCSSNode->setFlexDirection(WeexCore::kFlexDirectionColumn);
