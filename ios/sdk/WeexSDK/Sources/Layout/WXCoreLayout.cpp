@@ -230,7 +230,7 @@ namespace WeexCore {
       }
     }
 
-
+    //递归计算孩子的宽高用于撑大父亲
     void WXCoreLayoutNode::measureInternalNode(const float width, const float height, const bool needMeasure,
                                                const bool hypotheticalMeasurment) {
       for (WXCoreFlexLine *flexLine : mFlexLines) {
