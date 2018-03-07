@@ -24,7 +24,6 @@
 #import "WXCoreLayout.h"
 
 #define FlexUndefined NAN
-#define USE_FLEX
 
 #ifdef __cplusplus 
 extern "C" {

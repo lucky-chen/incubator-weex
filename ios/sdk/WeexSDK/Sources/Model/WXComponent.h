@@ -17,6 +17,12 @@
  * under the License.
  */
 
+/**
+ *  def : use weex_flex_engin
+ *  ndef: use yoga
+ **/
+#define USE_FLEX
+
 #import <Foundation/Foundation.h>
 #import "WXLayoutDefine.h"
 #import "WXType.h"
