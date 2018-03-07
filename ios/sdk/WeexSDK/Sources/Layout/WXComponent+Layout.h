@@ -68,6 +68,7 @@ extern "C" {
 #ifndef USE_FLEX
 #else
 - (void)_insertChildCssNode:(WXComponent*)subcomponent atIndex:(NSInteger)index;
+- (void)_rmChildCssNode:(WXComponent*)subcomponent;
 - (NSInteger) getActualNodeIndex:(WXComponent*)subcomponent atIndex:(NSInteger) index;
 #endif
 @end

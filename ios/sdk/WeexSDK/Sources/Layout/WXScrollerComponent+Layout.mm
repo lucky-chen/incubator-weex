@@ -42,6 +42,11 @@
     NSLog(@"test -> ref:%@,subNodeIndex:%ld,childCount:%ld",self.ref,index,_flexScrollerCSSNode->getChildCount());
 //    WXLogInfo(@"FlexLayout -- P:%@ -> C:%@",self,subcomponent);
 }
+- (void)_rmChildCssNode:(WXComponent *)subcomponent
+{
+    self.flexScrollerCSSNode->removeChild(subcomponent->_flexCssNode);
+    NSLog(@"test -> ref:%@ ,scrollerCSSNode->removeChild ,childRef:%@",self.ref,subcomponent.ref);
+}
 
 #endif
 @end
