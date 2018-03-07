@@ -222,10 +222,12 @@ bool flexIsUndefined(float value) {
     }
 #else
     _isLayoutDirty = NO;
-    CGRect newFrame = CGRectMake(WXRoundPixelValue(_flexCssNode->getLayoutPositionLeft()),
-                                 WXRoundPixelValue(_flexCssNode->getLayoutPositionTop()),
-                                 WXRoundPixelValue(_flexCssNode->getLayoutWidth()),
-                                 WXRoundPixelValue(_flexCssNode->getLayoutHeight()));
+    CGRect newFrame = CGRectMake(
+                                 isnan(WXRoundPixelValue(_flexCssNode->getLayoutPositionLeft()))?0:WXRoundPixelValue(_flexCssNode->getLayoutPositionLeft())
+                                 ,isnan(WXRoundPixelValue(_flexCssNode->getLayoutPositionTop()))?0:WXRoundPixelValue(_flexCssNode->getLayoutPositionTop())
+                                 ,isnan(WXRoundPixelValue(_flexCssNode->getLayoutWidth()))?0:WXRoundPixelValue(_flexCssNode->getLayoutWidth())
+                                 ,isnan(WXRoundPixelValue(_flexCssNode->getLayoutHeight()))?0:WXRoundPixelValue(_flexCssNode->getLayoutHeight())
+                                 );
     BOOL isFrameChanged = NO;
     
     if (!CGRectEqualToRect(newFrame, _calculatedFrame)) {

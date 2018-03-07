@@ -358,7 +358,8 @@
         if ([_view isKindOfClass:[UITextField class]]) {
             NSLog(@"%s", __PRETTY_FUNCTION__);
         }
-        _view.frame = _calculatedFrame;
+        
+        _view.frame = [self _fixIllegalFrame:_calculatedFrame];
         
         _view.hidden = _visibility == WXVisibilityShow ? NO : YES;
         _view.clipsToBounds = _clipToBounds;
@@ -435,6 +436,16 @@
         
         return _view;
     }
+}
+
+- (CGRect)_fixIllegalFrame:(CGRect)frame{
+    CGPoint origin = frame.origin;
+    CGSize size = frame.size;
+    CGRect fixedFrame = CGRectMake(isnan(origin.x)?0.0f:origin.x
+                                   , isnan(origin.y)?0.0f:origin.y
+                                   , isnan(size.width)?0.0f:size.width
+                                   , isnan(size.height)?0.0f:size.height);
+    return fixedFrame;
 }
 
 - (void)_buildViewHierarchyLazily
