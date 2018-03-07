@@ -10,14 +10,15 @@
 		042013AD1E66CD6A001FC79C /* WXValidateProtocol.h in Headers */ = {isa = PBXBuildFile; fileRef = 042013AC1E66CD6A001FC79C /* WXValidateProtocol.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		178EDF0D204FEC1300917F6B /* WXScrollerComponent+Layout.h in Headers */ = {isa = PBXBuildFile; fileRef = 17C7B50020452E1800A2296A /* WXScrollerComponent+Layout.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		178EDF0E204FEC1C00917F6B /* WXCoreLayout.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 17C7B4FE20452E1700A2296A /* WXCoreLayout.cpp */; };
+		178EDF0F204FF11700917F6B /* WXCoreLayout.h in Headers */ = {isa = PBXBuildFile; fileRef = 17C7B50420452E1800A2296A /* WXCoreLayout.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		17C7B50620452E1800A2296A /* WXCoreLayout.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 17C7B4FE20452E1700A2296A /* WXCoreLayout.cpp */; };
 		17C7B50720452E1800A2296A /* WXScrollerComponent+Layout.mm in Sources */ = {isa = PBXBuildFile; fileRef = 17C7B4FF20452E1800A2296A /* WXScrollerComponent+Layout.mm */; };
 		17C7B50820452E1800A2296A /* WXScrollerComponent+Layout.h in Headers */ = {isa = PBXBuildFile; fileRef = 17C7B50020452E1800A2296A /* WXScrollerComponent+Layout.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		17C7B50920452E1800A2296A /* WXCoreStyle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 17C7B50120452E1800A2296A /* WXCoreStyle.cpp */; };
-		17C7B50A20452E1800A2296A /* WXCoreFlexEnum.h in Headers */ = {isa = PBXBuildFile; fileRef = 17C7B50220452E1800A2296A /* WXCoreFlexEnum.h */; };
+		17C7B50A20452E1800A2296A /* WXCoreFlexEnum.h in Headers */ = {isa = PBXBuildFile; fileRef = 17C7B50220452E1800A2296A /* WXCoreFlexEnum.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		17C7B50B20452E1800A2296A /* WXCoreStyle.h in Headers */ = {isa = PBXBuildFile; fileRef = 17C7B50320452E1800A2296A /* WXCoreStyle.h */; };
-		17C7B50C20452E1800A2296A /* WXCoreLayout.h in Headers */ = {isa = PBXBuildFile; fileRef = 17C7B50420452E1800A2296A /* WXCoreLayout.h */; };
-		17C7B50D20452E1800A2296A /* ConstantsName.h in Headers */ = {isa = PBXBuildFile; fileRef = 17C7B50520452E1800A2296A /* ConstantsName.h */; };
+		17C7B50C20452E1800A2296A /* WXCoreLayout.h in Headers */ = {isa = PBXBuildFile; fileRef = 17C7B50420452E1800A2296A /* WXCoreLayout.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		17C7B50D20452E1800A2296A /* ConstantsName.h in Headers */ = {isa = PBXBuildFile; fileRef = 17C7B50520452E1800A2296A /* ConstantsName.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1C1A2BED1D91172800539AA1 /* WXConvertTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C1A2BEC1D91172800539AA1 /* WXConvertTests.m */; };
 		1D3000F11D40B9AC004F3B4F /* WXClipboardModule.h in Headers */ = {isa = PBXBuildFile; fileRef = 1D3000EF1D40B9AB004F3B4F /* WXClipboardModule.h */; };
 		1D3000F21D40B9AC004F3B4F /* WXClipboardModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D3000F01D40B9AB004F3B4F /* WXClipboardModule.m */; };
@@ -1889,6 +1890,7 @@
 				DCA4460C1EFA5A7600D0CFA8 /* WXThreadSafeMutableDictionary.h in Headers */,
 				DCA445CE1EFA593500D0CFA8 /* WXComponent+BoxShadow.h in Headers */,
 				74B81AF11F73C3E900D3A61D /* WXJSASTParser.h in Headers */,
+				178EDF0F204FF11700917F6B /* WXCoreLayout.h in Headers */,
 				DCA4461C1EFA5AA600D0CFA8 /* WXModuleFactory.h in Headers */,
 				DCA445D91EFA59A100D0CFA8 /* WXEditComponent.h in Headers */,
 				DCA445FB1EFA5A3C00D0CFA8 /* WXStorageModule.h in Headers */,
