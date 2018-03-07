@@ -58,6 +58,9 @@
 #import "WXErrorView.h"
 #import "WXDefine.h"
 #import "WXDebugTool.h"
+#import "WXCoreStyle.h"
+#import "WXCoreLayout.h"
+#import "WXCoreFlexEnum.h"
 #import "WXConvert.h"
 #import "WXConfigCenterProtocol.h"
 #import "WXComponentManager.h"
@@ -70,5 +73,6 @@
 #import "WXAComponent.h"
 #import "NSObject+WXSwizzle.h"
 #import "Layout.h"
+#import "ConstantsName.h"
 
 #endif /* __OBJC__ */

@@ -21,10 +21,11 @@
 #import "WXSDKInstance.h"
 #import "WXUtility.h"
 #import "WXLayoutDefine.h"
-#include "WXCoreLayout.h"
+#import "WXCoreLayout.h"
 
 #define FlexUndefined NAN
 #define USE_FLEX
+
 
 #ifdef __cplusplus 
 extern "C" {
@@ -43,8 +44,10 @@ extern "C" {
 #ifndef USE_FLEX
     css_node_t *_cssNode;
 #else
+#ifdef __cplusplus
     WeexCore::WXCoreLayoutNode *_flexCssNode;
-#endif
+#endif // __cplusplus
+#endif //USE_FLEX
     BOOL _isLayoutDirty;
     CGRect _calculatedFrame;
     CGPoint _absolutePosition;
@@ -59,7 +62,9 @@ extern "C" {
  */
 @property(nonatomic, readonly, assign) css_node_t *cssNode;
 #else
+#ifdef __cplusplus
 @property(nonatomic, readonly, assign) WeexCore::WXCoreLayoutNode *flexCssNode;
+#endif
 #endif
 
 @end
