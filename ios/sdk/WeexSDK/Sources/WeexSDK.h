@@ -30,6 +30,7 @@
 #import "WXTracingManager.h"
 #import "WXScrollerProtocol.h"
 #import "WXScrollerComponent.h"
+#import "WXScrollerComponent+Layout.h"
 #import "WXSDKManager.h"
 #import "WXSDKInstance.h"
 #import "WXSDKError.h"
@@ -58,10 +59,13 @@
 #import "WXErrorView.h"
 #import "WXDefine.h"
 #import "WXDebugTool.h"
+#import "WXCoreLayout.h"
+#import "WXCoreFlexEnum.h"
 #import "WXConvert.h"
 #import "WXConfigCenterProtocol.h"
 #import "WXComponentManager.h"
 #import "WXComponent.h"
+#import "WXComponent+Layout.h"
 #import "WXBridgeProtocol.h"
 #import "WXBridgeManager.h"
 #import "WXBaseViewController.h"
@@ -70,5 +74,6 @@
 #import "WXAComponent.h"
 #import "NSObject+WXSwizzle.h"
 #import "Layout.h"
+#import "ConstantsName.h"
 
 #endif /* __OBJC__ */

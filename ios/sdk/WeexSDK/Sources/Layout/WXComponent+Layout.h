@@ -21,7 +21,7 @@
 #import "WXSDKInstance.h"
 #import "WXUtility.h"
 #import "WXLayoutDefine.h"
-#include "WXCoreLayout.h"
+#import "WXCoreLayout.h"
 
 #define FlexUndefined NAN
 #define USE_FLEX
