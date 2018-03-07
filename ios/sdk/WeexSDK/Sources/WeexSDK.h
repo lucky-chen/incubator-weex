@@ -59,6 +59,7 @@
 #import "WXErrorView.h"
 #import "WXDefine.h"
 #import "WXDebugTool.h"
+#import "WXCoreStyle.h"
 #import "WXCoreLayout.h"
 #import "WXCoreFlexEnum.h"
 #import "WXConvert.h"

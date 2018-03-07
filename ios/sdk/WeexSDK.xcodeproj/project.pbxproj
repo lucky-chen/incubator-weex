@@ -16,7 +16,7 @@
 		17C7B50820452E1800A2296A /* WXScrollerComponent+Layout.h in Headers */ = {isa = PBXBuildFile; fileRef = 17C7B50020452E1800A2296A /* WXScrollerComponent+Layout.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		17C7B50920452E1800A2296A /* WXCoreStyle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 17C7B50120452E1800A2296A /* WXCoreStyle.cpp */; };
 		17C7B50A20452E1800A2296A /* WXCoreFlexEnum.h in Headers */ = {isa = PBXBuildFile; fileRef = 17C7B50220452E1800A2296A /* WXCoreFlexEnum.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		17C7B50B20452E1800A2296A /* WXCoreStyle.h in Headers */ = {isa = PBXBuildFile; fileRef = 17C7B50320452E1800A2296A /* WXCoreStyle.h */; };
+		17C7B50B20452E1800A2296A /* WXCoreStyle.h in Headers */ = {isa = PBXBuildFile; fileRef = 17C7B50320452E1800A2296A /* WXCoreStyle.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		17C7B50C20452E1800A2296A /* WXCoreLayout.h in Headers */ = {isa = PBXBuildFile; fileRef = 17C7B50420452E1800A2296A /* WXCoreLayout.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		17C7B50D20452E1800A2296A /* ConstantsName.h in Headers */ = {isa = PBXBuildFile; fileRef = 17C7B50520452E1800A2296A /* ConstantsName.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1C1A2BED1D91172800539AA1 /* WXConvertTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1C1A2BEC1D91172800539AA1 /* WXConvertTests.m */; };
