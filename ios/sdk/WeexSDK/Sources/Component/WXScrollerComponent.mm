@@ -853,24 +853,24 @@ WX_EXPORT_METHOD(@selector(resetLoadmore))
 
 #ifndef USE_FLEX
 #else
--(CGSize (^)(CGSize))measureBlock{
-    //此时回传的_flexScrollerCSSNode里面包含的LayoutSize仅表示contentSize，具体FrameSize还需要计算
-    __weak typeof(self) weakSelf = self;
-    return ^CGSize (CGSize constrainedSize) {
-        float constrainedWidth = constrainedSize.width;
-        float constrainedHeight = constrainedSize.height;
-        if (isnan(constrainedWidth)) {
-            constrainedWidth = 0;
-        }
-        if (isnan(constrainedHeight)) {
-            constrainedHeight = 0;
-        }
-        float weexInstanceHeight = CGRectGetHeight(weakSelf.weexInstance.frame);
-        float frameHeight = constrainedHeight > weexInstanceHeight ? weexInstanceHeight - weakSelf.flexScrollerCSSNode->getLayoutPositionTop():constrainedHeight;
-        CGSize actualSize = CGSizeMake(constrainedWidth, frameHeight);
-        return actualSize;
-    };
-}
+//-(CGSize (^)(CGSize))measureBlock{
+//    //此时回传的_flexScrollerCSSNode里面包含的LayoutSize仅表示contentSize，具体FrameSize还需要计算
+//    __weak typeof(self) weakSelf = self;
+//    return ^CGSize (CGSize constrainedSize) {
+//        float constrainedWidth = constrainedSize.width;
+//        float constrainedHeight = constrainedSize.height;
+//        if (isnan(constrainedWidth)) {
+//            constrainedWidth = 0;
+//        }
+//        if (isnan(constrainedHeight)) {
+//            constrainedHeight = 0;
+//        }
+//        float weexInstanceHeight = CGRectGetHeight(weakSelf.weexInstance.frame);
+//        float frameHeight = constrainedHeight > weexInstanceHeight ? weexInstanceHeight - weakSelf.flexScrollerCSSNode->getLayoutPositionTop():constrainedHeight;
+//        CGSize actualSize = CGSizeMake(constrainedWidth, frameHeight);
+//        return actualSize;
+//    };
+//}
 #endif
 
 
