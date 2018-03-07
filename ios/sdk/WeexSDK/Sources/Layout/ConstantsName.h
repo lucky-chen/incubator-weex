@@ -1,4 +1,4 @@
-
+#ifdef __cplusplus
 #ifndef WEEXV8_CONSTANTSNAME_H
 #define WEEXV8_CONSTANTSNAME_H
 
@@ -58,3 +58,4 @@ namespace WeexCore {
 }
 
 #endif //WEEXV8_CONSTANTSNAME_H
+#endif //__cplusplus
