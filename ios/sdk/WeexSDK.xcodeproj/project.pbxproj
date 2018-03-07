@@ -126,7 +126,7 @@
 		743933B51C7ED9AA00773BB7 /* WXSimulatorShortcutManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 743933B31C7ED9AA00773BB7 /* WXSimulatorShortcutManager.m */; };
 		744BEA551D05178F00452B5D /* WXComponent+Display.h in Headers */ = {isa = PBXBuildFile; fileRef = 744BEA531D05178F00452B5D /* WXComponent+Display.h */; };
 		744BEA561D05178F00452B5D /* WXComponent+Display.m in Sources */ = {isa = PBXBuildFile; fileRef = 744BEA541D05178F00452B5D /* WXComponent+Display.m */; };
-		744BEA591D0520F300452B5D /* WXComponent+Layout.h in Headers */ = {isa = PBXBuildFile; fileRef = 744BEA571D0520F300452B5D /* WXComponent+Layout.h */; };
+		744BEA591D0520F300452B5D /* WXComponent+Layout.h in Headers */ = {isa = PBXBuildFile; fileRef = 744BEA571D0520F300452B5D /* WXComponent+Layout.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		744BEA5A1D0520F300452B5D /* WXComponent+Layout.mm in Sources */ = {isa = PBXBuildFile; fileRef = 744BEA581D0520F300452B5D /* WXComponent+Layout.mm */; };
 		744D610C1E49978200B624B3 /* WXHeaderComponent.h in Headers */ = {isa = PBXBuildFile; fileRef = 744D610A1E49978200B624B3 /* WXHeaderComponent.h */; };
 		744D610D1E49978200B624B3 /* WXHeaderComponent.mm in Sources */ = {isa = PBXBuildFile; fileRef = 744D610B1E49978200B624B3 /* WXHeaderComponent.mm */; };

@@ -21,9 +21,7 @@
  *  def : use weex_flex_engin
  *  ndef: use yoga
  **/
-#ifndef USE_FLEX
-#define USE_FLEX
-#endif
+
 
 #import <Foundation/Foundation.h>
 #import "WXLayoutDefine.h"
