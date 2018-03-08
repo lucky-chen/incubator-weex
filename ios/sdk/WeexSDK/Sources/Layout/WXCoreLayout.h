@@ -9,7 +9,7 @@
 #include <iostream>
 #include <string>
 #include <algorithm>
-#include "ConstantsName.h"
+//#include "ConstantsName.h"
 
 namespace WeexCore {
 
@@ -669,6 +669,13 @@ namespace WeexCore {
     }
 
     void setBorderWidth(const WXCoreBorderWidthEdge edge, const float borderWidth) {
+        
+        if(isnan(borderWidth)){
+            
+            int i = 12;
+            
+        }
+        
       if (mCssStyle->mBorderWidth.setBorderWidth(edge, borderWidth)) {
         markDirty();
       }
