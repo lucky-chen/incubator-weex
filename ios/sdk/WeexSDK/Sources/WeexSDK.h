@@ -65,6 +65,7 @@
 #import "WXConfigCenterProtocol.h"
 #import "WXComponentManager.h"
 #import "WXComponent.h"
+#import "WXComponent+Layout.h"
 #import "WXBridgeProtocol.h"
 #import "WXBridgeManager.h"
 #import "WXBaseViewController.h"

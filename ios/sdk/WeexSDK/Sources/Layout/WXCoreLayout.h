@@ -9,7 +9,7 @@
 #include <iostream>
 #include <string>
 #include <algorithm>
-#include "ConstantsName.h"
+//#include "ConstantsName.h"
 
 namespace WeexCore {
 
