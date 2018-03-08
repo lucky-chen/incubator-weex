@@ -669,13 +669,6 @@ namespace WeexCore {
     }
 
     void setBorderWidth(const WXCoreBorderWidthEdge edge, const float borderWidth) {
-        
-        if(isnan(borderWidth)){
-            
-            int i = 12;
-            
-        }
-        
       if (mCssStyle->mBorderWidth.setBorderWidth(edge, borderWidth)) {
         markDirty();
       }
