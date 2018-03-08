@@ -304,6 +304,9 @@ do {\
 } while(0);
 
 #else
+
+#define WX_STYLE_FLEX_NODE_JUDGE_LEGAL(key) styles[key]&&!isnan([WXConvert WXPixelType:styles[key] scaleFactor:self.weexInstance.pixelScaleFactor])
+
 #endif
 
 - (CGFloat)WXPixelType:(id)value
@@ -385,89 +388,89 @@ do {\
     if (styles[@"position"]) {
         _flexCssNode->setStylePositionType([self fxPositionType:styles[@"position"]]);
     }
-    if (styles[@"top"]) {
+    if (WX_STYLE_FLEX_NODE_JUDGE_LEGAL(@"top")) {
         _flexCssNode->setStylePosition(WeexCore::kPositionEdgeTop, [WXConvert WXPixelType:styles[@"top"] scaleFactor:self.weexInstance.pixelScaleFactor]);
     }
-    if (styles[@"left"]) {
+    if (WX_STYLE_FLEX_NODE_JUDGE_LEGAL(@"left")) {
         _flexCssNode->setStylePosition(WeexCore::kPositionEdgeLeft, [WXConvert WXPixelType:styles[@"left"] scaleFactor:self.weexInstance.pixelScaleFactor]);
     }
-    if(styles[@"right"]) {
+    if(WX_STYLE_FLEX_NODE_JUDGE_LEGAL(@"right")) {
         _flexCssNode->setStylePosition(WeexCore::kPositionEdgeRight, [WXConvert WXPixelType:styles[@"right"] scaleFactor:self.weexInstance.pixelScaleFactor]);
     }
-    if (styles[@"bottom"]) {
+    if (WX_STYLE_FLEX_NODE_JUDGE_LEGAL(@"bottom")) {
         _flexCssNode->setStylePosition(WeexCore::kPositionEdgeBottom, [WXConvert WXPixelType:styles[@"bottom"] scaleFactor:self.weexInstance.pixelScaleFactor]);
     }
     
     // dimension
-    if (styles[@"width"]) {
+    if (WX_STYLE_FLEX_NODE_JUDGE_LEGAL(@"width")) {
         _flexCssNode->setStyleWidth([WXConvert WXPixelType:styles[@"width"] scaleFactor:self.weexInstance.pixelScaleFactor]);
     }
-    if (styles[@"height"]) {
+    if (WX_STYLE_FLEX_NODE_JUDGE_LEGAL(@"height")) {
         _flexCssNode->setStyleHeight([WXConvert WXPixelType:styles[@"height"] scaleFactor:self.weexInstance.pixelScaleFactor]);
     }
-    if (styles[@"minWidth"]) {
+    if (WX_STYLE_FLEX_NODE_JUDGE_LEGAL(@"minWidth")) {
         _flexCssNode->setMinWidth([WXConvert WXPixelType:styles[@"minWidth"] scaleFactor:self.weexInstance.pixelScaleFactor]);
     }
-    if (styles[@"minHeight"]) {
+    if (WX_STYLE_FLEX_NODE_JUDGE_LEGAL(@"minHeight")) {
         _flexCssNode->setMinHeight([WXConvert WXPixelType:styles[@"minHeight"] scaleFactor:self.weexInstance.pixelScaleFactor]);
     }
-    if (styles[@"maxWidth"]) {
+    if (WX_STYLE_FLEX_NODE_JUDGE_LEGAL(@"maxWidth")) {
         _flexCssNode->setMaxWidth([WXConvert WXPixelType:styles[@"maxWidth"] scaleFactor:self.weexInstance.pixelScaleFactor]);
     }
-    if (styles[@"maxHeight"]) {
+    if (WX_STYLE_FLEX_NODE_JUDGE_LEGAL(@"maxHeight")) {
         _flexCssNode->setMaxHeight([WXConvert WXPixelType:styles[@"maxHeight"] scaleFactor:self.weexInstance.pixelScaleFactor]);
     }
     
     // margin
-    if (styles[@"margin"]) {
+    if (WX_STYLE_FLEX_NODE_JUDGE_LEGAL(@"margin")) {
         _flexCssNode->setMargin(WeexCore::kMarginALL, [WXConvert WXPixelType:styles[@"margin"] scaleFactor:self.weexInstance.pixelScaleFactor]);
     }
-    if (styles[@"marginTop"]) {
+    if (WX_STYLE_FLEX_NODE_JUDGE_LEGAL(@"marginTop")) {
         _flexCssNode->setMargin(WeexCore::kMarginTop, [WXConvert WXPixelType:styles[@"marginTop"] scaleFactor:self.weexInstance.pixelScaleFactor]);
     }
-    if (styles[@"marginBottom"]) {
+    if (WX_STYLE_FLEX_NODE_JUDGE_LEGAL(@"marginBottom")) {
         _flexCssNode->setMargin(WeexCore::kMarginBottom, [WXConvert WXPixelType:styles[@"marginBottom"] scaleFactor:self.weexInstance.pixelScaleFactor]);
     }
-    if (styles[@"marginRight"]) {
+    if (WX_STYLE_FLEX_NODE_JUDGE_LEGAL(@"marginRight")) {
         _flexCssNode->setMargin(WeexCore::kMarginRight, [WXConvert WXPixelType:styles[@"marginRight"] scaleFactor:self.weexInstance.pixelScaleFactor]);
     }
-    if (styles[@"marginLeft"]) {
+    if (WX_STYLE_FLEX_NODE_JUDGE_LEGAL(@"marginLeft")) {
         _flexCssNode->setMargin(WeexCore::kMarginLeft, [WXConvert WXPixelType:styles[@"marginLeft"] scaleFactor:self.weexInstance.pixelScaleFactor]);
     }
     
     // border
-    if (styles[@"border"]) {
+    if (WX_STYLE_FLEX_NODE_JUDGE_LEGAL(@"border")) {
         _flexCssNode->setBorderWidth(WeexCore::kBorderWidthALL, [WXConvert WXPixelType:styles[@"border"] scaleFactor:self.weexInstance.pixelScaleFactor]);
     }
-    if (styles[@"borderTopWidth"]) {
+    if (WX_STYLE_FLEX_NODE_JUDGE_LEGAL(@"borderTopWidth")) {
         _flexCssNode->setBorderWidth(WeexCore::kBorderWidthTop, [WXConvert WXPixelType:styles[@"borderTopWidth"] scaleFactor:self.weexInstance.pixelScaleFactor]);
     }
     
-    if (styles[@"borderLeftWidth"]) {
+    if (WX_STYLE_FLEX_NODE_JUDGE_LEGAL(@"borderLeftWidth")) {
         _flexCssNode->setBorderWidth(WeexCore::kBorderWidthLeft, [WXConvert WXPixelType:styles[@"borderLeftWidth"] scaleFactor:self.weexInstance.pixelScaleFactor]);
     }
     
-    if (styles[@"borderBottomWidth"]) {
+    if (WX_STYLE_FLEX_NODE_JUDGE_LEGAL(@"borderBottomWidth")) {
         _flexCssNode->setBorderWidth(WeexCore::kBorderWidthBottom, [WXConvert WXPixelType:styles[@"borderBottomWidth"] scaleFactor:self.weexInstance.pixelScaleFactor]);
     }
-    if (styles[@"borderRightWidth"]) {
+    if (WX_STYLE_FLEX_NODE_JUDGE_LEGAL(@"borderRightWidth")) {
         _flexCssNode->setBorderWidth(WeexCore::kBorderWidthRight, [WXConvert WXPixelType:styles[@"borderRightWidth"] scaleFactor:self.weexInstance.pixelScaleFactor]);
     }
     
     // padding
-    if (styles[@"padding"]) {
+    if (WX_STYLE_FLEX_NODE_JUDGE_LEGAL(@"padding")) {
         _flexCssNode->setPadding(WeexCore::kPaddingALL, [WXConvert WXPixelType:styles[@"padding"] scaleFactor:self.weexInstance.pixelScaleFactor]);
     }
-    if (styles[@"paddingTop"]) {
+    if (WX_STYLE_FLEX_NODE_JUDGE_LEGAL(@"paddingTop")) {
         _flexCssNode->setPadding(WeexCore::kPaddingTop, [WXConvert WXPixelType:styles[@"paddingTop"] scaleFactor:self.weexInstance.pixelScaleFactor]);
     }
-    if (styles[@"paddingLeft"]) {
+    if (WX_STYLE_FLEX_NODE_JUDGE_LEGAL(@"paddingLeft")) {
         _flexCssNode->setPadding(WeexCore::kPaddingLeft, [WXConvert WXPixelType:styles[@"paddingLeft"] scaleFactor:self.weexInstance.pixelScaleFactor]);
     }
-    if (styles[@"paddingBottom"]) {
+    if (WX_STYLE_FLEX_NODE_JUDGE_LEGAL(@"paddingBottom")) {
         _flexCssNode->setPadding(WeexCore::kPaddingBottom, [WXConvert WXPixelType:styles[@"paddingBottom"] scaleFactor:self.weexInstance.pixelScaleFactor]);
     }
-    if (styles[@"paddingRight"]) {
+    if (WX_STYLE_FLEX_NODE_JUDGE_LEGAL(@"paddingRight")) {
         _flexCssNode->setPadding(WeexCore::kPaddingRight, [WXConvert WXPixelType:styles[@"paddingRight"] scaleFactor:self.weexInstance.pixelScaleFactor]);
     }
     
