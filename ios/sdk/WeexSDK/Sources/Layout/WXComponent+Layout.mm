@@ -364,10 +364,12 @@ do {\
     // flex
     if (styles[@"flex"]) {
         _flexCssNode->setFlex([WXConvert CGFloat:styles[@"flex"]]);
-    } else {
+    }
+    if (isnan(_flexCssNode->getFlex())) {
         // to make the default flex value is zero, yoga is nan, maybe this can configured by yoga config
         _flexCssNode->setFlex(0);
     }
+    
     if (styles[@"flexDirection"]) {
         _flexCssNode->setFlexDirection([self fxFlexDirection:styles[@"flexDirection"]]);
     }
