@@ -589,7 +589,7 @@
     [_subcomponents removeObject:subcomponent];
 #ifndef USE_FLEX
 #else
-    subcomponent->_isNeedJoinLayoutSystem = NO;
+    //subcomponent->_isNeedJoinLayoutSystem = NO;
     [self _rmChildCssNode:subcomponent];
 #endif
     pthread_mutex_unlock(&_propertyMutex);
