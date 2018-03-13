@@ -34,7 +34,7 @@ namespace WeexCore {
 
     bool setMargin(const WXCoreMarginEdge &edge, float margin);
 
-    float getMargin(const WXCoreMarginEdge &edge);
+    float getMargin(const WXCoreMarginEdge &edge)const;
   };
 
 
@@ -63,7 +63,7 @@ namespace WeexCore {
 
     bool setPadding(const WXCorePaddingEdge &edge, float padding);
 
-    float getPadding(const WXCorePaddingEdge &edge);
+    float getPadding(const WXCorePaddingEdge &edge)const;
   };
 
 
@@ -92,7 +92,7 @@ namespace WeexCore {
 
     bool setBorderWidth(const WXCoreBorderWidthEdge &edge, float borderWidth);
 
-    float getBorderWidth(const WXCoreBorderWidthEdge &edge);
+    float getBorderWidth(const WXCoreBorderWidthEdge &edge)const;
   };
 
 
@@ -232,8 +232,8 @@ namespace WeexCore {
                        mPositionType(kWXCorePositionTypeDefault),
                        mStyleWidth(NAN), mStyleHeight(NAN),
                        mStyleHeightLevel(FALLBACK_STYLE), mStyleWidthLevel(FALLBACK_STYLE),
-                       mMaxWidth(MAXFLOAT), mMaxHeight(MAXFLOAT),
-                       mMinWidth(0), mMinHeight(0) {
+                       mMaxWidth(NAN), mMaxHeight(NAN),
+                       mMinWidth(NAN), mMinHeight(NAN) {
 
     }
 
@@ -248,13 +248,13 @@ namespace WeexCore {
       mStyleHeight = NAN;
       mStyleWidthLevel = FALLBACK_STYLE;
       mStyleHeightLevel = FALLBACK_STYLE;
-      mMaxWidth = MAXFLOAT;
-      mMaxHeight = MAXFLOAT;
+      mMaxWidth = NAN;
+      mMaxHeight = NAN;
       mMinWidth = NAN;
       mMinHeight = NAN;
     }
 
-    float sumPaddingBorderOfEdge(const WXCoreEdge edge){
+    inline float sumPaddingBorderOfEdge(const WXCoreEdge edge){
       switch (edge) {
         case kTop:
           return mPadding.getPadding(kPaddingTop)
