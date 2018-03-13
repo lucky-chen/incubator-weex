@@ -221,7 +221,12 @@ bool flexIsUndefined(float value) {
         [subcomponent _calculateFrameWithSuperAbsolutePosition:newAbsolutePosition gatherDirtyComponents:dirtyComponents];
     }
 #else
+    if (!self.flexCssNode->hasNewLayout()) {
+        return;
+    }
+    self.flexCssNode->setHasNewLayout(false);
     _isLayoutDirty = NO;
+    
     CGRect newFrame = CGRectMake(
                                  isnan(WXRoundPixelValue(_flexCssNode->getLayoutPositionLeft()))?0:WXRoundPixelValue(_flexCssNode->getLayoutPositionLeft())
                                  ,isnan(WXRoundPixelValue(_flexCssNode->getLayoutPositionTop()))?0:WXRoundPixelValue(_flexCssNode->getLayoutPositionTop())
@@ -244,7 +249,15 @@ bool flexIsUndefined(float value) {
     [self _frameDidCalculated:isFrameChanged];
     NSArray * subcomponents = [_subcomponents copy];
     for (WXComponent *subcomponent in subcomponents) {
+#ifdef LOG_PERFORMANCE
+        UInt64 start = [[NSDate date] timeIntervalSince1970]*1000;
+#endif
         [subcomponent _calculateFrameWithSuperAbsolutePosition:newAbsolutePosition gatherDirtyComponents:dirtyComponents];
+#ifdef LOG_PERFORMANCE
+        UInt64 end = [[NSDate date] timeIntervalSince1970]*1000;
+        UInt64 diff = end - start;
+        NSLog(@"test -> time ,time:%lld,type:%@,ref:%@",diff,subcomponent.type,subcomponent.ref);
+#endif
     }
 #endif
     NSLog(@"test -> newFrame ,type:%@,ref:%@, parentRef:%@,size :%@ ,instance:%@",self.type,self.ref,self.supercomponent.ref,NSStringFromCGRect(newFrame),self.weexInstance.instanceId);

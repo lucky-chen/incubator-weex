@@ -874,53 +874,6 @@ WX_EXPORT_METHOD(@selector(resetLoadmore))
 #endif
 
 
-- (void) copyStyle
-{
-    
-#ifdef USE_FLEX
-    // flex
-    _flexScrollerCSSNode->setFlex(_flexCssNode->getFlex());
-    _flexScrollerCSSNode->setFlexDirection(_flexCssNode->getFlexDirection());
-    _flexScrollerCSSNode->setAlignItems(_flexCssNode->getAlignItems());
-    _flexScrollerCSSNode->setAlignSelf(_flexCssNode->getAlignSelf());
-    _flexScrollerCSSNode->setFlexWrap(_flexCssNode->getFlexWrap());
-    _flexScrollerCSSNode->setJustifyContent(_flexCssNode->getJustifyContent());
-    _flexScrollerCSSNode->setContext(_flexCssNode->getContext());
-    
-    // position
-    _flexScrollerCSSNode->setStylePositionType(_flexCssNode->getStypePositionType());
-    _flexScrollerCSSNode->setStylePosition(WeexCore::kPositionEdgeTop,_flexCssNode->getStylePositionTop());
-    _flexScrollerCSSNode->setStylePosition(WeexCore::kPositionEdgeRight,_flexCssNode->getStylePositionRight());
-    _flexScrollerCSSNode->setStylePosition(WeexCore::kPositionEdgeLeft,_flexCssNode->getStylePositionLeft());
-    _flexScrollerCSSNode->setStylePosition(WeexCore::kPositionEdgeBottom,_flexCssNode->getStylePositionBottom());
 
-    // dimension
-    _flexScrollerCSSNode->setStyleWidth(_flexCssNode->getStyleWidth());
-    _flexScrollerCSSNode->setStyleHeight(_flexCssNode->getStyleHeight());
-    _flexScrollerCSSNode->setMinWidth(_flexCssNode->getMinWidth());
-    _flexScrollerCSSNode->setMinHeight(_flexCssNode->getMinHeight());
-    _flexScrollerCSSNode->setMaxWidth(_flexCssNode->getMaxWidth());
-    _flexScrollerCSSNode->setMaxHeight(_flexCssNode->getMaxHeight());
-    
-    // margin
-    _flexScrollerCSSNode->setMargin(WeexCore::kMarginTop,_flexCssNode->getMarginTop());
-    _flexScrollerCSSNode->setMargin(WeexCore::kMarginBottom,_flexCssNode->getMarginBottom());
-    _flexScrollerCSSNode->setMargin(WeexCore::kMarginRight,_flexCssNode->getMarginRight());
-    _flexScrollerCSSNode->setMargin(WeexCore::kMarginLeft,_flexCssNode->getMarginLeft());
-    
-    // border
-    _flexScrollerCSSNode->setBorderWidth(WeexCore::kBorderWidthTop, _flexCssNode->getBorderWidthTop());
-    _flexScrollerCSSNode->setBorderWidth(WeexCore::kBorderWidthLeft, _flexCssNode->getBorderWidthLeft());
-    _flexScrollerCSSNode->setBorderWidth(WeexCore::kBorderWidthBottom, _flexCssNode->getBorderWidthBottom());
-    _flexScrollerCSSNode->setBorderWidth(WeexCore::kBorderWidthRight, _flexCssNode->getBorderWidthRight());
-
-    // padding
-    _flexScrollerCSSNode->setPadding(WeexCore::kPaddingTop,_flexCssNode->getPaddingTop());
-     _flexScrollerCSSNode->setPadding(WeexCore::kPaddingLeft,_flexCssNode->getPaddingLeft());
-     _flexScrollerCSSNode->setPadding(WeexCore::kPaddingBottom,_flexCssNode->getPaddingBottom());
-    _flexScrollerCSSNode->setPadding(WeexCore::kPaddingRight,_flexCssNode->getPaddingRight());
-# endif
-    
-}
 
 @end

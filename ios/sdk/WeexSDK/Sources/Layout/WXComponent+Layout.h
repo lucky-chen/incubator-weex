@@ -26,6 +26,10 @@
 #define FlexUndefined NAN
 #define USE_FLEX
 
+//#ifdef DEBUG
+//#define LOG_PERFORMANCE
+//#endif
+
 
 #ifdef __cplusplus 
 extern "C" {

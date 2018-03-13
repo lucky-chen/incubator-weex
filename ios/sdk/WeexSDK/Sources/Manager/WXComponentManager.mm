@@ -898,6 +898,8 @@ static css_node_t * rootNodeGetChild(void *context, int i)
     if (!needsLayout) {
         return;
     }
+    NSLog(@"test -> action__ calculateLayout root");
+    UInt64 startTime = [[NSDate date] timeIntervalSince1970]*1000;
 #ifndef USE_FLEX
     layoutNode(_rootCSSNode, _rootCSSNode->style.dimensions[CSS_WIDTH], _rootCSSNode->style.dimensions[CSS_HEIGHT], CSS_DIRECTION_INHERIT);
 #else
@@ -915,10 +917,20 @@ static css_node_t * rootNodeGetChild(void *context, int i)
 #endif
         }
     }
+#ifdef LOG_PERFORMANCE
+    UInt64 nodeCalculateEnd = [[NSDate date] timeIntervalSince1970]*1000;
+    UInt64 diff = nodeCalculateEnd - startTime;
+    NSLog(@"test -> time : NodeCalculateDiff :%lld",diff);
+#endif
     
     NSMutableSet<WXComponent *> *dirtyComponents = [NSMutableSet set];
     [_rootComponent _calculateFrameWithSuperAbsolutePosition:CGPointZero gatherDirtyComponents:dirtyComponents];
     [self _calculateRootFrame];
+#ifdef LOG_PERFORMANCE
+    UInt64 componentCalculateEnd = [[NSDate date] timeIntervalSince1970]*1000;
+    diff = componentCalculateEnd - nodeCalculateEnd;
+    NSLog(@"test -> time : ComponentCalculateEnd :%lld",diff);
+#endif
   
     for (WXComponent *dirtyComponent in dirtyComponents) {
         [self _addUITask:^{
@@ -1004,15 +1016,10 @@ static css_node_t * rootNodeGetChild(void *context, int i)
     
     resetNodeLayout(_rootCSSNode);
 #else
-    //TODO
-//    if (!_rootFlexCSSNode->layout.should_update) {
-//        return;
-//    }
-//    _rootFlexCSSNode->layout.should_update = false;
-    
-//    if (!_rootFlexCSSNode->isDirty()) {
-//        return;
-//    }
+    if(!_rootFlexCSSNode->hasNewLayout()){
+        return;
+    }
+    _rootFlexCSSNode->setHasNewLayout(false);
     
     NSLog(@"test -> root _calculateRootFrame");
     
