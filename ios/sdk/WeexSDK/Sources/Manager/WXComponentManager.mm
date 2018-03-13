@@ -902,8 +902,8 @@ static css_node_t * rootNodeGetChild(void *context, int i)
     layoutNode(_rootCSSNode, _rootCSSNode->style.dimensions[CSS_WIDTH], _rootCSSNode->style.dimensions[CSS_HEIGHT], CSS_DIRECTION_INHERIT);
 #else
     std::pair<float, float> renderPageSize;
-    renderPageSize.first = WXRoundPixelValue(_rootFlexCSSNode->getLayoutWidth());
-    renderPageSize.second = WXRoundPixelValue(_rootFlexCSSNode->getLayoutHeight());
+    renderPageSize.first = self.weexInstance.frame.size.width;
+    renderPageSize.second = self.weexInstance.frame.size.height;
     _rootFlexCSSNode->calculateLayout(renderPageSize);
 #endif
     
