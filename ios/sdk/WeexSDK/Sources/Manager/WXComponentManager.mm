@@ -899,7 +899,10 @@ static css_node_t * rootNodeGetChild(void *context, int i)
         return;
     }
     NSLog(@"test -> action__ calculateLayout root");
+#ifdef LOG_PERFORMANCE
     UInt64 startTime = [[NSDate date] timeIntervalSince1970]*1000;
+#endif
+    
 #ifndef USE_FLEX
     layoutNode(_rootCSSNode, _rootCSSNode->style.dimensions[CSS_WIDTH], _rootCSSNode->style.dimensions[CSS_HEIGHT], CSS_DIRECTION_INHERIT);
 #else
@@ -909,27 +912,19 @@ static css_node_t * rootNodeGetChild(void *context, int i)
     _rootFlexCSSNode->calculateLayout(renderPageSize);
 #endif
     
-    if ([_rootComponent needsLayout]) {
-        if ([WXLog logLevel] >= WXLogLevelDebug) {
-#ifndef USE_FLEX
-            print_css_node(_rootCSSNode, (css_print_options_t)(CSS_PRINT_LAYOUT | CSS_PRINT_STYLE | CSS_PRINT_CHILDREN));
-#else
-#endif
-        }
-    }
+    
 #ifdef LOG_PERFORMANCE
     UInt64 nodeCalculateEnd = [[NSDate date] timeIntervalSince1970]*1000;
-    UInt64 diff = nodeCalculateEnd - startTime;
-    NSLog(@"test -> time : NodeCalculateDiff :%lld",diff);
+    NSLog(@"test -> time : NodeCalculateDiff :%lld",nodeCalculateEnd - startTime);
 #endif
     
+
     NSMutableSet<WXComponent *> *dirtyComponents = [NSMutableSet set];
     [_rootComponent _calculateFrameWithSuperAbsolutePosition:CGPointZero gatherDirtyComponents:dirtyComponents];
     [self _calculateRootFrame];
 #ifdef LOG_PERFORMANCE
     UInt64 componentCalculateEnd = [[NSDate date] timeIntervalSince1970]*1000;
-    diff = componentCalculateEnd - nodeCalculateEnd;
-    NSLog(@"test -> time : ComponentCalculateEnd :%lld",diff);
+    NSLog(@"test -> time : ComponentCalculateEnd :%lld",(componentCalculateEnd - nodeCalculateEnd));
 #endif
   
     for (WXComponent *dirtyComponent in dirtyComponents) {

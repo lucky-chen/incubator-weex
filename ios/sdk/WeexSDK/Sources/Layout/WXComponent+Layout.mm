@@ -217,9 +217,9 @@ bool flexIsUndefined(float value) {
 
     [self _frameDidCalculated:isFrameChanged];
     NSArray * subcomponents = [_subcomponents copy];
-    for (WXComponent *subcomponent in subcomponents) {
-        [subcomponent _calculateFrameWithSuperAbsolutePosition:newAbsolutePosition gatherDirtyComponents:dirtyComponents];
-    }
+//    for (WXComponent *subcomponent in subcomponents) {
+//        [subcomponent _calculateFrameWithSuperAbsolutePosition:newAbsolutePosition gatherDirtyComponents:dirtyComponents];
+//    }
 #else
     if (!self.flexCssNode->hasNewLayout()) {
         return;
@@ -248,7 +248,11 @@ bool flexIsUndefined(float value) {
 
     [self _frameDidCalculated:isFrameChanged];
     NSArray * subcomponents = [_subcomponents copy];
+
+#endif
+    
     for (WXComponent *subcomponent in subcomponents) {
+        
 #ifdef LOG_PERFORMANCE
         UInt64 start = [[NSDate date] timeIntervalSince1970]*1000;
 #endif
@@ -259,7 +263,7 @@ bool flexIsUndefined(float value) {
         NSLog(@"test -> time ,time:%lld,type:%@,ref:%@",diff,subcomponent.type,subcomponent.ref);
 #endif
     }
-#endif
+    
     NSLog(@"test -> newFrame ,type:%@,ref:%@, parentRef:%@,size :%@ ,instance:%@",self.type,self.ref,self.supercomponent.ref,NSStringFromCGRect(newFrame),self.weexInstance.instanceId);
     
     

@@ -805,12 +805,7 @@ WX_EXPORT_METHOD(@selector(resetLoadmore))
         _scrollerCSSNode->layout.dimensions[CSS_WIDTH] = CSS_UNDEFINED;
         _scrollerCSSNode->layout.dimensions[CSS_HEIGHT] = CSS_UNDEFINED;
 #else
-        // can't use memcpy because of simple copy. but this seems has question.`~`
-//        _flexScrollerCSSNode->copyStyle(self.flexCssNode);
-//        _flexScrollerCSSNode->copyMeasureFunc(self.flexCssNode);
-        
-        //[self copyStyle];
-        //_flexScrollerCSSNode->setMeasureFunc(_flexCssNode->getMeasureFunc());
+
         _flexScrollerCSSNode->copyStyle(_flexCssNode);
         _flexScrollerCSSNode->copyMeasureFunc(_flexCssNode);
         
@@ -823,16 +818,11 @@ WX_EXPORT_METHOD(@selector(resetLoadmore))
             _flexScrollerCSSNode->setStyleHeight(self.flexCssNode->getLayoutHeight());
             _flexScrollerCSSNode->setStyleWidth(FlexUndefined);
         }
-        
-       // _flexScrollerCSSNode->resetLayolsutResult();
         _flexScrollerCSSNode->markDirty();
         std::pair<float, float> renderPageSize;
         renderPageSize.first = self.weexInstance.frame.size.width;
         renderPageSize.second = self.weexInstance.frame.size.height;
         _flexScrollerCSSNode->calculateLayout(renderPageSize);
-        if ([WXLog logLevel] >= WXLogLevelDebug) {
-            
-        }
         CGSize size = {
             WXRoundPixelValue(_flexScrollerCSSNode->getLayoutWidth()),
             WXRoundPixelValue(_flexScrollerCSSNode->getLayoutHeight())
