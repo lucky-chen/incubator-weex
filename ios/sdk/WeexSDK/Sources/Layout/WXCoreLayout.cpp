@@ -191,18 +191,15 @@ namespace WeexCore {
    * Determine the main size by expanding the individual flexGrow attribute.
    */
   void WXCoreLayoutNode::determineMainSize(const float width, const float height) {
-      float maxMainSize;
       bool horizontal = isMainAxisHorizontal(this);
-      if (horizontal) {
-        maxMainSize = widthMeasureMode == kUnspecified ? getLargestMainSize() : width;
-      } else {
-        maxMainSize = heightMeasureMode == kUnspecified ? getLargestMainSize() : height;
-      }
-
-      maxMainSize -= sumPaddingBorderAlongAxis(this, isMainAxisHorizontal(this));
-      Index childIndex = 0;
-      for (WXCoreFlexLine *flexLine : mFlexLines) {
-        childIndex = expandItemsInFlexLine(flexLine, maxMainSize, childIndex);
+      if((horizontal && widthMeasureMode == kExactly) || (!horizontal && heightMeasureMode == kExactly)) {
+        //The measureMode along main axis is exactly
+        float maxMainSize = horizontal ? width: height;
+        maxMainSize -= sumPaddingBorderAlongAxis(this, isMainAxisHorizontal(this));
+        Index childIndex = 0;
+        for (WXCoreFlexLine *flexLine : mFlexLines) {
+          childIndex = expandItemsInFlexLine(flexLine, maxMainSize, childIndex);
+        }
       }
     }
 
@@ -331,17 +328,17 @@ namespace WeexCore {
           nodeWidth < node->mCssStyle->mMinWidth) {
         widthRemeasure = true;
         nodeWidth = node->mCssStyle->mMinWidth;
-      } else if (!isnan(nodeWidth > node->mCssStyle->mMaxWidth)
+      } else if (!isnan(node->mCssStyle->mMaxWidth)
           && nodeWidth > node->mCssStyle->mMaxWidth) {
         widthRemeasure = true;
         nodeWidth = node->mCssStyle->mMaxWidth;
       }
 
-      if (!isnan(nodeHeight < node->mCssStyle->mMinHeight) &&
+      if (!isnan(node->mCssStyle->mMinHeight) &&
           nodeHeight < node->mCssStyle->mMinHeight) {
         heightRemeasure = true;
         nodeHeight = node->mCssStyle->mMinHeight;
-      } else if (!isnan(nodeHeight > node->mCssStyle->mMaxHeight) &&
+      } else if (!isnan(node->mCssStyle->mMaxHeight) &&
           nodeHeight > node->mCssStyle->mMaxHeight) {
         heightRemeasure = true;
         nodeHeight = node->mCssStyle->mMaxHeight;
@@ -353,9 +350,11 @@ namespace WeexCore {
       if (hypotheticalMeasurment) {
         if (widthRemeasure) {
           node->setLayoutWidth(nodeWidth);
+          node->mLayoutResult->mLayoutSize.hypotheticalWidth = nodeWidth;
         }
         if (heightRemeasure) {
           node->setLayoutHeight(nodeHeight);
+          node->mLayoutResult->mLayoutSize.hypotheticalHeight = nodeHeight;
         }
       } else {
         if (widthRemeasure || heightRemeasure) {
