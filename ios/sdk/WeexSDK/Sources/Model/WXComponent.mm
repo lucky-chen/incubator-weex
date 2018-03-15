@@ -571,8 +571,10 @@
          NSInteger actualIndex = [self getActualNodeIndex:subcomponent atIndex:index];
         [self _insertChildCssNode:subcomponent atIndex:actualIndex];
     }else{
-        NSLog(@"test -> no need JoinLayoutSystem parent :%@, self :%@ ",
+        NSLog(@"test -> no need JoinLayoutSystem parent ref:%@ type:%@, self ref:%@ type:%@ ",
+              self.ref,
               self.type,
+              subcomponent.ref,
               subcomponent.type
               );
         return;
