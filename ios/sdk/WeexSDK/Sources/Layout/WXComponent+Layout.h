@@ -24,7 +24,7 @@
 #import "WXCoreLayout.h"
 
 #define FlexUndefined NAN
-#define USE_FLEX
+//#define USE_FLEX
 
 //#ifdef DEBUG
 //#define LOG_PERFORMANCE
