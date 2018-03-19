@@ -16,6 +16,7 @@ namespace WeexCore {
         mChildrenFrozen[i] = false;
       }
       measure(std::get<1>(bfcDimension), std::get<2>(bfcDimension), true);
+      checkSizeConstraints(this, false);
     }
     layout(mCssStyle->mMargin.getMargin(kMarginLeft),
            mCssStyle->mMargin.getMargin(kMarginTop),
@@ -272,7 +273,7 @@ namespace WeexCore {
       flexLine->mMainSize += calcItemSizeAlongAxis(child, isMainAxisHorizontal(this), useHypotheticalSize);
       sumFlexGrow(child, flexLine, i);
       flexLine->mCrossSize =
-          std::max(flexLine->mCrossSize, calcItemSizeAlongAxis(child, !isMainAxisHorizontal(this)));
+          std::max(flexLine->mCrossSize, calcItemSizeAlongAxis(child, !isMainAxisHorizontal(this), useHypotheticalSize));
       if (i == childCount - 1 && flexLine->mItemCount != 0) {
         mFlexLines.push_back(flexLine);
       }
@@ -328,13 +329,7 @@ namespace WeexCore {
             childWidth = parentWidth - sumPaddingBorderAlongAxis(this, true) -
                 child->mCssStyle->sumMarginOfDirection(true);
           }
-
-          if (isnan(child->mCssStyle->mStyleHeight)) {
-            childHeight =
-                calcFreeSpaceAlongMainAxis(parentWidth, parentHeight, currentMainSize) -
-                    child->mCssStyle->sumMarginOfDirection(false);
-          }
-        }
+       }
       }
     }
 
