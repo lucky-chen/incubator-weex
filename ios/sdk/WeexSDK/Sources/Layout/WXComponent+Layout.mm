@@ -480,9 +480,9 @@ do {\
         }
         
         // border
-        if (styles[@"border"]) {
+        if (styles[@"borderWidth"]) {
             _flexCssNode->setBorderWidth(WeexCore::kBorderWidthALL,
-                                         [self judgePropValuePropValue:styles[@"border"] defaultValue:0]);
+                                         [self judgePropValuePropValue:styles[@"borderWidth"] defaultValue:0]);
         }
         if (styles[@"borderTopWidth"]) {
             _flexCssNode->setBorderWidth(WeexCore::kBorderWidthTop,
