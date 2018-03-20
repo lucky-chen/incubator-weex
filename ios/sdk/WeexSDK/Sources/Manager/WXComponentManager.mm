@@ -39,6 +39,8 @@
 #import "WXLayoutDefine.h"
 #import "WXComponent+Layout.h"
 
+
+
 static NSThread *WXComponentThread;
 
 #define WXAssertComponentExist(component)  WXAssert(component, @"component not exists")
@@ -59,11 +61,11 @@ static NSThread *WXComponentThread;
 
     WXComponent *_rootComponent;
     NSMutableArray *_fixedComponents;
-#ifndef USE_FLEX
+//#ifndef USE_FLEX
     css_node_t *_rootCSSNode;
-#else
+//#else
     WeexCore::WXCoreLayoutNode* _rootFlexCSSNode;
-#endif
+//#endif
     CADisplayLink *_displayLink;
 }
 
@@ -94,9 +96,13 @@ static NSThread *WXComponentThread;
 
 - (void)dealloc
 {
-#ifndef USE_FLEX
-    free_css_node(_rootCSSNode);
-#else
+//#ifndef USE_FLEX
+    if(![WXComponent isUseFlex])
+    {
+         free_css_node(_rootCSSNode);
+    }
+   
+//#else
     
     if(_rootFlexCSSNode){
         delete _rootFlexCSSNode;
@@ -104,7 +110,7 @@ static NSThread *WXComponentThread;
        // WeexCore::WXCoreLayoutNode::freeNodeTree(_rootFlexCSSNode);
         _rootFlexCSSNode=nullptr;
     }
-#endif
+//#endif
     [NSMutableArray wx_releaseArray:_fixedComponents];
 }
 
@@ -171,32 +177,38 @@ static NSThread *WXComponentThread;
 - (void)rootViewFrameDidChange:(CGRect)frame
 {
     WXAssertComponentThread();
-#ifndef USE_FLEX
-    if (_rootCSSNode) {
-        [self _applyRootFrame:frame toRootCSSNode:_rootCSSNode];
-        if (!_rootComponent.styles[@"width"]) {
-            _rootComponent.cssNode->style.dimensions[CSS_WIDTH] = frame.size.width ?: CSS_UNDEFINED;
-        }
-        if (!_rootComponent.styles[@"height"]) {
-            _rootComponent.cssNode->style.dimensions[CSS_HEIGHT] = frame.size.height ?: CSS_UNDEFINED;
-        }
-    }
-#else
-    if (_rootFlexCSSNode) {
-        [self _applyRootFrame:frame];
-        if (!_rootComponent.styles[@"width"]) {
-            _rootComponent.flexCssNode->setStyleWidth(frame.size.width ?:FlexUndefined);
-        }
-        if (!_rootComponent.styles[@"height"]) {
-            _rootComponent.flexCssNode->setStyleHeight(frame.size.height ?:FlexUndefined);
+//#ifndef USE_FLEX
+    
+    if (![WXComponent isUseFlex]) {
+        if (_rootCSSNode) {
+            [self _applyRootFrame:frame toRootCSSNode:_rootCSSNode];
+            if (!_rootComponent.styles[@"width"]) {
+                _rootComponent.cssNode->style.dimensions[CSS_WIDTH] = frame.size.width ?: CSS_UNDEFINED;
+            }
+            if (!_rootComponent.styles[@"height"]) {
+                _rootComponent.cssNode->style.dimensions[CSS_HEIGHT] = frame.size.height ?: CSS_UNDEFINED;
+            }
         }
     }
-#endif
+//#else
+    else
+    {
+        if (_rootFlexCSSNode) {
+            [self _applyRootFrame:frame];
+            if (!_rootComponent.styles[@"width"]) {
+                _rootComponent.flexCssNode->setStyleWidth(frame.size.width ?:FlexUndefined);
+            }
+            if (!_rootComponent.styles[@"height"]) {
+                _rootComponent.flexCssNode->setStyleHeight(frame.size.height ?:FlexUndefined);
+            }
+        }
+    }
+//#endif
     [_rootComponent setNeedsLayout];
     [self startComponentTasks];
 }
 
-#ifndef USE_FLEX
+//#ifndef USE_FLEX
 - (void)_applyRootFrame:(CGRect)rootFrame toRootCSSNode:(css_node_t *)rootCSSNode
 {
     _rootCSSNode->style.position[CSS_LEFT] = self.weexInstance.frame.origin.x;
@@ -205,14 +217,14 @@ static NSThread *WXComponentThread;
     _rootCSSNode->style.dimensions[CSS_WIDTH] = self.weexInstance.frame.size.width ?: CSS_UNDEFINED;
     _rootCSSNode->style.dimensions[CSS_HEIGHT] =  self.weexInstance.frame.size.height ?: CSS_UNDEFINED;
 }
-#else
+//#else
 - (void)_applyRootFrame:(CGRect)rootFrame{
     _rootFlexCSSNode->setStylePosition(WeexCore::kPositionEdgeLeft, self.weexInstance.frame.origin.x);
     _rootFlexCSSNode->setStylePosition(WeexCore::kPositionEdgeTop, self.weexInstance.frame.origin.y);
     _rootFlexCSSNode->setStyleWidth(self.weexInstance.frame.size.width ?: FlexUndefined);
     _rootFlexCSSNode->setStyleHeight(self.weexInstance.frame.size.height ?: FlexUndefined);
 }
-#endif
+//#endif
 
 - (void)_addUITask:(void (^)(void))block
 {
@@ -249,12 +261,18 @@ static NSThread *WXComponentThread;
     WXAssertParam(data);
     
     _rootComponent = [self _buildComponentForData:data supercomponent:nil];
-#ifndef USE_FLEX
-    [self _initRootCSSNode];
-#else
-    [self _initRootFlexCssNode];
-    _rootFlexCSSNode->addChildAt(_rootComponent.flexCssNode, (uint32_t)[_fixedComponents count]);
-#endif
+//#ifndef USE_FLEX
+    if(![WXComponent isUseFlex])
+    {
+        [self _initRootCSSNode];
+    }
+//#else
+    else
+    {
+        [self _initRootFlexCssNode];
+        _rootFlexCSSNode->addChildAt(_rootComponent.flexCssNode, (uint32_t)[_fixedComponents count]);
+    }
+//#endif
     
     NSArray *subcomponentsData = [data valueForKey:@"children"];
     if (subcomponentsData) {
@@ -290,7 +308,7 @@ static NSThread *WXComponentThread;
     
 }
 
-#ifndef USE_FLEX
+//#ifndef USE_FLEX
 static bool rootNodeIsDirty(void *context)
 {
     WXComponentManager *manager = (__bridge WXComponentManager *)(context);
@@ -308,7 +326,7 @@ static css_node_t * rootNodeGetChild(void *context, int i)
     
     return NULL;
 }
-#endif
+//#endif
 
 - (void)addComponent:(NSDictionary *)componentData toSupercomponent:(NSString *)superRef atIndex:(NSInteger)index appendingInTree:(BOOL)appendingInTree
 {
@@ -335,27 +353,38 @@ static css_node_t * rootNodeGetChild(void *context, int i)
         index = (index == -1 ? supercomponent->_subcomponents.count : index);
     }
     
-    
-    NSLog(@"test -> _recursivelyAddComponent : super:(%@,%@):[%f,%f] ,child:(%@,%@):[%f,%f],childClass:%@",
-          supercomponent.type,
-          supercomponent.ref,
-#ifdef USE_FLEX
-          supercomponent.flexCssNode->getStyleWidth(),
-          supercomponent.flexCssNode->getStyleHeight(),
-          component.type,
-          component.ref,
-          component.flexCssNode->getStyleWidth(),
-          component.flexCssNode->getStyleHeight()
-#else
-          supercomponent.cssNode->style.dimensions[CSS_WIDTH],
-          supercomponent.cssNode->style.dimensions[CSS_HEIGHT],
-          component.type,
-          component.ref,
-          component.cssNode->style.dimensions[CSS_WIDTH],
-          component.cssNode->style.dimensions[CSS_HEIGHT]
-#endif
-          ,NSStringFromClass([component class])
-          );
+//#ifndef USE_FLEX
+    if(![WXComponent isUseFlex])
+    {
+        NSLog(@"test -> _recursivelyAddComponent : super:(%@,%@):[%f,%f] ,child:(%@,%@):[%f,%f],childClass:%@",
+              supercomponent.type,
+              supercomponent.ref,
+              supercomponent.cssNode->style.dimensions[CSS_WIDTH],
+              supercomponent.cssNode->style.dimensions[CSS_HEIGHT],
+              component.type,
+              component.ref,
+              component.cssNode->style.dimensions[CSS_WIDTH],
+              component.cssNode->style.dimensions[CSS_HEIGHT]
+              ,NSStringFromClass([component class])
+              );
+    }
+//#else
+    else
+    {
+        NSLog(@"test -> _recursivelyAddComponent : super:(%@,%@):[%f,%f] ,child:(%@,%@):[%f,%f],childClass:%@",
+              supercomponent.type,
+              supercomponent.ref,
+              supercomponent.flexCssNode->getStyleWidth(),
+              supercomponent.flexCssNode->getStyleHeight(),
+              component.type,
+              component.ref,
+              component.flexCssNode->getStyleWidth(),
+              component.flexCssNode->getStyleHeight()
+              ,NSStringFromClass([component class])
+              );
+    }
+//#endif
+
     
     [supercomponent _insertSubcomponent:component atIndex:index];
     
@@ -899,24 +928,22 @@ static css_node_t * rootNodeGetChild(void *context, int i)
         return;
     }
     NSLog(@"test -> action__ calculateLayout root");
-#ifdef LOG_PERFORMANCE
-    UInt64 startTime = [[NSDate date] timeIntervalSince1970]*1000;
-#endif
     
-#ifndef USE_FLEX
-    layoutNode(_rootCSSNode, _rootCSSNode->style.dimensions[CSS_WIDTH], _rootCSSNode->style.dimensions[CSS_HEIGHT], CSS_DIRECTION_INHERIT);
-#else
-    std::pair<float, float> renderPageSize;
-    renderPageSize.first = self.weexInstance.frame.size.width;
-    renderPageSize.second = self.weexInstance.frame.size.height;
-    _rootFlexCSSNode->calculateLayout(renderPageSize);
-#endif
+//#ifndef USE_FLEX
+    if(![WXComponent isUseFlex])
+    {
+         layoutNode(_rootCSSNode, _rootCSSNode->style.dimensions[CSS_WIDTH], _rootCSSNode->style.dimensions[CSS_HEIGHT], CSS_DIRECTION_INHERIT);
+    }
+//#else
+    else
+    {
+        std::pair<float, float> renderPageSize;
+        renderPageSize.first = self.weexInstance.frame.size.width;
+        renderPageSize.second = self.weexInstance.frame.size.height;
+        _rootFlexCSSNode->calculateLayout(renderPageSize);
+    }
+//#endif
     
-    
-#ifdef LOG_PERFORMANCE
-    UInt64 nodeCalculateEnd = [[NSDate date] timeIntervalSince1970]*1000;
-    NSLog(@"test -> time : NodeCalculateDiff :%lld",nodeCalculateEnd - startTime);
-#endif
     
 
     NSMutableSet<WXComponent *> *dirtyComponents = [NSMutableSet set];
@@ -937,7 +964,7 @@ static css_node_t * rootNodeGetChild(void *context, int i)
    
 }
 
-#ifdef USE_FLEX
+//#ifdef USE_FLEX
 - (void) _printFlexComonentFrame:(WXComponent *)component
 {
     NSLog(@"node ref:%@, type:%@ , frame:%@",
@@ -954,7 +981,7 @@ static css_node_t * rootNodeGetChild(void *context, int i)
 
     
 }
-#endif
+//#endif
 
 - (void)_syncUITasks
 {
@@ -966,7 +993,7 @@ static css_node_t * rootNodeGetChild(void *context, int i)
         }
     });
 }
-#ifndef USE_FLEX
+//#ifndef USE_FLEX
 - (void)_initRootCSSNode
 {
     _rootCSSNode = new_css_node();
@@ -979,7 +1006,7 @@ static css_node_t * rootNodeGetChild(void *context, int i)
     _rootCSSNode->context=(__bridge void *)(self);
     _rootCSSNode->children_count = 1;
 }
-#else
+//#else
 - (void)_initRootFlexCssNode
 {
     _rootFlexCSSNode = new WeexCore::WXCoreLayoutNode();
@@ -987,52 +1014,58 @@ static css_node_t * rootNodeGetChild(void *context, int i)
     _rootFlexCSSNode->setFlexWrap(WeexCore::kNoWrap);
     _rootFlexCSSNode->setContext((__bridge void *)(self));
 }
-#endif
+//#endif
 
 - (void)_calculateRootFrame
 {
-#ifndef USE_FLEX
-    if (!_rootCSSNode->layout.should_update) {
-        return;
-    }
-    _rootCSSNode->layout.should_update = false;
+//#ifndef USE_FLEX
     
-    NSLog(@"test -> root _calculateRootFrame");
-    
-    CGRect frame = CGRectMake(WXRoundPixelValue(_rootCSSNode->layout.position[CSS_LEFT]),
-                              WXRoundPixelValue(_rootCSSNode->layout.position[CSS_TOP]),
-                              WXRoundPixelValue(_rootCSSNode->layout.dimensions[CSS_WIDTH]),
-                              WXRoundPixelValue(_rootCSSNode->layout.dimensions[CSS_HEIGHT]));
-    WXPerformBlockOnMainThread(^{
-        if(!self.weexInstance.isRootViewFrozen) {
-            self.weexInstance.rootView.frame = frame;
+    if(![WXComponent isUseFlex])
+    {
+        if (!_rootCSSNode->layout.should_update) {
+            return;
         }
-    });
-    
-    resetNodeLayout(_rootCSSNode);
-#else
-    if(!_rootFlexCSSNode->hasNewLayout()){
-        return;
+        _rootCSSNode->layout.should_update = false;
+        
+        NSLog(@"test -> root _calculateRootFrame");
+        
+        CGRect frame = CGRectMake(WXRoundPixelValue(_rootCSSNode->layout.position[CSS_LEFT]),
+                                  WXRoundPixelValue(_rootCSSNode->layout.position[CSS_TOP]),
+                                  WXRoundPixelValue(_rootCSSNode->layout.dimensions[CSS_WIDTH]),
+                                  WXRoundPixelValue(_rootCSSNode->layout.dimensions[CSS_HEIGHT]));
+        WXPerformBlockOnMainThread(^{
+            if(!self.weexInstance.isRootViewFrozen) {
+                self.weexInstance.rootView.frame = frame;
+            }
+        });
+        
+        resetNodeLayout(_rootCSSNode);
     }
-    _rootFlexCSSNode->setHasNewLayout(false);
-    
-    NSLog(@"test -> root _calculateRootFrame");
-    
-    
-    CGRect frame = CGRectMake(WXRoundPixelValue(_rootFlexCSSNode->getLayoutPositionLeft()),
-                              WXRoundPixelValue(_rootFlexCSSNode->getLayoutPositionTop()),
-                              WXRoundPixelValue(_rootFlexCSSNode->getLayoutWidth()),
-                              WXRoundPixelValue(_rootFlexCSSNode->getLayoutHeight()));
-    WXPerformBlockOnMainThread(^{
-        if(!self.weexInstance.isRootViewFrozen) {
-            self.weexInstance.rootView.frame = frame;
+//#else
+    else
+    {
+        if(!_rootFlexCSSNode->hasNewLayout()){
+            return;
         }
-    });
- //   _rootFlexCSSNode->reset();
-    
-//    resetNodeLayout(_rootFlexCSSNode);
-    
-#endif
+        _rootFlexCSSNode->setHasNewLayout(false);
+        
+        NSLog(@"test -> root _calculateRootFrame");
+        
+        
+        CGRect frame = CGRectMake(WXRoundPixelValue(_rootFlexCSSNode->getLayoutPositionLeft()),
+                                  WXRoundPixelValue(_rootFlexCSSNode->getLayoutPositionTop()),
+                                  WXRoundPixelValue(_rootFlexCSSNode->getLayoutWidth()),
+                                  WXRoundPixelValue(_rootFlexCSSNode->getLayoutHeight()));
+        WXPerformBlockOnMainThread(^{
+            if(!self.weexInstance.isRootViewFrozen) {
+                self.weexInstance.rootView.frame = frame;
+            }
+        });
+        //   _rootFlexCSSNode->reset();
+        
+        //    resetNodeLayout(_rootFlexCSSNode);
+    }
+//#endif
     
    
 }
@@ -1043,21 +1076,33 @@ static css_node_t * rootNodeGetChild(void *context, int i)
 - (void)addFixedComponent:(WXComponent *)fixComponent
 {
     [_fixedComponents addObject:fixComponent];
-#ifndef USE_FLEX
-    _rootCSSNode->children_count = (int)[_fixedComponents count] + 1;
-#else
-    _rootFlexCSSNode->addChildAt(fixComponent.flexCssNode, (uint32_t)([_fixedComponents count]));
-#endif
+//#ifndef USE_FLEX
+    if(![WXComponent isUseFlex])
+    {
+        _rootCSSNode->children_count = (int)[_fixedComponents count] + 1;
+    }
+//#else
+    else
+    {
+        _rootFlexCSSNode->addChildAt(fixComponent.flexCssNode, (uint32_t)([_fixedComponents count]));
+    }
+//#endif
 }
 
 - (void)removeFixedComponent:(WXComponent *)fixComponent
 {
     [_fixedComponents removeObject:fixComponent];
-#ifndef USE_FLEX
-    _rootCSSNode->children_count = (int)[_fixedComponents count] + 1;
-#else
-    _rootFlexCSSNode->removeChild(fixComponent->_flexCssNode);
-#endif
+//#ifndef USE_FLEX
+    if(![WXComponent isUseFlex])
+    {
+        _rootCSSNode->children_count = (int)[_fixedComponents count] + 1;
+    }
+//#else
+    else
+    {
+        _rootFlexCSSNode->removeChild(fixComponent->_flexCssNode);
+    }
+//#endif
 }
 
 @end

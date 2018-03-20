@@ -170,13 +170,19 @@
     } else {
         component->_templateComponent = self->_templateComponent;
     }
-#ifndef USE_FLEX
-    memcpy(component->_cssNode, self.cssNode, sizeof(css_node_t));
-    component->_cssNode->context = (__bridge void *)component;
-#else
-    memcpy((void*)component->_flexCssNode,self.flexCssNode,sizeof(WeexCore::WXCoreLayoutNode));
-    component->_flexCssNode->setContext((__bridge void *)component);
-#endif
+//#ifndef USE_FLEX
+    if(![WXComponent isUseFlex])
+    {
+        memcpy(component->_cssNode, self.cssNode, sizeof(css_node_t));
+        component->_cssNode->context = (__bridge void *)component;
+    }
+//#else
+    else
+    {
+        memcpy((void*)component->_flexCssNode,self.flexCssNode,sizeof(WeexCore::WXCoreLayoutNode));
+        component->_flexCssNode->setContext((__bridge void *)component);
+    }
+//#endif
     component->_calculatedFrame = self.calculatedFrame;
     
     NSMutableArray *subcomponentsCopy = [NSMutableArray array];
@@ -207,21 +213,27 @@
 
 - (void)dealloc
 {
-#ifndef USE_FLEX
-    free_css_node(_cssNode);
-#else
-    if(self.flexCssNode){
-        
-        
-        
-        NSLog(@"test -> dealloc %@",self.ref);
-        
-        delete self.flexCssNode;
-    
-      //  WeexCore::WXCoreLayoutNode::freeNodeTree(self.flexCssNode);
-        //self.flexCssNode = nullptr;
+//#ifndef USE_FLEX
+    if(![WXComponent isUseFlex])
+    {
+         free_css_node(_cssNode);
     }
-#endif
+//#else
+    else
+    {
+        if(self.flexCssNode){
+            
+            
+            
+            NSLog(@"test -> dealloc %@",self.ref);
+            
+            delete self.flexCssNode;
+            
+            //  WeexCore::WXCoreLayoutNode::freeNodeTree(self.flexCssNode);
+            //self.flexCssNode = nullptr;
+        }
+    }
+//#endif
     
     // remove all gesture and all
     if (_tapGesture) {
@@ -498,13 +510,13 @@
     return _absolutePosition;
 }
 
-#ifndef USE_FLEX
+//#ifndef USE_FLEX
 - (css_node_t *)cssNode
 {
     return _cssNode;
 }
-#else
-#endif
+//#else
+//#endif
 
 - (void)_addEventParams:(NSDictionary *)params
 {
@@ -565,21 +577,28 @@
     if (_useCompositing || _isCompositingChild) {
         subcomponent->_isCompositingChild = YES;
     }
-#ifndef USE_FLEX
-#else
-    if (subcomponent->_isNeedJoinLayoutSystem) {
-         NSInteger actualIndex = [self getActualNodeIndex:subcomponent atIndex:index];
-        [self _insertChildCssNode:subcomponent atIndex:actualIndex];
-    }else{
-        NSLog(@"test -> no need JoinLayoutSystem parent ref:%@ type:%@, self ref:%@ type:%@ ",
-              self.ref,
-              self.type,
-              subcomponent.ref,
-              subcomponent.type
-              );
-        return;
+//#ifndef USE_FLEX
+    if(![WXComponent isUseFlex])
+    {
+        
     }
-#endif
+//#else
+    else
+    {
+        if (subcomponent->_isNeedJoinLayoutSystem) {
+            NSInteger actualIndex = [self getActualNodeIndex:subcomponent atIndex:index];
+            [self _insertChildCssNode:subcomponent atIndex:actualIndex];
+        }else{
+            NSLog(@"test -> no need JoinLayoutSystem parent ref:%@ type:%@, self ref:%@ type:%@ ",
+                  self.ref,
+                  self.type,
+                  subcomponent.ref,
+                  subcomponent.type
+                  );
+            return;
+        }
+    }
+//#endif
     
     [self _recomputeCSSNodeChildren];
     [self setNeedsLayout];
@@ -589,11 +608,16 @@
 {
     pthread_mutex_lock(&_propertyMutex);
     [_subcomponents removeObject:subcomponent];
-#ifndef USE_FLEX
-#else
-    //subcomponent->_isNeedJoinLayoutSystem = NO;
-    [self _rmChildCssNode:subcomponent];
-#endif
+//#ifndef USE_FLEX
+      if (![WXComponent isUseFlex]) {
+      }
+//#else
+    else
+    {
+        //subcomponent->_isNeedJoinLayoutSystem = NO;
+        [self _rmChildCssNode:subcomponent];
+    }
+//#endif
     pthread_mutex_unlock(&_propertyMutex);
 }
 

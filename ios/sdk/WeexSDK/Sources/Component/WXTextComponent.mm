@@ -26,6 +26,7 @@
 #import "WXRuleManager.h"
 #import "WXDefine.h"
 #import "WXView.h"
+#import "WXComponent+Layout.h"
 #import <pthread/pthread.h>
 #import <CoreText/CoreText.h>
 #import "WXComponent+Layout.h"
@@ -168,9 +169,12 @@ CGFloat WXTextDefaultLineThroughWidth = 1.2;
         [self fillCSSStyles:styles];
         [self fillAttributes:attributes];
     }
-#ifdef USE_FLEX
-    NSLog(@"test -> textView nod :%x",_flexCssNode);
-#endif
+
+//#ifdef USE_FLEX
+    if ([WXComponent isUseFlex]) {
+        NSLog(@"test -> textView nod :%x",_flexCssNode);
+    }
+//#endif
     
     return self;
 }
@@ -261,31 +265,38 @@ do {\
         _observerIconfont = YES;
     }
     
-#ifndef USE_FLEX
-    UIEdgeInsets padding = {
-        WXFloorPixelValue(self.cssNode->style.padding[CSS_TOP] + self.cssNode->style.border[CSS_TOP]),
-        WXFloorPixelValue(self.cssNode->style.padding[CSS_LEFT] + self.cssNode->style.border[CSS_LEFT]),
-        WXFloorPixelValue(self.cssNode->style.padding[CSS_BOTTOM] + self.cssNode->style.border[CSS_BOTTOM]),
-        WXFloorPixelValue(self.cssNode->style.padding[CSS_RIGHT] + self.cssNode->style.border[CSS_RIGHT])
-    };
-    
-    if (!UIEdgeInsetsEqualToEdgeInsets(padding, _padding)) {
-        _padding = padding;
-        [self setNeedsRepaint];
+//#ifndef USE_FLEX
+    if(![WXComponent isUseFlex])
+    {
+        UIEdgeInsets padding = {
+            WXFloorPixelValue(self.cssNode->style.padding[CSS_TOP] + self.cssNode->style.border[CSS_TOP]),
+            WXFloorPixelValue(self.cssNode->style.padding[CSS_LEFT] + self.cssNode->style.border[CSS_LEFT]),
+            WXFloorPixelValue(self.cssNode->style.padding[CSS_BOTTOM] + self.cssNode->style.border[CSS_BOTTOM]),
+            WXFloorPixelValue(self.cssNode->style.padding[CSS_RIGHT] + self.cssNode->style.border[CSS_RIGHT])
+        };
+        
+        if (!UIEdgeInsetsEqualToEdgeInsets(padding, _padding)) {
+            _padding = padding;
+            [self setNeedsRepaint];
+        }
     }
-#else
-    UIEdgeInsets flex_padding = {
-        WXFloorPixelValue(self.flexCssNode->getPaddingTop()+ self.flexCssNode->getBorderWidthTop()),
-        WXFloorPixelValue(self.flexCssNode->getPaddingLeft() + self.flexCssNode->getBorderWidthLeft()),
-        WXFloorPixelValue(self.flexCssNode->getPaddingBottom() + self.flexCssNode->getBorderWidthBottom()),
-        WXFloorPixelValue(self.flexCssNode->getPaddingRight() + self.flexCssNode->getBorderWidthRight())
-    };
-    
-    if (!UIEdgeInsetsEqualToEdgeInsets(flex_padding, _padding)) {
-        _padding = flex_padding;
-        [self setNeedsRepaint];
+  
+//#else
+    else
+    {
+        UIEdgeInsets flex_padding = {
+            WXFloorPixelValue(self.flexCssNode->getPaddingTop()+ self.flexCssNode->getBorderWidthTop()),
+            WXFloorPixelValue(self.flexCssNode->getPaddingLeft() + self.flexCssNode->getBorderWidthLeft()),
+            WXFloorPixelValue(self.flexCssNode->getPaddingBottom() + self.flexCssNode->getBorderWidthBottom()),
+            WXFloorPixelValue(self.flexCssNode->getPaddingRight() + self.flexCssNode->getBorderWidthRight())
+        };
+        
+        if (!UIEdgeInsetsEqualToEdgeInsets(flex_padding, _padding)) {
+            _padding = flex_padding;
+            [self setNeedsRepaint];
+        }
     }
-#endif
+//#endif
     
 }
 
@@ -366,23 +377,29 @@ do {\
         NSTextStorage *textStorage = nil;
         
         //TODO:more elegant way to use max and min constrained size
-#ifndef USE_FLEX
-        if (!isnan(weakSelf.cssNode->style.minDimensions[CSS_WIDTH])) {
-            constrainedSize.width = MAX(constrainedSize.width, weakSelf.cssNode->style.minDimensions[CSS_WIDTH]);
+//#ifndef USE_FLEX
+        if(![WXComponent isUseFlex])
+        {
+            if (!isnan(weakSelf.cssNode->style.minDimensions[CSS_WIDTH])) {
+                constrainedSize.width = MAX(constrainedSize.width, weakSelf.cssNode->style.minDimensions[CSS_WIDTH]);
+            }
+            
+            if (!isnan(weakSelf.cssNode->style.maxDimensions[CSS_WIDTH])) {
+                constrainedSize.width = MIN(constrainedSize.width, weakSelf.cssNode->style.maxDimensions[CSS_WIDTH]);
+            }
         }
-        
-        if (!isnan(weakSelf.cssNode->style.maxDimensions[CSS_WIDTH])) {
-            constrainedSize.width = MIN(constrainedSize.width, weakSelf.cssNode->style.maxDimensions[CSS_WIDTH]);
+//#else
+        else
+        {
+            if (!isnan(weakSelf.flexCssNode->getMinWidth())) {
+                constrainedSize.width = MAX(constrainedSize.width, weakSelf.flexCssNode->getMinWidth());
+            }
+            
+            if (!isnan(weakSelf.flexCssNode->getMaxWidth())) {
+                constrainedSize.width = MIN(constrainedSize.width, weakSelf.flexCssNode->getMaxWidth());
+            }
         }
-#else
-        if (!isnan(weakSelf.flexCssNode->getMinWidth())) {
-            constrainedSize.width = MAX(constrainedSize.width, weakSelf.flexCssNode->getMinWidth());
-        }
-        
-        if (!isnan(weakSelf.flexCssNode->getMaxWidth())) {
-            constrainedSize.width = MIN(constrainedSize.width, weakSelf.flexCssNode->getMaxWidth());
-        }
-#endif
+//#endif
         
         if (![self useCoreText]) {
             textStorage = [weakSelf textStorageWithWidth:constrainedSize.width];
@@ -392,40 +409,48 @@ do {\
         } else {
             computedSize = [weakSelf calculateTextHeightWithWidth:constrainedSize.width];
         }
-#ifndef USE_FLEX
-        //TODO:more elegant way to use max and min constrained size
-        if (!isnan(weakSelf.cssNode->style.minDimensions[CSS_WIDTH])) {
-            computedSize.width = MAX(computedSize.width, weakSelf.cssNode->style.minDimensions[CSS_WIDTH]);
+//#ifndef USE_FLEX
+        if(![WXComponent isUseFlex])
+        {
+            //TODO:more elegant way to use max and min constrained size
+            if (!isnan(weakSelf.cssNode->style.minDimensions[CSS_WIDTH])) {
+                computedSize.width = MAX(computedSize.width, weakSelf.cssNode->style.minDimensions[CSS_WIDTH]);
+            }
+            
+            if (!isnan(weakSelf.cssNode->style.maxDimensions[CSS_WIDTH])) {
+                computedSize.width = MIN(computedSize.width, weakSelf.cssNode->style.maxDimensions[CSS_WIDTH]);
+            }
+            
+            if (!isnan(weakSelf.cssNode->style.minDimensions[CSS_HEIGHT])) {
+                computedSize.height = MAX(computedSize.height, weakSelf.cssNode->style.minDimensions[CSS_HEIGHT]);
+            }
+            
+            if (!isnan(weakSelf.cssNode->style.maxDimensions[CSS_HEIGHT])) {
+                computedSize.height = MIN(computedSize.height, weakSelf.cssNode->style.maxDimensions[CSS_HEIGHT]);
+            }
         }
-        
-        if (!isnan(weakSelf.cssNode->style.maxDimensions[CSS_WIDTH])) {
-            computedSize.width = MIN(computedSize.width, weakSelf.cssNode->style.maxDimensions[CSS_WIDTH]);
+       
+//#else
+        else
+        {
+            if (!isnan(weakSelf.flexCssNode->getMinWidth())) {
+                computedSize.width = MAX(computedSize.width, weakSelf.flexCssNode->getMinWidth());
+            }
+            
+            if (!isnan(weakSelf.flexCssNode->getMaxWidth())) {
+                computedSize.width = MIN(computedSize.width, weakSelf.flexCssNode->getMaxWidth());
+            }
+            
+            if (!isnan(weakSelf.flexCssNode->getMinHeight())) {
+                computedSize.height = MAX(computedSize.height, weakSelf.flexCssNode->getMinHeight());
+            }
+            
+            if (!isnan(weakSelf.flexCssNode->getMaxHeight())) {
+                computedSize.height = MIN(computedSize.height, weakSelf.flexCssNode->getMaxHeight());
+            }
         }
-        
-        if (!isnan(weakSelf.cssNode->style.minDimensions[CSS_HEIGHT])) {
-            computedSize.height = MAX(computedSize.height, weakSelf.cssNode->style.minDimensions[CSS_HEIGHT]);
-        }
-        
-        if (!isnan(weakSelf.cssNode->style.maxDimensions[CSS_HEIGHT])) {
-            computedSize.height = MIN(computedSize.height, weakSelf.cssNode->style.maxDimensions[CSS_HEIGHT]);
-        }
-#else
-        if (!isnan(weakSelf.flexCssNode->getMinWidth())) {
-            computedSize.width = MAX(computedSize.width, weakSelf.flexCssNode->getMinWidth());
-        }
-        
-        if (!isnan(weakSelf.flexCssNode->getMaxWidth())) {
-            computedSize.width = MIN(computedSize.width, weakSelf.flexCssNode->getMaxWidth());
-        }
-        
-        if (!isnan(weakSelf.flexCssNode->getMinHeight())) {
-            computedSize.height = MAX(computedSize.height, weakSelf.flexCssNode->getMinHeight());
-        }
-        
-        if (!isnan(weakSelf.flexCssNode->getMaxHeight())) {
-            computedSize.height = MIN(computedSize.height, weakSelf.flexCssNode->getMaxHeight());
-        }
-#endif
+    
+//#endif
         if (textStorage && [WXUtility isBlankString:textStorage.string]) {
             //  if the text value is empty or nil, then set the height is 0.
             computedSize.height = 0;

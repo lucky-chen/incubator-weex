@@ -52,11 +52,17 @@
                 WXLogError(@"");
             }
         }
-#ifndef USE_FLEX
-        self.cssNode->style.position_type = CSS_POSITION_ABSOLUTE;
-#else
-        self.flexCssNode->setStylePositionType(WeexCore::kAbsolute);
-#endif
+//#ifndef USE_FLEX
+        if (![WXComponent isUseFlex]) {
+          self.cssNode->style.position_type = CSS_POSITION_ABSOLUTE;
+        }
+//#else
+        else
+        {
+            self.flexCssNode->setStylePositionType(WeexCore::kAbsolute);
+        }
+       
+//#endif
     }
     return self;
 }
