@@ -38,6 +38,8 @@
 #import "WXUtility.h"
 #import "WXExtendCallNativeManager.h"
 #import "WXExceptionUtils.h"
+#import "WXConfigCenterProtocol.h"
+#import "WXComponent+Layout.h"
 
 @implementation WXSDKEngine
 
@@ -242,6 +244,17 @@
         [self registerDefaults];
         [[WXSDKManager bridgeMgr] executeJsFramework:script];
     });
+    
+    //switch for use FlexEngin or yougaEngin
+    BOOL useFlexLayotEngin = YES;
+    id configCenter = [WXSDKEngine handlerForProtocol:@protocol(WXConfigCenterProtocol)];
+    if ([configCenter respondsToSelector:@selector(configForKey:defaultValue:isDefault:)]) {
+        NSString *str = [configCenter configForKey:@"iOS_weex_flex_layout_engin" defaultValue:@"true" isDefault:NULL];
+        useFlexLayotEngin = [str isEqualToString:@"true"];
+    }
+    [WXComponent setUseFlex:useFlexLayotEngin];
+//
+    
     
     WX_MONITOR_PERF_END(WXPTInitalizeSync)
     
