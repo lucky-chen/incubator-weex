@@ -253,6 +253,9 @@
         useFlexLayotEngin = [str isEqualToString:@"true"];
     }
     [WXComponent setUseFlex:useFlexLayotEngin];
+#ifdef DEBUG
+    NSLog(@"test -> layoutEngin :use flexEngin :%d",useFlexLayotEngin);
+#endif
 //
     
     
