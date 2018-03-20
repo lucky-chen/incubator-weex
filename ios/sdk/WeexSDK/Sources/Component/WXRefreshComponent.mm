@@ -52,11 +52,17 @@
                 WXLogError(@"");
             }
         }
-#ifndef USE_FLEX
-        self.cssNode->style.position_type = CSS_POSITION_ABSOLUTE;
-#else
-        self.flexCssNode->setStylePositionType(WeexCore::kAbsolute);
-#endif
+//#ifndef USE_FLEX
+        if (![WXComponent isUseFlex]) {
+          self.cssNode->style.position_type = CSS_POSITION_ABSOLUTE;
+        }
+//#else
+        else
+        {
+            self.flexCssNode->setStylePositionType(WeexCore::kAbsolute);
+        }
+       
+//#endif
     }
     return self;
 }
@@ -91,6 +97,7 @@
     if (!_refreshEvent || _displayState) {
         return;
     }
+    NSLog(@"test -> refreshComponent : refresh ref:%@",self.ref);
     [self fireEvent:@"refresh" params:nil];
 }
 
@@ -99,6 +106,7 @@
     if (!_pullingdownEvent) {
         return ;
     }
+    NSLog(@"test -> refreshComponent : pullingdown ,ref:%@",self.ref);
     
     [self fireEvent:@"pullingdown" params:param];
 }
@@ -129,6 +137,7 @@
 
 - (void)addEvent:(NSString *)eventName
 {
+    NSLog(@"test -> refreshComponent : addEvent %@ ,ref:%@",eventName,self.ref);
     if ([eventName isEqualToString:@"refresh"]) {
         _refreshEvent = YES;
     }
@@ -139,6 +148,7 @@
 
 - (void)removeEvent:(NSString *)evetName
 {
+    NSLog(@"test -> refreshComponent : removeEvent %@,ref:%@",evetName,self.ref);
     if ([evetName isEqualToString:@"refresh"]) {
         _refreshEvent = NO;
     }

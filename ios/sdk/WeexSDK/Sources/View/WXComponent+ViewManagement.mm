@@ -99,25 +99,10 @@ do {\
     if (subcomponent.displayType == WXDisplayTypeNone) {
         return;
     }
-    
-
-    CGRect parentFrame = self.view.layer.frame;
-    
-   
-    
+  
     WX_CHECK_COMPONENT_TYPE(self.componentType)
     if (subcomponent->_positionType == WXPositionTypeFixed) {
         [self.weexInstance.rootView addSubview:subcomponent.view];
-        
-        NSLog(@"test -> layer node:%@,ref:%@, frame%@ || parent:%@,ref:%@,frame%@",
-              subcomponent.type,
-              subcomponent.ref,
-              NSStringFromCGRect(subcomponent.view.layer.frame),
-              self.type,
-              self.ref,
-              NSStringFromCGRect(parentFrame)
-              );
-        
         return;
     }
     
@@ -128,16 +113,6 @@ do {\
     
     if (!subcomponent->_lazyCreateView || (self->_lazyCreateView && [self isViewLoaded])) {
         [self.view insertSubview:subcomponent.view atIndex:index];
-        
-        NSLog(@"test -> layer node lazy :%@,ref:%@, frame%@ || parent:%@,ref:%@,frame%@",
-              subcomponent.type,
-              subcomponent.ref,
-              NSStringFromCGRect(subcomponent.view.layer.frame),
-              self.type,
-              self.ref,
-              NSStringFromCGRect(parentFrame)
-              );
-        
     }
 }
 

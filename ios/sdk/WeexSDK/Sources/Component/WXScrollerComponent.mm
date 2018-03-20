@@ -140,28 +140,34 @@ WX_EXPORT_METHOD(@selector(resetLoadmore))
         _scrollable = attributes[@"scrollable"] ? [WXConvert BOOL:attributes[@"scrollable"]] : YES;
         _offsetAccuracy = attributes[@"offsetAccuracy"] ? [WXConvert WXPixelType:attributes[@"offsetAccuracy"] scaleFactor:self.weexInstance.pixelScaleFactor] : 0;
         
-#ifndef USE_FLEX
-        _scrollerCSSNode = new_css_node();
-        
-        // let scroller fill the rest space if it is a child component and has no fixed height & width
-        if (((_scrollDirection == WXScrollDirectionVertical &&
-            isUndefined(self.cssNode->style.dimensions[CSS_HEIGHT])) ||
-            (_scrollDirection == WXScrollDirectionHorizontal &&
-              isUndefined(self.cssNode->style.dimensions[CSS_WIDTH]))) &&
-             self.cssNode->style.flex <= 0.0) {
-            self.cssNode->style.flex = 1.0;
+//#ifndef USE_FLEX
+        if(![WXComponent isUseFlex])
+        {
+            _scrollerCSSNode = new_css_node();
+            
+            // let scroller fill the rest space if it is a child component and has no fixed height & width
+            if (((_scrollDirection == WXScrollDirectionVertical &&
+                  isUndefined(self.cssNode->style.dimensions[CSS_HEIGHT])) ||
+                 (_scrollDirection == WXScrollDirectionHorizontal &&
+                  isUndefined(self.cssNode->style.dimensions[CSS_WIDTH]))) &&
+                self.cssNode->style.flex <= 0.0) {
+                self.cssNode->style.flex = 1.0;
+            }
         }
-#else
-        _flexScrollerCSSNode = new WeexCore::WXCoreLayoutNode();
-        // let scroller fill the rest space if it is a child component and has no fixed height & width
-        if (((_scrollDirection == WXScrollDirectionVertical &&
-              flexIsUndefined(self.flexCssNode->getStyleHeight())) ||
-             (_scrollDirection == WXScrollDirectionHorizontal &&
-              flexIsUndefined(self.flexCssNode->getStyleWidth()))) &&
-            self.flexCssNode->getFlex() <= 0.0) {
-            self.flexCssNode->setFlex(1.0);
+//#else
+        else
+        {
+            _flexScrollerCSSNode = new WeexCore::WXCoreLayoutNode();
+            // let scroller fill the rest space if it is a child component and has no fixed height & width
+            if (((_scrollDirection == WXScrollDirectionVertical &&
+                  flexIsUndefined(self.flexCssNode->getStyleHeight())) ||
+                 (_scrollDirection == WXScrollDirectionHorizontal &&
+                  flexIsUndefined(self.flexCssNode->getStyleWidth()))) &&
+                self.flexCssNode->getFlex() <= 0.0) {
+                self.flexCssNode->setFlex(1.0);
+            }
         }
-#endif
+//#endif
         id configCenter = [WXSDKEngine handlerForProtocol:@protocol(WXConfigCenterProtocol)];
         if ([configCenter respondsToSelector:@selector(configForKey:defaultValue:isDefault:)]) {
             BOOL shouldNotifiAppearDescendantView = [[configCenter configForKey:@"iOS_weex_ext_config.shouldNotifiAppearDescendantView" defaultValue:@(YES) isDefault:NULL] boolValue];
@@ -237,17 +243,22 @@ WX_EXPORT_METHOD(@selector(resetLoadmore))
     ((UIScrollView *)_view).delegate = nil;
     [self.stickyArray removeAllObjects];
     [self.listenerArray removeAllObjects];
-#ifndef USE_FLEX
-    free(_scrollerCSSNode);
-#else
-    if(_flexScrollerCSSNode){
-        delete _flexScrollerCSSNode;
-        
-        //WeexCore::WXCoreLayoutNode::freeNodeTree(_flexScrollerCSSNode);
-        
-        _flexScrollerCSSNode=nullptr;
+//#ifndef USE_FLEX
+    if (![WXComponent isUseFlex]) {
+         free(_scrollerCSSNode);
     }
-#endif
+//#else
+    else
+    {
+        if(_flexScrollerCSSNode){
+            delete _flexScrollerCSSNode;
+            
+            //WeexCore::WXCoreLayoutNode::freeNodeTree(_flexScrollerCSSNode);
+            
+            _flexScrollerCSSNode=nullptr;
+        }
+    }
+//#endif
 }
 
 - (void)updateAttributes:(NSDictionary *)attributes
@@ -768,110 +779,103 @@ WX_EXPORT_METHOD(@selector(resetLoadmore))
      *  layout from children to scroller to get scroller's contentSize
      */
     if ([self needsLayout]) {
-#ifndef USE_FLEX
-        memcpy(_scrollerCSSNode, self.cssNode, sizeof(css_node_t));
-        _scrollerCSSNode->children_count = (int)[self childrenCountForScrollerLayout];
-        
-        _scrollerCSSNode->style.position[CSS_LEFT] = 0;
-        _scrollerCSSNode->style.position[CSS_TOP] = 0;
-        
-        if (_scrollDirection == WXScrollDirectionVertical) {
-            _scrollerCSSNode->style.flex_direction = CSS_FLEX_DIRECTION_COLUMN;
-            _scrollerCSSNode->style.dimensions[CSS_WIDTH] = _cssNode->layout.dimensions[CSS_WIDTH];
-            _scrollerCSSNode->style.dimensions[CSS_HEIGHT] = CSS_UNDEFINED;
-        } else {
-            _scrollerCSSNode->style.flex_direction = CSS_FLEX_DIRECTION_ROW;
-            _scrollerCSSNode->style.dimensions[CSS_HEIGHT] = _cssNode->layout.dimensions[CSS_HEIGHT];
-            _scrollerCSSNode->style.dimensions[CSS_WIDTH] = CSS_UNDEFINED;
-        }
-        
-        _scrollerCSSNode->layout.dimensions[CSS_WIDTH] = CSS_UNDEFINED;
-        _scrollerCSSNode->layout.dimensions[CSS_HEIGHT] = CSS_UNDEFINED;
-        
-        layoutNode(_scrollerCSSNode, CSS_UNDEFINED, CSS_UNDEFINED, CSS_DIRECTION_INHERIT);
-        if ([WXLog logLevel] >= WXLogLevelDebug) {
-            print_css_node(_scrollerCSSNode, (css_print_options_t)(CSS_PRINT_LAYOUT | CSS_PRINT_STYLE | CSS_PRINT_CHILDREN));
-        }
-        CGSize size = {
-            WXRoundPixelValue(_scrollerCSSNode->layout.dimensions[CSS_WIDTH]),
-            WXRoundPixelValue(_scrollerCSSNode->layout.dimensions[CSS_HEIGHT])
-        };
-
-        if (!CGSizeEqualToSize(size, _contentSize)) {
-            _contentSize = size;
-            [dirtyComponents addObject:self];
-        }
-        
-        _scrollerCSSNode->layout.dimensions[CSS_WIDTH] = CSS_UNDEFINED;
-        _scrollerCSSNode->layout.dimensions[CSS_HEIGHT] = CSS_UNDEFINED;
-#else
-        // can't use memcpy because of simple copy. but this seems has question.`~`
-//        _flexScrollerCSSNode->copyStyle(self.flexCssNode);
-//        _flexScrollerCSSNode->copyMeasureFunc(self.flexCssNode);
-        
-        //[self copyStyle];
-        //_flexScrollerCSSNode->setMeasureFunc(_flexCssNode->getMeasureFunc());
-        _flexScrollerCSSNode->copyStyle(_flexCssNode);
-        _flexScrollerCSSNode->copyMeasureFunc(_flexCssNode);
-        
-        if (_scrollDirection == WXScrollDirectionVertical) {
-            _flexScrollerCSSNode->setFlexDirection(WeexCore::kFlexDirectionColumn);
-            _flexScrollerCSSNode->setStyleWidth(self.flexCssNode->getLayoutWidth());
-            _flexScrollerCSSNode->setStyleHeight(FlexUndefined);
-        } else {
-            _flexScrollerCSSNode->setFlexDirection(WeexCore::kFlexDirectionRow);
-            _flexScrollerCSSNode->setStyleHeight(self.flexCssNode->getLayoutHeight());
-            _flexScrollerCSSNode->setStyleWidth(FlexUndefined);
-        }
-        
-       // _flexScrollerCSSNode->resetLayolsutResult();
-        _flexScrollerCSSNode->markDirty();
-        std::pair<float, float> renderPageSize;
-        renderPageSize.first = self.weexInstance.frame.size.width;
-        renderPageSize.second = self.weexInstance.frame.size.height;
-        _flexScrollerCSSNode->calculateLayout(renderPageSize);
-        if ([WXLog logLevel] >= WXLogLevelDebug) {
+//#ifndef USE_FLEX
+        if (![WXComponent isUseFlex]) {
+            memcpy(_scrollerCSSNode, self.cssNode, sizeof(css_node_t));
+            _scrollerCSSNode->children_count = (int)[self childrenCountForScrollerLayout];
             
+            _scrollerCSSNode->style.position[CSS_LEFT] = 0;
+            _scrollerCSSNode->style.position[CSS_TOP] = 0;
+            
+            if (_scrollDirection == WXScrollDirectionVertical) {
+                _scrollerCSSNode->style.flex_direction = CSS_FLEX_DIRECTION_COLUMN;
+                _scrollerCSSNode->style.dimensions[CSS_WIDTH] = _cssNode->layout.dimensions[CSS_WIDTH];
+                _scrollerCSSNode->style.dimensions[CSS_HEIGHT] = CSS_UNDEFINED;
+            } else {
+                _scrollerCSSNode->style.flex_direction = CSS_FLEX_DIRECTION_ROW;
+                _scrollerCSSNode->style.dimensions[CSS_HEIGHT] = _cssNode->layout.dimensions[CSS_HEIGHT];
+                _scrollerCSSNode->style.dimensions[CSS_WIDTH] = CSS_UNDEFINED;
+            }
+            
+            _scrollerCSSNode->layout.dimensions[CSS_WIDTH] = CSS_UNDEFINED;
+            _scrollerCSSNode->layout.dimensions[CSS_HEIGHT] = CSS_UNDEFINED;
+            
+            layoutNode(_scrollerCSSNode, CSS_UNDEFINED, CSS_UNDEFINED, CSS_DIRECTION_INHERIT);
+            if ([WXLog logLevel] >= WXLogLevelDebug) {
+                print_css_node(_scrollerCSSNode, (css_print_options_t)(CSS_PRINT_LAYOUT | CSS_PRINT_STYLE | CSS_PRINT_CHILDREN));
+            }
+            CGSize size = {
+                WXRoundPixelValue(_scrollerCSSNode->layout.dimensions[CSS_WIDTH]),
+                WXRoundPixelValue(_scrollerCSSNode->layout.dimensions[CSS_HEIGHT])
+            };
+            
+            if (!CGSizeEqualToSize(size, _contentSize)) {
+                _contentSize = size;
+                [dirtyComponents addObject:self];
+            }
+            
+            _scrollerCSSNode->layout.dimensions[CSS_WIDTH] = CSS_UNDEFINED;
+            _scrollerCSSNode->layout.dimensions[CSS_HEIGHT] = CSS_UNDEFINED;
         }
-        CGSize size = {
-            WXRoundPixelValue(_flexScrollerCSSNode->getLayoutWidth()),
-            WXRoundPixelValue(_flexScrollerCSSNode->getLayoutHeight())
-        };
-        
-        if (!CGSizeEqualToSize(size, _contentSize)) {
-            // content size
-            _contentSize = size;
-            [dirtyComponents addObject:self];
+      
+//#else
+        else
+        {
+            _flexScrollerCSSNode->copyStyle(_flexCssNode);
+            _flexScrollerCSSNode->copyMeasureFunc(_flexCssNode);
+            
+            if (_scrollDirection == WXScrollDirectionVertical) {
+                _flexScrollerCSSNode->setFlexDirection(WeexCore::kFlexDirectionColumn);
+                _flexScrollerCSSNode->setStyleWidth(self.flexCssNode->getLayoutWidth());
+                _flexScrollerCSSNode->setStyleHeight(FlexUndefined);
+            } else {
+                _flexScrollerCSSNode->setFlexDirection(WeexCore::kFlexDirectionRow);
+                _flexScrollerCSSNode->setStyleHeight(self.flexCssNode->getLayoutHeight());
+                _flexScrollerCSSNode->setStyleWidth(FlexUndefined);
+            }
+            _flexScrollerCSSNode->markDirty();
+            std::pair<float, float> renderPageSize;
+            renderPageSize.first = self.weexInstance.frame.size.width;
+            renderPageSize.second = self.weexInstance.frame.size.height;
+            _flexScrollerCSSNode->calculateLayout(renderPageSize);
+            CGSize size = {
+                WXRoundPixelValue(_flexScrollerCSSNode->getLayoutWidth()),
+                WXRoundPixelValue(_flexScrollerCSSNode->getLayoutHeight())
+            };
+            
+            if (!CGSizeEqualToSize(size, _contentSize)) {
+                // content size
+                _contentSize = size;
+                [dirtyComponents addObject:self];
+            }
         }
-        
-        
-#endif
+//#endif
     }
     
     [super _calculateFrameWithSuperAbsolutePosition:superAbsolutePosition gatherDirtyComponents:dirtyComponents];
 }
 
-#ifndef USE_FLEX
-#else
-//-(CGSize (^)(CGSize))measureBlock{
-//    //此时回传的_flexScrollerCSSNode里面包含的LayoutSize仅表示contentSize，具体FrameSize还需要计算
-//    __weak typeof(self) weakSelf = self;
-//    return ^CGSize (CGSize constrainedSize) {
-//        float constrainedWidth = constrainedSize.width;
-//        float constrainedHeight = constrainedSize.height;
-//        if (isnan(constrainedWidth)) {
-//            constrainedWidth = 0;
-//        }
-//        if (isnan(constrainedHeight)) {
-//            constrainedHeight = 0;
-//        }
-//        float weexInstanceHeight = CGRectGetHeight(weakSelf.weexInstance.frame);
-//        float frameHeight = constrainedHeight > weexInstanceHeight ? weexInstanceHeight - weakSelf.flexScrollerCSSNode->getLayoutPositionTop():constrainedHeight;
-//        CGSize actualSize = CGSizeMake(constrainedWidth, frameHeight);
-//        return actualSize;
-//    };
-//}
-#endif
+//#ifndef USE_FLEX
+//#else
+////-(CGSize (^)(CGSize))measureBlock{
+////    //此时回传的_flexScrollerCSSNode里面包含的LayoutSize仅表示contentSize，具体FrameSize还需要计算
+////    __weak typeof(self) weakSelf = self;
+////    return ^CGSize (CGSize constrainedSize) {
+////        float constrainedWidth = constrainedSize.width;
+////        float constrainedHeight = constrainedSize.height;
+////        if (isnan(constrainedWidth)) {
+////            constrainedWidth = 0;
+////        }
+////        if (isnan(constrainedHeight)) {
+////            constrainedHeight = 0;
+////        }
+////        float weexInstanceHeight = CGRectGetHeight(weakSelf.weexInstance.frame);
+////        float frameHeight = constrainedHeight > weexInstanceHeight ? weexInstanceHeight - weakSelf.flexScrollerCSSNode->getLayoutPositionTop():constrainedHeight;
+////        CGSize actualSize = CGSizeMake(constrainedWidth, frameHeight);
+////        return actualSize;
+////    };
+////}
+//#endif
 
 
 

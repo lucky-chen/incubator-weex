@@ -21,12 +21,12 @@
 
 @implementation WXScrollerComponent (FlexLayout)
 
-#ifndef USE_FLEX
+//#ifndef USE_FLEX
 - (css_node_t *)scrollerCSSNode
 {
     return _scrollerCSSNode;
 }
-#else
+//#else
 - (WeexCore::WXCoreLayoutNode *)flexScrollerCSSNode{
     return _flexScrollerCSSNode;
 }
@@ -48,5 +48,5 @@
     NSLog(@"test -> ref:%@ ,scrollerCSSNode->removeChild ,childRef:%@",self.ref,subcomponent.ref);
 }
 
-#endif
+//#endif
 @end

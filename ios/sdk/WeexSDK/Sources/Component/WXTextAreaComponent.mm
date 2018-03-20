@@ -76,39 +76,49 @@ typedef UITextView WXTextAreaView;
         
         CGSize computedSize = [[[NSString alloc] init]sizeWithAttributes:@{NSFontAttributeName:[UIFont systemFontOfSize:weakSelf.textView.font.pointSize]}];
         computedSize.height = _rows? computedSize.height *weakSelf.rows + (CorrectY + CorrectY/2):0;
-#ifndef USE_FLEX
-        if (!isnan(weakSelf.cssNode->style.minDimensions[CSS_WIDTH])) {
-            computedSize.width = MAX(computedSize.width, weakSelf.cssNode->style.minDimensions[CSS_WIDTH]);
+//#ifndef USE_FLEX
+        
+         if (![WXComponent isUseFlex])
+         {
+             if (!isnan(weakSelf.cssNode->style.minDimensions[CSS_WIDTH])) {
+                 computedSize.width = MAX(computedSize.width, weakSelf.cssNode->style.minDimensions[CSS_WIDTH]);
+             }
+             
+             if (!isnan(weakSelf.cssNode->style.maxDimensions[CSS_WIDTH])) {
+                 computedSize.width = MIN(computedSize.width, weakSelf.cssNode->style.maxDimensions[CSS_WIDTH]);
+             }
+             
+             if (!isnan(weakSelf.cssNode->style.minDimensions[CSS_HEIGHT])) {
+                 computedSize.height = MAX(computedSize.height, weakSelf.cssNode->style.minDimensions[CSS_HEIGHT]);
+             }
+             
+             if (!isnan(weakSelf.cssNode->style.maxDimensions[CSS_HEIGHT])) {
+                 computedSize.height = MIN(computedSize.height, weakSelf.cssNode->style.maxDimensions[CSS_HEIGHT]);
+             }
+         }
+       
+//#else
+        
+        else
+        {
+            if (!isnan(weakSelf.flexCssNode->getMinWidth())) {
+                computedSize.width = MAX(computedSize.width, weakSelf.flexCssNode->getMinWidth());
+            }
+            
+            if (!isnan(weakSelf.flexCssNode->getMaxWidth())) {
+                computedSize.width = MIN(computedSize.width, weakSelf.flexCssNode->getMaxWidth());
+            }
+            
+            if (!isnan(weakSelf.flexCssNode->getMinHeight())) {
+                computedSize.height = MAX(computedSize.height, weakSelf.flexCssNode->getMinHeight());
+            }
+            
+            if (!isnan(weakSelf.flexCssNode->getMaxHeight())) {
+                computedSize.height = MIN(computedSize.height, weakSelf.flexCssNode->getMaxHeight());
+            }
         }
         
-        if (!isnan(weakSelf.cssNode->style.maxDimensions[CSS_WIDTH])) {
-            computedSize.width = MIN(computedSize.width, weakSelf.cssNode->style.maxDimensions[CSS_WIDTH]);
-        }
-        
-        if (!isnan(weakSelf.cssNode->style.minDimensions[CSS_HEIGHT])) {
-            computedSize.height = MAX(computedSize.height, weakSelf.cssNode->style.minDimensions[CSS_HEIGHT]);
-        }
-        
-        if (!isnan(weakSelf.cssNode->style.maxDimensions[CSS_HEIGHT])) {
-            computedSize.height = MIN(computedSize.height, weakSelf.cssNode->style.maxDimensions[CSS_HEIGHT]);
-        }
-#else
-        if (!isnan(weakSelf.flexCssNode->getMinWidth())) {
-            computedSize.width = MAX(computedSize.width, weakSelf.flexCssNode->getMinWidth());
-        }
-        
-        if (!isnan(weakSelf.flexCssNode->getMaxWidth())) {
-            computedSize.width = MIN(computedSize.width, weakSelf.flexCssNode->getMaxWidth());
-        }
-        
-        if (!isnan(weakSelf.flexCssNode->getMinHeight())) {
-            computedSize.height = MAX(computedSize.height, weakSelf.flexCssNode->getMinHeight());
-        }
-        
-        if (!isnan(weakSelf.flexCssNode->getMaxHeight())) {
-            computedSize.height = MIN(computedSize.height, weakSelf.flexCssNode->getMaxHeight());
-        }
-#endif
+//#endif
         return (CGSize) {
             WXCeilPixelValue(computedSize.width),
             WXCeilPixelValue(computedSize.height)
