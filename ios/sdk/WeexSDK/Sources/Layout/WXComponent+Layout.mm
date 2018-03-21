@@ -201,7 +201,6 @@ static BOOL sUseFlex = TRUE;
                            gatherDirtyComponents:(NSMutableSet<WXComponent *> *)dirtyComponents
 {
     WXAssertComponentThread();
-    
 
 //#ifndef USE_FLEX
     if (![WXComponent isUseFlex])
@@ -224,8 +223,6 @@ static BOOL sUseFlex = TRUE;
             [dirtyComponents addObject:self];
         }
         
-        CGPoint newAbsolutePosition = [self computeNewAbsolutePosition:superAbsolutePosition];
-        
         _cssNode->layout.dimensions[CSS_WIDTH] = CSS_UNDEFINED;
         _cssNode->layout.dimensions[CSS_HEIGHT] = CSS_UNDEFINED;
         _cssNode->layout.position[CSS_LEFT] = 0;
@@ -234,7 +231,7 @@ static BOOL sUseFlex = TRUE;
         [self _frameDidCalculated:isFrameChanged];
         NSArray * subcomponents = [_subcomponents copy];
         for (WXComponent *subcomponent in subcomponents) {
-            [subcomponent _calculateFrameWithSuperAbsolutePosition:newAbsolutePosition gatherDirtyComponents:dirtyComponents];
+            [subcomponent _calculateFrameWithSuperAbsolutePosition:superAbsolutePosition gatherDirtyComponents:dirtyComponents];
         }
         NSLog(@"test -> newFrame ,type:%@,ref:%@, parentRef:%@,size :%@ ,instance:%@",self.type,self.ref,self.supercomponent.ref,NSStringFromCGRect(newFrame),self.weexInstance.instanceId);
     }
@@ -242,45 +239,35 @@ static BOOL sUseFlex = TRUE;
 //#else
     else
     {
-        if (!self.flexCssNode->hasNewLayout()) {
-            return;
-        }
-        self.flexCssNode->setHasNewLayout(false);
-        _isLayoutDirty = NO;
-        
-        CGRect newFrame = CGRectMake(
-                                     isnan(WXRoundPixelValue(_flexCssNode->getLayoutPositionLeft()))?0:WXRoundPixelValue(_flexCssNode->getLayoutPositionLeft())
-                                     ,isnan(WXRoundPixelValue(_flexCssNode->getLayoutPositionTop()))?0:WXRoundPixelValue(_flexCssNode->getLayoutPositionTop())
-                                     ,isnan(WXRoundPixelValue(_flexCssNode->getLayoutWidth()))?0:WXRoundPixelValue(_flexCssNode->getLayoutWidth())
-                                     ,isnan(WXRoundPixelValue(_flexCssNode->getLayoutHeight()))?0:WXRoundPixelValue(_flexCssNode->getLayoutHeight())
-                                     );
-        BOOL isFrameChanged = NO;
-        
-        if (!CGRectEqualToRect(newFrame, _calculatedFrame)) {
+        if (self.flexCssNode->hasNewLayout()) {
+            self.flexCssNode->setHasNewLayout(false);
+            _isLayoutDirty = NO;
+            CGRect newFrame = CGRectMake(
+                                         isnan(WXRoundPixelValue(_flexCssNode->getLayoutPositionLeft()))?0:WXRoundPixelValue(_flexCssNode->getLayoutPositionLeft())
+                                         ,isnan(WXRoundPixelValue(_flexCssNode->getLayoutPositionTop()))?0:WXRoundPixelValue(_flexCssNode->getLayoutPositionTop())
+                                         ,isnan(WXRoundPixelValue(_flexCssNode->getLayoutWidth()))?0:WXRoundPixelValue(_flexCssNode->getLayoutWidth())
+                                         ,isnan(WXRoundPixelValue(_flexCssNode->getLayoutHeight()))?0:WXRoundPixelValue(_flexCssNode->getLayoutHeight())
+                                         );
+            BOOL isFrameChanged = NO;
             
-            isFrameChanged = YES;
-            _calculatedFrame = newFrame;
-            [dirtyComponents addObject:self];
+            if (!CGRectEqualToRect(newFrame, _calculatedFrame)) {
+                
+                isFrameChanged = YES;
+                _calculatedFrame = newFrame;
+                [dirtyComponents addObject:self];
+            }
+            
+            [self _frameDidCalculated:isFrameChanged];
+            
+            NSLog(@"test -> newFrame ,type:%@,ref:%@, parentRef:%@,size :%@ ,instance:%@",self.type,self.ref,self.supercomponent.ref,NSStringFromCGRect(newFrame),self.weexInstance.instanceId);
         }
-        
-        CGPoint newAbsolutePosition = [self computeNewAbsolutePosition:superAbsolutePosition];
-        
-        //_flexCssNode->resetLayolsutResult();
-        
-        [self _frameDidCalculated:isFrameChanged];
+    
         NSArray * subcomponents = [_subcomponents copy];
         for (WXComponent *subcomponent in subcomponents) {
-            [subcomponent _calculateFrameWithSuperAbsolutePosition:newAbsolutePosition gatherDirtyComponents:dirtyComponents];
+            [subcomponent _calculateFrameWithSuperAbsolutePosition:superAbsolutePosition gatherDirtyComponents:dirtyComponents];
         }
-        NSLog(@"test -> newFrame ,type:%@,ref:%@, parentRef:%@,size :%@ ,instance:%@",self.type,self.ref,self.supercomponent.ref,NSStringFromCGRect(newFrame),self.weexInstance.instanceId);
     }
 //#endif
-}
-
-- (CGPoint)computeNewAbsolutePosition:(CGPoint)superAbsolutePosition
-{
-    // Not need absolutePosition any more
-    return superAbsolutePosition;
 }
 
 - (void)_layoutDidFinish
