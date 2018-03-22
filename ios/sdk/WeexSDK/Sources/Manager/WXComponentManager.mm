@@ -196,7 +196,7 @@ static NSThread *WXComponentThread;
         if (_rootFlexCSSNode) {
             [self _applyRootFrame:frame];
             if (!_rootComponent.styles[@"width"]) {
-                _rootComponent.flexCssNode->setStyleWidth(frame.size.width ?:FlexUndefined);
+                _rootComponent.flexCssNode->setStyleWidth(frame.size.width ?:FlexUndefined,NO);
             }
             if (!_rootComponent.styles[@"height"]) {
                 _rootComponent.flexCssNode->setStyleHeight(frame.size.height ?:FlexUndefined);
@@ -221,7 +221,7 @@ static NSThread *WXComponentThread;
 - (void)_applyRootFrame:(CGRect)rootFrame{
     _rootFlexCSSNode->setStylePosition(WeexCore::kPositionEdgeLeft, self.weexInstance.frame.origin.x);
     _rootFlexCSSNode->setStylePosition(WeexCore::kPositionEdgeTop, self.weexInstance.frame.origin.y);
-    _rootFlexCSSNode->setStyleWidth(self.weexInstance.frame.size.width ?: FlexUndefined);
+    _rootFlexCSSNode->setStyleWidth(self.weexInstance.frame.size.width ?: FlexUndefined,NO);
     _rootFlexCSSNode->setStyleHeight(self.weexInstance.frame.size.height ?: FlexUndefined);
 }
 //#endif

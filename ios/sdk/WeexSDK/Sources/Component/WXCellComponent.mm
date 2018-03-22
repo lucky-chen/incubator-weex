@@ -148,7 +148,7 @@
     else
     {
         if (self.delegate && (flexIsUndefined(self.flexCssNode->getStyleWidth()) || _isUseContainerWidth)) {
-            self.flexCssNode->setStyleWidth([self.delegate containerWidthForLayout:self]);
+            self.flexCssNode->setStyleWidth([self.delegate containerWidthForLayout:self],NO);
             _isUseContainerWidth = YES;
         }
         

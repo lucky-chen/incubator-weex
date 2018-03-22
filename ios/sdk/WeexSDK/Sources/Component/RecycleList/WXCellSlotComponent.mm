@@ -89,7 +89,7 @@ static const NSString *WXDefaultRecycleTemplateType = @"WXDefaultRecycleTemplate
     else
     {
         if (flexIsUndefined(self.flexCssNode->getStyleWidth())) {
-            self.flexCssNode->setStyleWidth(((WXScrollerComponent *)(self.supercomponent)).flexScrollerCSSNode->getStyleWidth());
+            self.flexCssNode->setStyleWidth(((WXScrollerComponent *)(self.supercomponent)).flexScrollerCSSNode->getStyleWidth(),NO);
         }
         
         if ([self needsLayout]) {

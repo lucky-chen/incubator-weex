@@ -84,7 +84,7 @@ static BOOL sUseFlex = TRUE;
         _cssNode->context = (__bridge void *)self;
         
         [self _recomputeCSSNodeChildren];
-        [self _fillCSSNode:styles];
+        [self _fillCSSNode:styles isUpdate:NO];
         
         // To be in conformity with Android/Web, hopefully remove this in the future.
         if ([self.ref isEqualToString:WX_SDK_ROOT_REF]) {
@@ -107,7 +107,7 @@ static BOOL sUseFlex = TRUE;
         }
         _flexCssNode->setContext((__bridge void *)self);
         [self _recomputeCSSNodeChildren];
-        [self _fillCSSNode:styles];
+        [self _fillCSSNode:styles isUpdate:NO];
         
         if ([self.ref isEqualToString:WX_SDK_ROOT_REF]) {
             if (flexIsUndefined(_flexCssNode->getStyleHeight()) && self.weexInstance.frame.size.height) {
@@ -115,7 +115,7 @@ static BOOL sUseFlex = TRUE;
             }
             
             if (flexIsUndefined(_flexCssNode->getStyleWidth()) && self.weexInstance.frame.size.width) {
-                _flexCssNode->setStyleWidth(self.weexInstance.frame.size.width);
+                _flexCssNode->setStyleWidth(self.weexInstance.frame.size.width,NO);
             }
         }
     }
@@ -124,7 +124,7 @@ static BOOL sUseFlex = TRUE;
 
 - (void)_updateCSSNodeStyles:(NSDictionary *)styles
 {
-    [self _fillCSSNode:styles];
+    [self _fillCSSNode:styles isUpdate:YES];
 }
 
 -(void)_resetCSSNodeStyles:(NSArray *)styles
@@ -325,7 +325,7 @@ do {\
     return [WXConvert WXPixelType:value scaleFactor:self.weexInstance.pixelScaleFactor];
 }
 
-- (void)_fillCSSNode:(NSDictionary *)styles
+- (void)_fillCSSNode:(NSDictionary *)styles isUpdate:(BOOL)isUpdate
 {
 //#ifndef USE_FLEX
     if(![WXComponent isUseFlex])
@@ -426,19 +426,22 @@ do {\
         
         // dimension
         if (styles[@"width"]) {
-            _flexCssNode->setStyleWidth([self judgePropValuePropValue:styles[@"width"] defaultValue:NAN]);
+            _flexCssNode->setStyleWidth([self judgePropValuePropValue:styles[@"width"] defaultValue:NAN]
+                                        ,isUpdate);
         }
         if (styles[@"height"]) {
             _flexCssNode->setStyleHeight([self judgePropValuePropValue:styles[@"height"] defaultValue:NAN]);
         }
         if (styles[@"minWidth"]) {
-            _flexCssNode->setMinWidth([self judgePropValuePropValue:styles[@"minWidth"] defaultValue:NAN]);
+            _flexCssNode->setMinWidth([self judgePropValuePropValue:styles[@"minWidth"] defaultValue:NAN]
+                                      ,isUpdate);
         }
         if (styles[@"minHeight"]) {
             _flexCssNode->setMinHeight([self judgePropValuePropValue:styles[@"minHeight"] defaultValue:NAN]);
         }
         if (styles[@"maxWidth"]) {
-            _flexCssNode->setMaxWidth([self judgePropValuePropValue:styles[@"maxWidth"] defaultValue:NAN]);
+            _flexCssNode->setMaxWidth([self judgePropValuePropValue:styles[@"maxWidth"] defaultValue:NAN]
+                                      ,isUpdate);
         }
         if (styles[@"maxHeight"]) {
             _flexCssNode->setMaxHeight([self judgePropValuePropValue:styles[@"maxHeight"] defaultValue:NAN]);

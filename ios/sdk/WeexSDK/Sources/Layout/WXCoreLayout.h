@@ -470,6 +470,84 @@ namespace WeexCore {
       return std::make_pair(needsReexpand, childSizeAlongMainAxis);
     }
 
+    void layoutFlexlineHorizontal(const float width,
+                                  const WXCoreFlexLine *const flexLine,
+                                  float &childLeft,
+                                  float &childRight,
+                                  float &spaceBetweenItem) const {
+      Index visibleCount, visibleItem;
+      float denominator;
+      switch (mCssStyle->mJustifyContent) {
+        case kJustifyFlexEnd:
+          childLeft = width - flexLine->mMainSize - getPaddingRight() - getBorderWidthRight();
+          childRight = width - getPaddingLeft() - getBorderWidthLeft();
+          break;
+        case kJustifyCenter:
+          childLeft = (width - flexLine->mMainSize - mCssStyle->sumPaddingBorderOfEdge(kRight) + mCssStyle->sumPaddingBorderOfEdge(kLeft)) / 2;
+          childRight = childLeft + flexLine->mMainSize;
+          break;
+        case kJustifySpaceAround:
+          visibleCount = flexLine->mItemCount;
+          if (visibleCount != 0) {
+            spaceBetweenItem = (width - flexLine->mMainSize - sumPaddingBorderAlongAxis(this, true)) / visibleCount;
+          }
+          childLeft = getPaddingLeft() + getBorderWidthLeft() + spaceBetweenItem / 2.f;
+          childRight = width - getPaddingRight() - getBorderWidthRight() - spaceBetweenItem / 2.f;
+          break;
+        case kJustifySpaceBetween:
+          childLeft = getPaddingLeft() + getBorderWidthLeft();
+          visibleItem = flexLine->mItemCount;
+          denominator = visibleItem != 1 ? visibleItem - 1 : 1.f;
+          spaceBetweenItem = (width - flexLine->mMainSize - sumPaddingBorderAlongAxis(this, true)) / denominator;
+          childRight = width - getPaddingRight() - getBorderWidthRight();
+          break;
+        case kJustifyFlexStart:
+        default:
+          childLeft = getPaddingLeft() + getBorderWidthLeft();
+          childRight = width - getPaddingRight() - getBorderWidthRight();
+          break;
+      }
+    }
+
+    void layoutFlexlineVertical(const float height,
+                                const WXCoreFlexLine *const flexLine,
+                                float &childTop,
+                                float &childBottom,
+                                float &spaceBetweenItem) const {
+      Index visibleCount,visibleItem;
+      float denominator;
+      switch (mCssStyle->mJustifyContent) {
+        case kJustifyFlexEnd:
+          childTop = height - flexLine->mMainSize - getPaddingBottom() - getBorderWidthBottom();
+          childBottom = height - getPaddingTop() - getBorderWidthTop();
+          break;
+        case kJustifyCenter:
+          childTop = (height - flexLine->mMainSize - mCssStyle->sumPaddingBorderOfEdge(kBottom) + mCssStyle->sumPaddingBorderOfEdge(kTop)) / 2;
+          childBottom = childTop + flexLine->mMainSize;
+          break;
+        case kJustifySpaceAround:
+          visibleCount = flexLine->mItemCount;
+          if (visibleCount != 0) {
+            spaceBetweenItem = (height - flexLine->mMainSize- sumPaddingBorderAlongAxis(this, false) ) / visibleCount;
+          }
+          childTop = getPaddingTop() + getBorderWidthTop() + spaceBetweenItem / 2;
+          childBottom = height - getPaddingBottom() - getBorderWidthBottom() - spaceBetweenItem / 2;
+          break;
+        case kJustifySpaceBetween:
+          childTop = getPaddingTop() + getBorderWidthTop();
+          visibleItem = flexLine->mItemCount;
+          denominator = visibleItem != 1 ? visibleItem - 1 : 1.f;
+          spaceBetweenItem = (height - flexLine->mMainSize - sumPaddingBorderAlongAxis(this, false)) / denominator;
+          childBottom = height - getPaddingBottom() - getBorderWidthBottom();
+          break;
+        case kJustifyFlexStart:
+        default:
+          childTop = getPaddingTop() + getBorderWidthTop();
+          childBottom = height - getPaddingBottom() - getBorderWidthBottom();
+          break;
+      }
+    }
+
     /** ================================ other =================================== **/
 
     inline void clearDirty() {
@@ -769,10 +847,13 @@ namespace WeexCore {
       return mCssStyle->mStyleWidthLevel;
     }
 
-    inline void setStyleWidth(const float width) {
+    inline void setStyleWidth(const float width, const bool updating) {
       if (mCssStyle->mStyleWidth != width) {
         mCssStyle->mStyleWidth = width;
         markDirty();
+        if(updating) {
+          markChildrenDirty(true);
+        }
       }
     }
 
@@ -791,10 +872,13 @@ namespace WeexCore {
       return mCssStyle->mStyleHeight;
     }
 
-    inline void setMinWidth(const float minWidth) {
+    inline void setMinWidth(const float minWidth, const bool updating) {
       if (mCssStyle->mMinWidth != minWidth) {
         mCssStyle->mMinWidth = minWidth;
         markDirty();
+        if(updating) {
+          markChildrenDirty(true);
+        }
       }
     }
 
@@ -802,10 +886,13 @@ namespace WeexCore {
       return mCssStyle->mMinWidth;
     }
 
-    inline void setMaxWidth(const float maxWidth) {
+    inline void setMaxWidth(const float maxWidth, const bool updating) {
       if (mCssStyle->mMaxWidth != maxWidth) {
         mCssStyle->mMaxWidth = maxWidth;
         markDirty();
+        if(updating) {
+          markChildrenDirty(true);
+        }
       }
     }
 
@@ -944,6 +1031,25 @@ namespace WeexCore {
           getParent()->markDirty();
         }
       }
+    }
+
+    bool markChildrenDirty(const bool updatedNode = false) {
+      bool ret = false;
+      if(getChildCount() == 0){
+        if(measureFunc!= nullptr){
+          ret = true;
+        }
+      }
+      else {
+        //isnan(mCssStyle->mStyleWidth) XOR updatedNode
+        if(isnan(mCssStyle->mStyleWidth) != updatedNode){
+          for (auto it = ChildListIterBegin(); it != ChildListIterEnd(); it++) {
+            ret = ((*it)->markChildrenDirty() || ret) ;
+          }
+        }
+      }
+      dirty = ret || dirty;
+      return ret;
     }
 
     inline void setHasNewLayout(const bool hasNewLayout) {

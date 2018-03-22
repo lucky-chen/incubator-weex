@@ -89,7 +89,7 @@
     else
     {
         if (self.delegate && ( isnan(self.flexCssNode->getStyleWidth()) || _isUseContainerWidth)) {
-            self.flexCssNode->setStyleWidth([self.delegate headerWidthForLayout:self]);
+            self.flexCssNode->setStyleWidth([self.delegate headerWidthForLayout:self],NO);
             //TODO: set _isUseContainerWidth to NO if updateStyles have width
             _isUseContainerWidth = YES;
         }

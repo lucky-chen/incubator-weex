@@ -55,7 +55,7 @@
 //#else
         else
         {
-            self.flexCssNode->setStyleWidth(51);
+            self.flexCssNode->setStyleWidth(51,NO);
             self.flexCssNode->setStyleHeight(31);
         }
 //#endif

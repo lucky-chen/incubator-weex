@@ -826,12 +826,12 @@ WX_EXPORT_METHOD(@selector(resetLoadmore))
             
             if (_scrollDirection == WXScrollDirectionVertical) {
                 _flexScrollerCSSNode->setFlexDirection(WeexCore::kFlexDirectionColumn);
-                _flexScrollerCSSNode->setStyleWidth(self.flexCssNode->getLayoutWidth());
+                _flexScrollerCSSNode->setStyleWidth(self.flexCssNode->getLayoutWidth(),NO);
                 _flexScrollerCSSNode->setStyleHeight(FlexUndefined);
             } else {
                 _flexScrollerCSSNode->setFlexDirection(WeexCore::kFlexDirectionRow);
                 _flexScrollerCSSNode->setStyleHeight(self.flexCssNode->getLayoutHeight());
-                _flexScrollerCSSNode->setStyleWidth(FlexUndefined);
+                _flexScrollerCSSNode->setStyleWidth(FlexUndefined,NO);
             }
             _flexScrollerCSSNode->markDirty();
             std::pair<float, float> renderPageSize;
