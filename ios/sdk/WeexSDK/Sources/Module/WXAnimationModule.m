@@ -336,26 +336,7 @@ WX_EXPORT_METHOD(@selector(transition:args:callback:))
        but they don’t allow you to specify your own cubic Bézier curve. 
        CATransaction can be used instead to force these animations to use the supplied CAMediaTimingFunction to pace animations.
      **/
-    
-     NSMutableDictionary *resetArgs = [[NSMutableDictionary alloc] init];
-    NSNumber *durationDouble = [[NSNumber alloc] initWithDouble:0];
-    
-    for (NSString *key in args) {
-        if ([@"duration" isEqualToString:key]) {
-            [resetArgs setObject:durationDouble forKey:@"duration"];
-        }else{
-            [resetArgs setObject:[args objectForKey:key] forKey:key];
-        }
-    }
-    
-    args =(NSDictionary *)resetArgs;
-    
-   
-    
-    NSLog(@"test -> animation :ref:%@,type:%@,styles:%@",targetComponent.ref,targetComponent.type,targetComponent.styles);
-     NSLog(@"test -> animation :ref:%@, animaArgs:%@",targetComponent.ref,args);
-    
-    
+     
     [CATransaction begin];
     [CATransaction setAnimationTimingFunction:[WXConvert CAMediaTimingFunction:args[@"timingFunction"]]];
     [CATransaction setCompletionBlock:^{
