@@ -19,6 +19,7 @@
 
 #import <Foundation/Foundation.h>
 #import "WXSDKInstance.h"
+#import "WXAnalyzerProtocol.h"
 
 #define WXTNetworkHanding          @"loadJS"
 #define WXTExecJS                  @"execJS"
@@ -153,4 +154,10 @@ typedef enum : NSUInteger {
  *  @param instanceId the instanceId.
  */
 +(void)destroyTraincgTaskWithInstance:(NSString *)instanceId;
+
+//performance data analyzer
++ (NSMutableArray<WXAnalyzerProtocol> *) getAnalyzerList;
++ (void) addWxAnalyzer:(id<WXAnalyzerProtocol>)handler;
++(void) rmWxAnalyzer:(id<WXAnalyzerProtocol>)handler;
+
 @end

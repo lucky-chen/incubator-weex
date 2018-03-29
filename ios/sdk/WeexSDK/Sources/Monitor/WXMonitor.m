@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -28,6 +28,8 @@
 #import "WXThreadSafeMutableDictionary.h"
 #import "WXAppConfiguration.h"
 #import "WXTracingManager.h"
+#import "WXAnalyzerProtocol.h"
+#import "WXAnalyzerDataTransfer.h"
 
 NSString *const kStartKey = @"start";
 NSString *const kEndKey = @"end";
@@ -38,12 +40,16 @@ NSString *const kEndKey = @"end";
 
 static WXThreadSafeMutableDictionary *globalPerformanceDict;
 
+
 + (void)performancePoint:(WXPerformanceTag)tag willStartWithInstance:(WXSDKInstance *)instance
 {
     NSMutableDictionary *performanceDict = [self performanceDictForInstance:instance];
     NSMutableDictionary *dict = [[NSMutableDictionary alloc] initWithCapacity:2];
     dict[kStartKey] = @(CACurrentMediaTime() * 1000);
     performanceDict[@(tag)] = dict;
+    [dict setValue:@(tag) forKey:@"tag"];
+    
+    //[self announceAllAnlyzerToHandle:dict withTag:tag instance:instance];
 }
 
 + (void)performancePoint:(WXPerformanceTag)tag didEndWithInstance:(WXSDKInstance *)instance
@@ -61,10 +67,12 @@ static WXThreadSafeMutableDictionary *globalPerformanceDict;
     }
     
     dict[kEndKey] = @(CACurrentMediaTime() * 1000);
-    
-//    if (tag == WXPTAllRender) {
-//        [self performanceFinish:instance];
-//    }
+#ifdef DEBUG
+    [self announceAllAnlyzerToHandle:dict withTag:tag instance:instance];
+#endif
+    //    if (tag == WXPTAllRender) {
+    //        [self performanceFinish:instance];
+    //    }
 }
 
 + (void)performancePoint:(WXPerformanceTag)tag didSetValue:(double)value withInstance:(WXSDKInstance *)instance
@@ -77,6 +85,8 @@ static WXThreadSafeMutableDictionary *globalPerformanceDict;
     dict[kStartKey] = @(0);
     dict[kEndKey] = @(value);
     performanceDict[@(tag)] = dict;
+    
+    [self monitorMeasureRealTime:instance withKey:@"tag" andValue:value];
 }
 
 + (BOOL)performancePoint:(WXPerformanceTag)tag isRecordedWithInstance:(WXSDKInstance *)instance
@@ -88,6 +98,11 @@ static WXThreadSafeMutableDictionary *globalPerformanceDict;
     
     NSMutableDictionary *dict = performanceDict[@(tag)];
     return dict && dict[kStartKey] && dict[kEndKey];
+}
+
++ (NSMutableDictionary *)collectC:(WXSDKInstance *)instance
+{
+    
 }
 
 + (void)performanceFinish:(WXSDKInstance *)instance
@@ -131,15 +146,20 @@ static WXThreadSafeMutableDictionary *globalPerformanceDict;
             commitDict[WXCUSTOMMONITORINFO] = instance.userInfo[WXCUSTOMMONITORINFO];
         }
     }
+    
     WXPerformBlockOnComponentThread(^{
         commitDict[COMPONENTCOUNT] = @([instance numberOfComponents]);
         WXPerformBlockOnMainThread(^{
-            [self commitPerformanceWithDict:commitDict instance:instance];
+#ifdef DEBUG
+        [self commitPerformanceWithDict:commitDict instance:instance isDebug:true];
+#else
+        [self commitPerformanceWithDict:commitDict instance:instance isDebug:false];
+#endif
         });
     });
 }
 
-+ (void)commitPerformanceWithDict:(NSMutableDictionary *)commitDict instance:(WXSDKInstance *)instance
++ (void)commitPerformanceWithDict:(NSMutableDictionary *)commitDict instance:(WXSDKInstance *)instance isDebug:(bool) debug
 {
     static NSDictionary *commitKeyDict;
     static dispatch_once_t onceToken;
@@ -193,14 +213,15 @@ static WXThreadSafeMutableDictionary *globalPerformanceDict;
     else {
         commitDict[FSRENDERTIME] = @"-1";
     }
-    
-    id<WXAppMonitorProtocol> appMonitor = [WXHandlerFactory handlerForProtocol:@protocol(WXAppMonitorProtocol)];
-    if (appMonitor && [appMonitor respondsToSelector:@selector(commitAppMonitorArgs:)]){
-        [appMonitor commitAppMonitorArgs:commitDict];
+    if (!debug) {
+        id<WXAppMonitorProtocol> appMonitor = [WXHandlerFactory handlerForProtocol:@protocol(WXAppMonitorProtocol)];
+        if (appMonitor && [appMonitor respondsToSelector:@selector(commitAppMonitorArgs:)]){
+            [appMonitor commitAppMonitorArgs:commitDict];
+        }
+        
+        [self printPerformance:commitDict];
+        [WXTracingManager commitTracingSummaryInfo:commitDict withInstanceId:instance.instanceId];
     }
-    
-    [self printPerformance:commitDict];
-    [WXTracingManager commitTracingSummaryInfo:commitDict withInstanceId:instance.instanceId];
 }
 
 + (NSMutableDictionary *)performanceDictForInstance:(WXSDKInstance *)instance
@@ -209,6 +230,7 @@ static WXThreadSafeMutableDictionary *globalPerformanceDict;
     if (!instance) {
         if (!globalPerformanceDict) {
             globalPerformanceDict = [WXThreadSafeMutableDictionary dictionary];
+            
         }
         performanceDict = globalPerformanceDict;
     } else {
@@ -270,4 +292,15 @@ static WXThreadSafeMutableDictionary *globalPerformanceDict;
     }
 }
 
++(void) monitorDimenRealTime:(WXSDKInstance *)instance withKey:(NSString *)key andValue:(double)value
+{
+    
+}
+
++ (void) monitorMeasureRealTime:(WXSDKInstance *)instance withKey:(NSString *)key andValue:(double)value
+{
+    
+}
+
 @end
+

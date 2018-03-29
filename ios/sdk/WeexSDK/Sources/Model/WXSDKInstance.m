@@ -327,7 +327,9 @@ typedef enum : NSUInteger {
         }
         
         [strongSelf _renderWithMainBundleString:jsBundleString];
+        [WXAnalyzerDataTransfer transData:weakSelf.instanceId withState:AfterRequest];
         [WXTracingManager setBundleJSType:jsBundleString instanceId:weakSelf.instanceId];
+    
     };
     
     _mainBundleLoader.onFailed = ^(NSError *loadError) {

@@ -2,89 +2,88 @@
 #import "WXAnalyzerDataTransfer.h"
 #import "WXAnalyzerProtocol.h"
 #import "WXUtility.h"
-#import "WXHandlerFactory.h"
+#import "WXTracingManager.h"
+#import "WXLog.h"
+#import "WXSDKManager.h"
 
 @implementation WXAnalyzerDataTransfer
 
-//+ (void)transDataAfterDownLoad:(WXSDKInstance *)instance
-//{
-//    if (![self hasAnalyzer] || NULL == instance) {
-//        return;
-//    }
-//
-//    [self transMeasureValue:instance.instanceId withUrl:[instance.scriptURL absoluteString]
-//                    withKey:JSTEMPLATESIZE withValue:instance.performanceDict[JSTEMPLATESIZE]];
-//    [self transMeasureValue:instance.instanceId withUrl:[instance.scriptURL absoluteString]
-//                    withKey:NETWORKTIME withValue:instance.performanceDict[NETWORKTIME]];
-//
-//    [self transDimenValue:instance.instanceId withUrl:[instance.scriptURL absoluteString]
-//                    withKey:CACHETYPE withValue:instance.performanceDict[CACHETYPE]];
-//    [self transDimenValue:instance.instanceId withUrl:[instance.scriptURL absoluteString]
-//                  withKey:WXREQUESTTYPE withValue:instance.performanceDict[WXREQUESTTYPE]];
-//    [self transDimenValue:instance.instanceId withUrl:[instance.scriptURL absoluteString]
-//                  withKey:NETWORKTYPE withValue:instance.performanceDict[NETWORKTYPE]];
-//    [self transDimenValue:instance.instanceId withUrl:[instance.scriptURL absoluteString]
-//                  withKey:PAGENAME withValue:instance.performanceDict[PAGENAME]];
-//
-//}
-//
-//+(void) transDataAfterFirstScreen:(WXSDKInstance *)instance
-//{
-//    if (![self hasAnalyzer] || NULL == instance) {
-//        return;
-//    }
-//
-//    [self transMeasureValue:instance.instanceId withUrl:[instance.scriptURL absoluteString]
-//                    withKey:FSRENDERTIME withValue:instance.performanceDict[FSRENDERTIME]];
-//    [self transMeasureValue:instance.instanceId withUrl:[instance.scriptURL absoluteString]
-//                    withKey:JSLIBINITTIME withValue:instance.performanceDict[JSLIBINITTIME]];
-//    [self transMeasureValue:instance.instanceId withUrl:[instance.scriptURL absoluteString]
-//                    withKey:JSLIBINITTIME withValue:instance.performanceDict[JSLIBINITTIME]];
-//
-//
-//}
-//
-//+(void) transDataAfterExit:(WXSDKInstance *)instance
-//{
-//    if (![self hasAnalyzer] || NULL == instance) {
-//        return;
-//    }
-//}
 
-+(void) transDimenValue:(NSString *)instansId withUrl:(NSString *)url withKey:key withValue:(id)value
++ (void) transData:(WXSDKInstance *)instance withState:(WXPerformanceState)state
 {
-    if (![self hasAnalyzer]) {
+    if(![self needTransfer])
+    {
         return;
     }
-    NSDictionary *dic= @{
-                         @"instanceId":instansId,
-                         @"url":url,
-                         key:value
-                         };
-    NSString *jsonData =[WXUtility JSONString:dic];
-    [self _transDataToAnaylzer:GROUP_ANALYZER withModule:MODULE_PERFORMANCE withType:@"dimen_real_time" jsonData:jsonData];
+    switch (state) {
+        case AfterRequest:
+            [self transDataAfterRequest:instance];
+            break;
+        case AfterCreateFinish:
+            [self transDataAfterCreateFinsh:instance];
+            break;
+        case AfterExit:
+            [self transDataAfterExit:instance];
+            break;
+        default:
+            WXLogDebug(@"unknow WXPerformanceState :%ld",state);
+            break;
+    }
 }
 
-+(void) transMeasureValue:(NSString *)instansId withUrl:(NSString *)url withKey:key withValue:(id)value
++ (void) transDataAfterRequest:(WXSDKInstance *)instance
 {
-    if (![self hasAnalyzer]) {
+    
+}
+
++ (void) transDataAfterCreateFinsh:(WXSDKInstance *)instance
+{
+    
+}
+
++ (void) transDataAfterExit:(WXSDKInstance *)instance
+{
+    
+}
+
+
+
+
++(BOOL) needTransfer
+{
+    return true;
+}
+
++ (void) transDimenValueWithInstanceId:(NSString *)instansId data:(NSDictionary *)data
+{
+    if (![self needTransfer]) {
         return;
     }
-    NSDictionary *dic= @{
-                         @"instanceId":instansId,
-                         @"url":url,
-                         key:value
-                         };
+ 
+    
+    
+    
+//    NSString *jsonData =[WXUtility JSONString:dic];
+//    jsonData = [jsonData stringByReplacingOccurrencesOfString:@"\n" withString:@""];
+    [self _transDataToAnaylzer:GROUP_ANALYZER withModule:MODULE_PERFORMANCE withType:@"dimen_real_time" data];
+}
+
++ (void) transMeasureValueWithInstanceId:(NSString*)instansId url:(NSString *)url data:(NSDictionary *)data
+{
+    if (![self needTransfer]) {
+        return;
+    }
+    NSMutableDictionary *dic = [data mutableCopy];
+    [dic setValue:instansId forKey:@"instanceId"];
+    [dic setValue:url forKey:@"url"];
+    NSInteger tag = [data[@"tag"] integerValue];
     NSString *jsonData =[WXUtility JSONString:dic];
-    [self _transDataToAnaylzer:GROUP_ANALYZER withModule:MODULE_PERFORMANCE withType:@"measure_real_time" jsonData:jsonData];
+    jsonData = [jsonData stringByReplacingOccurrencesOfString:@"\n" withString:@""];
+    [self _transDataToAnaylzer:GROUP_ANALYZER withModule:MODULE_PERFORMANCE withType:@"measure_real_time" tag:tag jsonData:jsonData];
 }
 
 +(void)transErrorInfo:(WXJSExceptionInfo *)errorInfo
 {
-    if (![self hasAnalyzer]) {
-        return;
-    }
-    
     NSDictionary *dic= @{
                          @"instanceId":errorInfo.instanceId,
                          @"url":errorInfo.bundleUrl,
@@ -94,36 +93,37 @@
                          };
     
     NSString *jsonData =[WXUtility JSONString:dic];
+    jsonData = [jsonData stringByReplacingOccurrencesOfString:@"\n" withString:@""];
     [self _transDataToAnaylzer:GROUP_ANALYZER withModule:MODULE_ERROR withType:@"js" jsonData:jsonData];
 }
 
++ (void) _transDataToAnaylzer:(NSString *)group withModule:(NSString*)module withType:(NSString *)type jsonData:(NSString *)jsonData{
+    [self _transDataToAnaylzer:GROUP_ANALYZER withModule:MODULE_ERROR withType:@"js" tag:NSIntegerMax jsonData:jsonData];
+}
 
-+ (void) _transDataToAnaylzer:(NSString *)group withModule:(NSString*)module withType:(NSString *)type jsonData:(NSString *)jsonData
++ (void) _transDataToAnaylzer:(NSString *)group withModule:(NSString*)module withType:(NSString *)type withValue:(NSDictionary *) dic
 {
     NSLog(@"test -> transDataToAnaylzer module%@,withType:%@,jsonData:%@",module,type,jsonData);
-    NSMutableArray* analyzerList = [WXHandlerFactory getAnalyzerList];
+    NSMutableArray* analyzerList = [WXTracingManager getAnalyzerList];
     if (nil == analyzerList || analyzerList.count <= 0) {
         return;
     }
-    NSDictionary* dic = @{
-                          @"group":group,
-                          @"module":module,
-                          @"type":type,
-                          @"data":jsonData
-                          };
+    NSMutableDictionary *dic = [[NSMutableDictionary alloc] init];
+    [dic setValue:group forKey:@"group"];
+    [dic setValue:module forKey:@"module"];
+    [dic setValue:type forKey:@"type"];
+    [dic setValue:jsonData forKey:@"data"];
+    if (tag!= NSIntegerMax) {
+        [dic setValue:@(tag) forKey:@"tag"];
+    }
     
     for (id analyzer in analyzerList) {
         if ( [analyzer respondsToSelector:(@selector(transfer:))])
         {
             [analyzer performSelector:@selector(transfer:) withObject:dic];
         }
-        
     }
 }
 
-+ (BOOL) hasAnalyzer
-{
-    return true;
-}
 
 @end

@@ -47,6 +47,8 @@
 @property (nonatomic, strong) NSMutableDictionary *tracingTasks;  // every instance have a task
 @property (nonatomic, copy) NSString *currentInstanceId;  // every instance have a task
 
+@property (nonatomic, strong) NSMutableArray<WXAnalyzerProtocol> *analyzerList;
+
 @end
 
 @implementation WXTracingManager
@@ -68,6 +70,8 @@
     self = [super init];
     if(self){
         self.isTracing = NO;
+        
+        self.analyzerList = [[NSMutableArray<WXAnalyzerProtocol> alloc] init];
     }
     
     return self;
@@ -291,7 +295,7 @@
     if(tracings && [tracings count]>0){
         for (NSInteger i = [tracings count] - 1; i >= 0; i--) {
             WXTracing *t = tracings[i];
-//            if([t.threadName isEqualToString:WXTJSBridgeThread]&& [self compareRef:tracing.ref withTracing:t] && ([t.name isEqualToString:tracing.name] || [t.name isEqualToString:WXTJSCall])){
+            //            if([t.threadName isEqualToString:WXTJSBridgeThread]&& [self compareRef:tracing.ref withTracing:t] && ([t.name isEqualToString:tracing.name] || [t.name isEqualToString:WXTJSCall])){
             if([t.threadName isEqualToString:WXTJSBridgeThread]&& [self compareRef:tracing.ref withTracing:t]){
                 if([t.fName isEqualToString:tracing.fName]){
                     return (NSInteger)t.traceId;
@@ -362,7 +366,7 @@
                 tracing.parentId = [self getParentId:task tracing:tracing];
             }
         }
-    
+        
     }
     if([WXTracingEnd isEqualToString:tracing.ph]){  // deal end
         NSMutableArray *tracings = task.tracings;
@@ -411,7 +415,7 @@
 {
     if(![self isTracing]){
         return @{};
-     }
+    }
     NSMutableDictionary *dict = [NSMutableDictionary new];
     NSMutableArray *componetArray = [NSMutableArray new];
     NSMutableArray *moduleArray = [NSMutableArray new];
@@ -504,5 +508,28 @@
         [[WXTracingManager sharedInstance].tracingTasks removeObjectForKey:instanceId];
     }
 }
+
+
++ (NSMutableArray *) getAnalyzerList
+{
+    return [WXTracingManager sharedInstance].analyzerList;
+}
+
++ (void) addWxAnalyzer:(id)handler
+{
+    if (!handler) {
+        return;
+    }
+    [[WXTracingManager sharedInstance].analyzerList addObject:handler];
+}
+
++(void) rmWxAnalyzer:(id)handler
+{
+    if (!handler) {
+        return;
+    }
+    [[WXTracingManager sharedInstance].analyzerList removeObject:handler];
+}
+
 
 @end

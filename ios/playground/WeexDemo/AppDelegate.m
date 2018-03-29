@@ -37,6 +37,10 @@
 #import "WXConfigCenterDefaultImpl.h"
 #import "WXNavigationHandlerImpl.h"
 
+#ifdef DEBUG
+#import "DebugAnalyzer.h"
+#endif
+
 @interface AppDelegate ()
 @end
 
@@ -124,6 +128,9 @@
     [WXSDKEngine registerModule:@"titleBar" withClass:NSClassFromString(@"WXTitleBarModule")];
     [WXSDKEngine registerExtendCallNative:@"test" withClass:NSClassFromString(@"WXExtendCallNativeTest")];
     [WXSDKEngine registerModule:@"ext" withClass:[WXExtModule class]];
+#ifdef DEBUG
+    [WXTracingManager addWxAnalyzer:[DebugAnalyzer new]];
+#endif
     
 #if !(TARGET_IPHONE_SIMULATOR)
     [self checkUpdate];

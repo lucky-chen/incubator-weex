@@ -25,7 +25,7 @@
 #import "WXJSExceptionInfo.h"
 #import "WXUtility.h"
 #import "WXSDKManager.h"
-
+#import "WXAnalyzerDataTransfer.h"
 
 @implementation WXExceptionUtils
 
@@ -52,6 +52,7 @@
     if ([jsExceptionHandler respondsToSelector:@selector(onJSException:)]) {
         [jsExceptionHandler onJSException:jsExceptionInfo];
     }
+    [WXAnalyzerDataTransfer transErrorInfo:jsExceptionInfo];
 }
 
 @end
