@@ -35,7 +35,18 @@ typedef enum : NSUInteger {
     WXPTFirstScreenRender,
     WXPTAllRender,
     WXPTBundleSize,
-    WXPTEnd
+    WXPTEnd,
+    //new point
+    WXPTFsCallJsTime,
+    WXPTFsCallJsNum,
+    WXPTFsCallNativeTime,
+    WXPTFsCallNativeNum,
+    WXPTFsCallEventNum,
+    WXPTFsReqNetNum,
+    WXPTCellExceedNum,
+    WXPTMaxDeepVDom,
+    WXPTImgWrongSizeNum,
+    WXPTTimerNum
 } WXPerformanceTag;
 
 typedef enum : NSUInteger {
@@ -75,5 +86,9 @@ NSError *error = [NSError errorWithDomain:WX_ERROR_DOMAIN \
 
 + (void)monitoringPointDidSuccess:(WXMonitorTag)tag onPage:(NSString *)pageName;
 + (void)monitoringPoint:(WXMonitorTag)tag didFailWithError:(NSError *)error onPage:(NSString *)pageName;
+
+#ifdef DEBUG
++ (void)performanceFinishDebug:(WXSDKInstance *)instance;
+#endif
 
 @end

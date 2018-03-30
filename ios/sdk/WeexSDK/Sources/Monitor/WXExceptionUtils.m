@@ -25,7 +25,11 @@
 #import "WXJSExceptionInfo.h"
 #import "WXUtility.h"
 #import "WXSDKManager.h"
+
+#ifdef DEBUG
 #import "WXAnalyzerDataTransfer.h"
+#endif
+
 
 @implementation WXExceptionUtils
 
@@ -52,7 +56,9 @@
     if ([jsExceptionHandler respondsToSelector:@selector(onJSException:)]) {
         [jsExceptionHandler onJSException:jsExceptionInfo];
     }
+#ifdef DEBUG
     [WXAnalyzerDataTransfer transErrorInfo:jsExceptionInfo];
+#endif
 }
 
 @end

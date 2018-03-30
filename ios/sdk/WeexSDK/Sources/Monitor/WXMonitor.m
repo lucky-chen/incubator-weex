@@ -29,7 +29,10 @@
 #import "WXAppConfiguration.h"
 #import "WXTracingManager.h"
 #import "WXAnalyzerProtocol.h"
+
+#ifdef DEBUG
 #import "WXAnalyzerDataTransfer.h"
+#endif
 
 NSString *const kStartKey = @"start";
 NSString *const kEndKey = @"end";
@@ -68,7 +71,7 @@ static WXThreadSafeMutableDictionary *globalPerformanceDict;
     
     dict[kEndKey] = @(CACurrentMediaTime() * 1000);
 #ifdef DEBUG
-    [self announceAllAnlyzerToHandle:dict withTag:tag instance:instance];
+    //[self announceAllAnlyzerToHandle:dict withTag:tag instance:instance];
 #endif
     //    if (tag == WXPTAllRender) {
     //        [self performanceFinish:instance];
@@ -100,12 +103,19 @@ static WXThreadSafeMutableDictionary *globalPerformanceDict;
     return dict && dict[kStartKey] && dict[kEndKey];
 }
 
-+ (NSMutableDictionary *)collectC:(WXSDKInstance *)instance
+#ifdef DEBUG
++ (void)performanceFinishDebug:(WXSDKInstance *)instance
 {
-    
+    [self performanceFinishInternal:instance monitorCommit:NO];
 }
+#endif
 
 + (void)performanceFinish:(WXSDKInstance *)instance
+{
+    [self performanceFinishInternal:instance monitorCommit:YES];
+}
+
++ (void)performanceFinishInternal:(WXSDKInstance *)instance monitorCommit:(BOOL)appMonitor
 {
     NSMutableDictionary *commitDict = [NSMutableDictionary dictionary];
     
@@ -150,19 +160,16 @@ static WXThreadSafeMutableDictionary *globalPerformanceDict;
     WXPerformBlockOnComponentThread(^{
         commitDict[COMPONENTCOUNT] = @([instance numberOfComponents]);
         WXPerformBlockOnMainThread(^{
-#ifdef DEBUG
-        [self commitPerformanceWithDict:commitDict instance:instance isDebug:true];
-#else
-        [self commitPerformanceWithDict:commitDict instance:instance isDebug:false];
-#endif
+            [self commitPerformanceWithDict:commitDict instance:instance monitorCommit:appMonitor];
         });
     });
 }
 
-+ (void)commitPerformanceWithDict:(NSMutableDictionary *)commitDict instance:(WXSDKInstance *)instance isDebug:(bool) debug
++ (void)commitPerformanceWithDict:(NSMutableDictionary *)commitDict instance:(WXSDKInstance *)instance monitorCommit:(BOOL) monitorCommit
 {
     static NSDictionary *commitKeyDict;
     static dispatch_once_t onceToken;
+
     dispatch_once(&onceToken, ^{
         // non-standard perf commit names, remove this hopefully.
         commitKeyDict = @{
@@ -174,7 +181,15 @@ static WXThreadSafeMutableDictionary *globalPerformanceDict;
                           @(WXFirstScreenJSFExecuteTime) : FIRSETSCREENJSFEXECUTETIME,
                           @(WXPTFirstScreenRender) : SCREENRENDERTIME,
                           @(WXPTAllRender) : TOTALTIME,
-                          @(WXPTBundleSize) : JSTEMPLATESIZE
+                          @(WXPTBundleSize) : JSTEMPLATESIZE,
+                           @(WXPTFsCallJsTime): M_FS_CALL_JS_TIME,
+                           @(WXPTFsCallJsNum): M_FS_CALL_JS_TIME,
+                           @(WXPTFsCallNativeTime): M_FS_CALL_NATIVE_TIME,
+                           @(WXPTFsCallNativeNum): M_FS_CALL_NATIVE_NUM,
+                           @(WXPTFsCallEventNum): M_FS_CALL_EVENT_NUM,
+                           @(WXPTMaxDeepVDom): M_MAX_DEEP_VDOM,
+                           @(WXPTImgWrongSizeNum): M_IMG_WRONG_SIZE_NUM,
+                           @(WXPTTimerNum): M_TIMER_NUM
                           };
     });
     
@@ -213,7 +228,11 @@ static WXThreadSafeMutableDictionary *globalPerformanceDict;
     else {
         commitDict[FSRENDERTIME] = @"-1";
     }
-    if (!debug) {
+#ifdef DEBUG
+    [WXAnalyzerDataTransfer transData:instance.instanceId data:commitDict];
+#endif
+    if(monitorCommit)
+    {
         id<WXAppMonitorProtocol> appMonitor = [WXHandlerFactory handlerForProtocol:@protocol(WXAppMonitorProtocol)];
         if (appMonitor && [appMonitor respondsToSelector:@selector(commitAppMonitorArgs:)]){
             [appMonitor commitAppMonitorArgs:commitDict];

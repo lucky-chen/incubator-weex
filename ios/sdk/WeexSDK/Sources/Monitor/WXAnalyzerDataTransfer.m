@@ -1,51 +1,117 @@
 #import <Foundation/Foundation.h>
 #import "WXAnalyzerDataTransfer.h"
 #import "WXAnalyzerProtocol.h"
-#import "WXUtility.h"
-#import "WXTracingManager.h"
-#import "WXLog.h"
+#import "WXAppMonitorProtocol.h"
 #import "WXSDKManager.h"
 
 @implementation WXAnalyzerDataTransfer
 
 
-+ (void) transData:(WXSDKInstance *)instance withState:(WXPerformanceState)state
++ (void) transData:(NSString *)instanceId data:(NSDictionary *)data
 {
+    WXSDKInstance *instance = [WXSDKManager instanceForID:instanceId];
+    if (!instance) {
+        return;
+    }
+
     if(![self needTransfer])
     {
         return;
     }
-    switch (state) {
-        case AfterRequest:
-            [self transDataAfterRequest:instance];
-            break;
-        case AfterCreateFinish:
-            [self transDataAfterCreateFinsh:instance];
-            break;
-        case AfterExit:
-            [self transDataAfterExit:instance];
-            break;
-        default:
-            WXLogDebug(@"unknow WXPerformanceState :%ld",state);
-            break;
+    static NSSet *commitDimenKeys;
+    static NSSet *commitMeasureKeys;
+    static dispatch_once_t onceToken;
+    
+    dispatch_once(&onceToken, ^{
+        // non-standard perf commit names, remove this hopefully.
+        commitDimenKeys =[NSSet setWithObjects:
+                          BIZTYPE,
+                          PAGENAME,
+                          WXSDKVERSION,
+                          JSLIBVERSION,
+                          JSLIBSIZE,
+                          WXREQUESTTYPE,
+                          WXCONNECTIONTYPE,
+                          NETWORKTYPE,
+                          CACHETYPE,
+                          WXCUSTOMMONITORINFO,
+                          nil
+                        ];
+        commitMeasureKeys =[NSSet setWithObjects:
+                            SDKINITTIME,
+                            SDKINITINVOKETIME,
+                            JSLIBINITTIME,
+                            JSTEMPLATESIZE,
+                            NETWORKTIME,
+                            COMMUNICATETIME,
+                            SCREENRENDERTIME,
+                            TOTALTIME,
+                            FIRSETSCREENJSFEXECUTETIME,
+                            CALLCREATEINSTANCETIME,
+                            COMMUNICATETOTALTIME,
+                            FSRENDERTIME,
+                            COMPONENTCOUNT,
+                            CACHEPROCESSTIME,
+                            CACHERATIO,
+                            M_FS_CALL_JS_TIME,
+                            M_FS_CALL_JS_NUM,
+                            M_FS_CALL_NATIVE_TIME,
+                            M_FS_CALL_NATIVE_NUM,
+                            M_FS_CALL_EVENT_NUM,
+                            M_CELL_EXCEED_NUM,
+                            M_MAX_DEEP_VDOM,
+                            M_IMG_WRONG_SIZE_NUM,
+                            M_TIMER_NUM,
+                            nil
+                        ];
+      
+    });
+    
+    for (NSString *key in data) {
+        if (nil == key) {
+            continue;
+        }
+        if ([commitDimenKeys containsObject:key]) {
+            [self _transDimenValueWithInstanceId:instance withData:@{key:[data objectForKey:key]}];
+        }else if([commitMeasureKeys containsObject:key]){
+            [self _transMeasureValueWithInstanceId:instance withData:@{key:[data objectForKey:key]}];
+        }else{
+            //...
+        }
     }
 }
 
-+ (void) transDataAfterRequest:(WXSDKInstance *)instance
+
++ (void) _transMeasureValueWithInstanceId:(WXSDKInstance *)instance withData:(NSDictionary *)data
 {
-    
+    [self _transDataToAnaylzer:instance
+                        withModule:MODULE_PERFORMANCE
+                        withType:TYPE_MEASURE_REAL
+                        withData:data
+     ];
 }
 
-+ (void) transDataAfterCreateFinsh:(WXSDKInstance *)instance
++ (void) _transDimenValueWithInstanceId:(WXSDKInstance *)instance withData:(NSDictionary *)data
 {
-    
+    [self _transDataToAnaylzer:instance
+                        withModule:MODULE_PERFORMANCE
+                        withType:TYPE_DIMEN_REAL
+                        withData:data
+     ];
 }
 
-+ (void) transDataAfterExit:(WXSDKInstance *)instance
+
++(void) _transDataToAnaylzer:(WXSDKInstance *)instance withModule:(NSString *)module  withType:(NSString *)type withData:(NSDictionary *)data
 {
     
+    //    NSString *jsonData =[WXUtility JSONString:dic];
+    //    jsonData = [jsonData stringByReplacingOccurrencesOfString:@"\n" withString:@""];\\
+    
+    NSMutableDictionary *wrapDic = [data mutableCopy];
+    [wrapDic setObject:instance.instanceId forKey:@"instanceId"];
+    [wrapDic setObject:[instance.scriptURL absoluteString] forKey:@"url"];
+    NSLog(@"test -> val:%@",wrapDic);
 }
-
 
 
 
@@ -54,76 +120,27 @@
     return true;
 }
 
-+ (void) transDimenValueWithInstanceId:(NSString *)instansId data:(NSDictionary *)data
-{
-    if (![self needTransfer]) {
-        return;
-    }
- 
-    
-    
-    
-//    NSString *jsonData =[WXUtility JSONString:dic];
-//    jsonData = [jsonData stringByReplacingOccurrencesOfString:@"\n" withString:@""];
-    [self _transDataToAnaylzer:GROUP_ANALYZER withModule:MODULE_PERFORMANCE withType:@"dimen_real_time" data];
-}
-
-+ (void) transMeasureValueWithInstanceId:(NSString*)instansId url:(NSString *)url data:(NSDictionary *)data
-{
-    if (![self needTransfer]) {
-        return;
-    }
-    NSMutableDictionary *dic = [data mutableCopy];
-    [dic setValue:instansId forKey:@"instanceId"];
-    [dic setValue:url forKey:@"url"];
-    NSInteger tag = [data[@"tag"] integerValue];
-    NSString *jsonData =[WXUtility JSONString:dic];
-    jsonData = [jsonData stringByReplacingOccurrencesOfString:@"\n" withString:@""];
-    [self _transDataToAnaylzer:GROUP_ANALYZER withModule:MODULE_PERFORMANCE withType:@"measure_real_time" tag:tag jsonData:jsonData];
-}
 
 +(void)transErrorInfo:(WXJSExceptionInfo *)errorInfo
 {
+    if (!errorInfo) {
+        return;
+    }
+    WXSDKInstance *instance = [WXSDKManager instanceForID:errorInfo.instanceId];
+    if (!instance) {
+        return;
+    }
     NSDictionary *dic= @{
-                         @"instanceId":errorInfo.instanceId,
-                         @"url":errorInfo.bundleUrl,
                          @"errorCode":errorInfo.errorCode,
                          @"errorGroup":@"",
                          @"errorMsg":errorInfo.exception
                          };
     
-    NSString *jsonData =[WXUtility JSONString:dic];
-    jsonData = [jsonData stringByReplacingOccurrencesOfString:@"\n" withString:@""];
-    [self _transDataToAnaylzer:GROUP_ANALYZER withModule:MODULE_ERROR withType:@"js" jsonData:jsonData];
+    [self _transDataToAnaylzer:instance
+                    withModule:MODULE_ERROR
+                      withType:TYPE_JS_ERROR
+                      withData:dic
+     ];
 }
-
-+ (void) _transDataToAnaylzer:(NSString *)group withModule:(NSString*)module withType:(NSString *)type jsonData:(NSString *)jsonData{
-    [self _transDataToAnaylzer:GROUP_ANALYZER withModule:MODULE_ERROR withType:@"js" tag:NSIntegerMax jsonData:jsonData];
-}
-
-+ (void) _transDataToAnaylzer:(NSString *)group withModule:(NSString*)module withType:(NSString *)type withValue:(NSDictionary *) dic
-{
-    NSLog(@"test -> transDataToAnaylzer module%@,withType:%@,jsonData:%@",module,type,jsonData);
-    NSMutableArray* analyzerList = [WXTracingManager getAnalyzerList];
-    if (nil == analyzerList || analyzerList.count <= 0) {
-        return;
-    }
-    NSMutableDictionary *dic = [[NSMutableDictionary alloc] init];
-    [dic setValue:group forKey:@"group"];
-    [dic setValue:module forKey:@"module"];
-    [dic setValue:type forKey:@"type"];
-    [dic setValue:jsonData forKey:@"data"];
-    if (tag!= NSIntegerMax) {
-        [dic setValue:@(tag) forKey:@"tag"];
-    }
-    
-    for (id analyzer in analyzerList) {
-        if ( [analyzer respondsToSelector:(@selector(transfer:))])
-        {
-            [analyzer performSelector:@selector(transfer:) withObject:dic];
-        }
-    }
-}
-
 
 @end

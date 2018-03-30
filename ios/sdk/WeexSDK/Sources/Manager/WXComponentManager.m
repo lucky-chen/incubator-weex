@@ -37,7 +37,6 @@
 #import "WXPrerenderManager.h"
 #import "WXTracingManager.h"
 #import "WXLayoutDefine.h"
-#import "WXAnalyzerDataTransfer.h"
 
 static NSThread *WXComponentThread;
 
@@ -666,9 +665,9 @@ static css_node_t * rootNodeGetChild(void *context, int i)
     WXAssertComponentThread();
     
     WXSDKInstance *instance  = self.weexInstance;
-    if (instance) {
-        [WXAnalyzerDataTransfer transData:self.weexInstance.instanceId withState:AfterCreateFinish];
-    }
+#ifdef DEBUG
+    [WXMonitor performanceFinishDebug:instance];
+#endif
     [self _addUITask:^{
         UIView *rootView = instance.rootView;
         
