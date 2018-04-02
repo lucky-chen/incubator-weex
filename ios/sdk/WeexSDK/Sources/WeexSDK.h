@@ -67,6 +67,8 @@
 #import "WXBaseViewController.h"
 #import "WXAppMonitorProtocol.h"
 #import "WXAppConfiguration.h"
+#import "WXAnalyzerProtocol.h"
+#import "WXAnalyzerCenter.h"
 #import "WXAComponent.h"
 #import "NSObject+WXSwizzle.h"
 #import "Layout.h"
