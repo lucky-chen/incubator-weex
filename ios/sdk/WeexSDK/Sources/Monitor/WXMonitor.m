@@ -31,7 +31,7 @@
 #import "WXAnalyzerProtocol.h"
 
 #ifdef DEBUG
-#import "WXAnalyzerDataTransfer.h"
+#import "WXAnalyzerCenter+Transfer.h"
 #endif
 
 NSString *const kStartKey = @"start";
@@ -103,20 +103,25 @@ static WXThreadSafeMutableDictionary *globalPerformanceDict;
     return dict && dict[kStartKey] && dict[kEndKey];
 }
 
-#ifdef DEBUG
-+ (void)performanceFinishDebug:(WXSDKInstance *)instance
-{
-    [self performanceFinishInternal:instance monitorCommit:NO];
-}
-#endif
 
 + (void)performanceFinish:(WXSDKInstance *)instance
 {
-    [self performanceFinishInternal:instance monitorCommit:YES];
+    [self performanceFinishWithState:Release instance:instance];
 }
 
-+ (void)performanceFinishInternal:(WXSDKInstance *)instance monitorCommit:(BOOL)appMonitor
++ (void)performanceFinishWithState:(CommitState) state instance:(WXSDKInstance *)instance
 {
+    BOOL needCommit = FALSE;
+#ifdef DEBUG
+    needCommit = TRUE;
+#else
+    needCommit = state == Release;
+#endif
+    
+    if(!needCommit)
+    {
+        return;
+    }
     NSMutableDictionary *commitDict = [NSMutableDictionary dictionary];
     
     commitDict[BIZTYPE] = instance.bizType ?: @"";
@@ -160,12 +165,12 @@ static WXThreadSafeMutableDictionary *globalPerformanceDict;
     WXPerformBlockOnComponentThread(^{
         commitDict[COMPONENTCOUNT] = @([instance numberOfComponents]);
         WXPerformBlockOnMainThread(^{
-            [self commitPerformanceWithDict:commitDict instance:instance monitorCommit:appMonitor];
+            [self commitPerformanceWithDict:commitDict instance:instance comitState:state];
         });
     });
 }
 
-+ (void)commitPerformanceWithDict:(NSMutableDictionary *)commitDict instance:(WXSDKInstance *)instance monitorCommit:(BOOL) monitorCommit
++ (void)commitPerformanceWithDict:(NSMutableDictionary *)commitDict instance:(WXSDKInstance *)instance comitState:(CommitState) state
 {
     static NSDictionary *commitKeyDict;
     static dispatch_once_t onceToken;
@@ -228,10 +233,7 @@ static WXThreadSafeMutableDictionary *globalPerformanceDict;
     else {
         commitDict[FSRENDERTIME] = @"-1";
     }
-#ifdef DEBUG
-    [WXAnalyzerDataTransfer transData:instance.instanceId data:commitDict];
-#endif
-    if(monitorCommit)
+    if(state == Release)
     {
         id<WXAppMonitorProtocol> appMonitor = [WXHandlerFactory handlerForProtocol:@protocol(WXAppMonitorProtocol)];
         if (appMonitor && [appMonitor respondsToSelector:@selector(commitAppMonitorArgs:)]){
@@ -240,6 +242,11 @@ static WXThreadSafeMutableDictionary *globalPerformanceDict;
         
         [self printPerformance:commitDict];
         [WXTracingManager commitTracingSummaryInfo:commitDict withInstanceId:instance.instanceId];
+    }else
+    {
+#ifdef DEBUG
+        [WXAnalyzerCenter transDataOnState:state withInstaneId:instance.instanceId data:commitDict];
+#endif
     }
 }
 

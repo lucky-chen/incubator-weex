@@ -57,6 +57,16 @@ typedef enum : NSUInteger {
     WXMTJSService,
 } WXMonitorTag;
 
+typedef NS_ENUM(NSInteger, CommitState)
+{
+    Release,
+    
+    //just use on Debug mode
+    AfterRequest,
+    AfterFirstSreenFinish,
+    AfterExist,
+    OnRunTime
+};
 
 #define WX_MONITOR_SUCCESS_ON_PAGE(tag, pageName) [WXMonitor monitoringPointDidSuccess:tag onPage:pageName];
 #define WX_MONITOR_FAIL_ON_PAGE(tag, errorCode, errorMessage, pageName) \
@@ -87,8 +97,6 @@ NSError *error = [NSError errorWithDomain:WX_ERROR_DOMAIN \
 + (void)monitoringPointDidSuccess:(WXMonitorTag)tag onPage:(NSString *)pageName;
 + (void)monitoringPoint:(WXMonitorTag)tag didFailWithError:(NSError *)error onPage:(NSString *)pageName;
 
-#ifdef DEBUG
-+ (void)performanceFinishDebug:(WXSDKInstance *)instance;
-#endif
++ (void)performanceFinishWithState:(CommitState) state instance:(WXSDKInstance *)instance;
 
 @end

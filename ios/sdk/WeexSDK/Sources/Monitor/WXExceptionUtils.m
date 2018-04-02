@@ -27,7 +27,7 @@
 #import "WXSDKManager.h"
 
 #ifdef DEBUG
-#import "WXAnalyzerDataTransfer.h"
+#import "WXAnalyzerCenter+Transfer.h"
 #endif
 
 
@@ -57,7 +57,7 @@
         [jsExceptionHandler onJSException:jsExceptionInfo];
     }
 #ifdef DEBUG
-    [WXAnalyzerDataTransfer transErrorInfo:jsExceptionInfo];
+    [WXAnalyzerCenter transErrorInfo:jsExceptionInfo];
 #endif
 }
 

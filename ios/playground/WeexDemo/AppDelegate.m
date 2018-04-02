@@ -36,6 +36,8 @@
 #import "WXConfigCenterProtocol.h"
 #import "WXConfigCenterDefaultImpl.h"
 #import "WXNavigationHandlerImpl.h"
+//#import "WXAnalyzerCenter.h"
+
 
 #ifdef DEBUG
 #import "DebugAnalyzer.h"
@@ -129,7 +131,7 @@
     [WXSDKEngine registerExtendCallNative:@"test" withClass:NSClassFromString(@"WXExtendCallNativeTest")];
     [WXSDKEngine registerModule:@"ext" withClass:[WXExtModule class]];
 #ifdef DEBUG
-    [WXTracingManager addWxAnalyzer:[DebugAnalyzer new]];
+    //[WXAnalyzerCenter addWxAnalyzer:[DebugAnalyzer new]];
 #endif
     
 #if !(TARGET_IPHONE_SIMULATOR)

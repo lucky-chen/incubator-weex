@@ -47,8 +47,6 @@
 @property (nonatomic, strong) NSMutableDictionary *tracingTasks;  // every instance have a task
 @property (nonatomic, copy) NSString *currentInstanceId;  // every instance have a task
 
-@property (nonatomic, strong) NSMutableArray<WXAnalyzerProtocol> *analyzerList;
-
 @end
 
 @implementation WXTracingManager
@@ -70,8 +68,6 @@
     self = [super init];
     if(self){
         self.isTracing = NO;
-        
-        self.analyzerList = [[NSMutableArray<WXAnalyzerProtocol> alloc] init];
     }
     
     return self;
@@ -510,26 +506,7 @@
 }
 
 
-+ (NSMutableArray *) getAnalyzerList
-{
-    return [WXTracingManager sharedInstance].analyzerList;
-}
 
-+ (void) addWxAnalyzer:(id)handler
-{
-    if (!handler) {
-        return;
-    }
-    [[WXTracingManager sharedInstance].analyzerList addObject:handler];
-}
-
-+(void) rmWxAnalyzer:(id)handler
-{
-    if (!handler) {
-        return;
-    }
-    [[WXTracingManager sharedInstance].analyzerList removeObject:handler];
-}
 
 
 @end
