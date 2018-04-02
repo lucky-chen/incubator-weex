@@ -8,25 +8,24 @@
 #import "WXAnalyzerCenter.h"
 #import "WXAnalyzerCenter+Transfer.h"
 
-//@interface WXAnalyzerCenter ()
-//@property (nonatomic, strong) NSMutableArray<WXAnalyzerProtocol> *analyzerList;
-//@end
+@interface WXAnalyzerCenter ()
+@property (nonatomic, strong) NSMutableArray<WXAnalyzerProtocol> *analyzerList;
+@end
 
 @implementation WXAnalyzerCenter
 
-//+ (instancetype) sharedInstance{
-//
-//    static WXAnalyzerCenter *instance = nil;
-//    static dispatch_once_t once;
-//
-//    dispatch_once(&once, ^{
-//        instance = [[WXAnalyzerCenter alloc] init];
-//
-//    });
-//
-//    return instance;
-//}
++ (instancetype) sharedInstance{
 
+    static WXAnalyzerCenter *instance = nil;
+    static dispatch_once_t once;
+
+    dispatch_once(&once, ^{
+        instance = [[WXAnalyzerCenter alloc] init];
+        instance.analyzerList= [NSMutableArray<WXAnalyzerProtocol> new];
+    });
+
+    return instance;
+}
 
 + (void) transDataOnState:(CommitState) timeState withInstaneId:(NSString *)instanceId data:(NSDictionary *)data
 {
@@ -37,8 +36,9 @@
     if (!instance) {
         return;
     }
-
+#ifdef DEBUG
     WXLogDebug(@"test --> transDataOnState :%ld",timeState);
+#endif
 
     NSDictionary *commitDimenKeys = [self getKeys:TRUE];
     NSDictionary *commitMeasureKeys = [self getKeys:FALSE];
@@ -68,8 +68,6 @@
     }
     return TRUE;
 }
-
-
 
 + (NSDictionary *) getKeys:(BOOL) measureOrDimen
 {
@@ -123,8 +121,6 @@
     return measureOrDimen?commitMeasureKeys:commitDimenKeys;
 }
 
-
-
 + (void) _transMeasureValue:(WXSDKInstance *)instance key:(NSString *)commitKey withVal:(id)commitVal
 {
     [self _transDataToAnaylzer:instance
@@ -142,7 +138,6 @@
                         withData:@{commitKey:commitVal}
      ];
 }
-
 
 +(void) _transDataToAnaylzer:(WXSDKInstance *)instance withModule:(NSString *)module  withType:(NSString *)type withData:(NSDictionary *)data
 {
@@ -165,7 +160,10 @@
     [dic setValue:module forKey:@"module"];
     [dic setValue:type forKey:@"type"];
     [dic setValue:data forKey:@"data"];
-
+    
+#ifdef DEBUG
+    WXLogDebug(@"WXPerformance :%@",dic);
+#endif
     
     for (id analyzer in analyzerList) {
         if ( [analyzer respondsToSelector:(@selector(transfer:))])
@@ -174,8 +172,6 @@
         }
     }
 }
-
-
 
 +(void)transErrorInfo:(WXJSExceptionInfo *)errorInfo
 {
@@ -204,7 +200,7 @@
     if (!handler) {
         return;
     }
-    //[[self ].analyzerList addObject:handler];
+    [[WXAnalyzerCenter sharedInstance].analyzerList addObject:handler];
 }
 
 + (void) rmWxAnalyzer:(id<WXAnalyzerProtocol>)handler
@@ -212,14 +208,13 @@
     if (!handler) {
         return;
     }
-    //[[WXTracingManager sharedInstance].analyzerList removeObject:handler];
+    [[WXAnalyzerCenter sharedInstance].analyzerList removeObject:handler];
 }
 
 + (NSMutableArray<WXAnalyzerProtocol> *)getAnalyzerList
 {
-    return nil;
+    return [WXAnalyzerCenter sharedInstance].analyzerList;
 }
-
 
 +(BOOL) needTransfer
 {

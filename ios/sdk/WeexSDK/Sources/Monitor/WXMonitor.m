@@ -70,12 +70,10 @@ static WXThreadSafeMutableDictionary *globalPerformanceDict;
     }
     
     dict[kEndKey] = @(CACurrentMediaTime() * 1000);
-#ifdef DEBUG
-    //[self announceAllAnlyzerToHandle:dict withTag:tag instance:instance];
-#endif
-    //    if (tag == WXPTAllRender) {
-    //        [self performanceFinish:instance];
-    //    }
+
+//    if (tag == WXPTAllRender) {
+//        [self performanceFinish:instance];
+//    }
 }
 
 + (void)performancePoint:(WXPerformanceTag)tag didSetValue:(double)value withInstance:(WXSDKInstance *)instance
@@ -88,8 +86,7 @@ static WXThreadSafeMutableDictionary *globalPerformanceDict;
     dict[kStartKey] = @(0);
     dict[kEndKey] = @(value);
     performanceDict[@(tag)] = dict;
-    
-    [self monitorMeasureRealTime:instance withKey:@"tag" andValue:value];
+
 }
 
 + (BOOL)performancePoint:(WXPerformanceTag)tag isRecordedWithInstance:(WXSDKInstance *)instance
@@ -318,14 +315,18 @@ static WXThreadSafeMutableDictionary *globalPerformanceDict;
     }
 }
 
-+(void) monitorDimenRealTime:(WXSDKInstance *)instance withKey:(NSString *)key andValue:(double)value
++ (void)performanceDynamicValue:(WXPerformanceTag)tag withDiff:(NSNumber *)diff onInstance:(WXSDKInstance *)instance
 {
-    
-}
-
-+ (void) monitorMeasureRealTime:(WXSDKInstance *)instance withKey:(NSString *)key andValue:(double)value
-{
-    
+    NSMutableDictionary *performanceDict = [self performanceDictForInstance:instance];
+    NSMutableDictionary *dict = performanceDict[@(tag)];
+    if (!dict) {
+        NSMutableDictionary *dict = [[NSMutableDictionary alloc] initWithCapacity:2];
+        dict[kStartKey] = @(0);
+        dict[kEndKey] = @(0);
+        [dict setValue:@(tag) forKey:@"tag"];
+        performanceDict[@(tag)] = dict;
+    }
+    dict[kEndKey] = @([dict[kEndKey] integerValue] + [diff integerValue]);
 }
 
 @end

@@ -25,6 +25,7 @@
 
 @interface WXSDKInstance ()
 
+@property (nonatomic, assign) BOOL isCreateFinish;
 @property (nonatomic, assign) CGFloat viewportWidth;
 
 @property (nonatomic, strong) WXThreadSafeMutableDictionary *moduleInstances;

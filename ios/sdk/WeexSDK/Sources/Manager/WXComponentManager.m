@@ -37,6 +37,7 @@
 #import "WXPrerenderManager.h"
 #import "WXTracingManager.h"
 #import "WXLayoutDefine.h"
+#import "WXSDKInstance_private.h"
 
 static NSThread *WXComponentThread;
 
@@ -679,6 +680,7 @@ static css_node_t * rootNodeGetChild(void *context, int i)
         if(instance.renderFinish){
             [WXTracingManager startTracingWithInstanceId:instance.instanceId ref:nil className:nil name:nil phase:WXTracingInstant functionName:WXTRenderFinish options:@{@"threadName":WXTUIThread}];
             instance.renderFinish(rootView);
+            instance.isCreateFinish = TRUE;
         }
     }];
 }

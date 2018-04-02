@@ -29,6 +29,8 @@
 #import "WXResourceLoader.h"
 #import "WXDebugTool.h"
 #import "WXTracingManager.h"
+#import "WXMonitor.h"
+#import "WXSDKInstance_private.h"
 
 @interface WXBridgeManager ()
 
@@ -322,6 +324,10 @@ void WXPerformBlockOnBridgeThread(void (^block)(void))
     }
     WXSDKInstance *instance = [WXSDKManager instanceForID:instanceId];
     
+    if(instance && !instance.isCreateFinish)
+    {
+        [WXMonitor performanceDynamicValue:WXPTFsCallEventNum withDiff:@(1) onInstance:instance];
+    }
     WXCallJSMethod *method = [[WXCallJSMethod alloc] initWithModuleName:nil methodName:@"fireEvent" arguments:args instance:instance];
     [self callJsMethod:method];
 }

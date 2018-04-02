@@ -41,6 +41,7 @@
 #import "WXPrerenderManager.h"
 #import "WXTracingManager.h"
 #import "WXExceptionUtils.h"
+#import "WXSDKInstance_private.h"
 
 #define SuppressPerformSelectorLeakWarning(Stuff) \
 do { \
@@ -394,6 +395,9 @@ _Pragma("clang diagnostic pop") \
         WXLogInfo(@"instance already destroyed, task ignored");
         return -1;
     }
+    
+    NSTimeInterval startTime = CACurrentMediaTime()*1000;
+    
     for (NSDictionary *task in tasks) {
         NSString *methodName = task[@"method"];
         NSArray *arguments = task[@"args"];
@@ -412,7 +416,11 @@ _Pragma("clang diagnostic pop") \
     }
     
     [self performSelector:@selector(_sendQueueLoop) withObject:nil];
-    
+    if (!instance.isCreateFinish) {
+        NSTimeInterval diff = CACurrentMediaTime()*1000-startTime;
+        [WXMonitor performanceDynamicValue:WXPTFsCallNativeTime withDiff:@(diff) onInstance:instance];
+        [WXMonitor performanceDynamicValue:WXPTFsCallNativeNum withDiff:@(1) onInstance:instance];
+    }
     return 1;
 }
 

@@ -21,6 +21,8 @@
 #import "WXSDKManager.h"
 #import "WXLog.h"
 #import "WXAssert.h"
+#import "WXMonitor.h"
+#import "WXSDKInstance_private.h"
 
 @interface WXTimerTarget : NSObject
 
@@ -41,6 +43,10 @@
         _callbackID = callbackID;
         _weexInstance = weexInstance;
         _shouldRepeat = shouldRepeat;
+        
+        if (weexInstance && !weexInstance.isCreateFinish) {
+            [WXMonitor performanceDynamicValue:WXPTTimerNum withDiff:@(1) onInstance:weexInstance];
+        }
     }
     
     return self;

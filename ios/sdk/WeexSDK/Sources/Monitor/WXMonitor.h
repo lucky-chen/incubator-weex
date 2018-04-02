@@ -98,5 +98,6 @@ NSError *error = [NSError errorWithDomain:WX_ERROR_DOMAIN \
 + (void)monitoringPoint:(WXMonitorTag)tag didFailWithError:(NSError *)error onPage:(NSString *)pageName;
 
 + (void)performanceFinishWithState:(CommitState) state instance:(WXSDKInstance *)instance;
++ (void)performanceDynamicValue:(WXPerformanceTag)tag withDiff:(NSNumber *)diff onInstance:(WXSDKInstance *)instance;
 
 @end
