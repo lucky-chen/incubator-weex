@@ -1336,10 +1336,10 @@
 		77D1611B1C02DD3C0010B15B /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				77D161221C02DDD10010B15B /* WXSDKInstance.h */,
 				59A5961A1CB630F10012CD52 /* WXComponent+Navigation.h */,
 				59A5961B1CB630F10012CD52 /* WXComponent+Navigation.m */,
 				748B25161C44A6F9005D491E /* WXSDKInstance_private.h */,
-				77D161221C02DDD10010B15B /* WXSDKInstance.h */,
 				77D161231C02DDD10010B15B /* WXSDKInstance.m */,
 				DCF343651E49CAEE00A2FB34 /* WXJSExceptionInfo.h */,
 				DCF343661E49CAEE00A2FB34 /* WXJSExceptionInfo.m */,

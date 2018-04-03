@@ -328,7 +328,7 @@ typedef enum : NSUInteger {
         
         [strongSelf _renderWithMainBundleString:jsBundleString];
         [WXTracingManager setBundleJSType:jsBundleString instanceId:weakSelf.instanceId];
-        [WXMonitor performanceFinishWithState:AfterRequest instance:strongSelf];
+        [WXMonitor performanceFinishWithState:DebugAfterRequest instance:strongSelf];
     
     };
     

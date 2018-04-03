@@ -667,7 +667,7 @@ static css_node_t * rootNodeGetChild(void *context, int i)
     
     WXSDKInstance *instance  = self.weexInstance;
 
-    [WXMonitor performanceFinishWithState:AfterFirstSreenFinish instance:instance];
+    [WXMonitor performanceFinishWithState:DebugAfterFSFinish instance:instance];
 
     [self _addUITask:^{
         UIView *rootView = instance.rootView;

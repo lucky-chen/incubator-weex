@@ -59,13 +59,13 @@ typedef enum : NSUInteger {
 
 typedef NS_ENUM(NSInteger, CommitState)
 {
-    Release,
+    MonitorCommit,
     
     //just use on Debug mode
-    AfterRequest,
-    AfterFirstSreenFinish,
-    AfterExist,
-    OnRunTime
+    DebugAfterRequest,
+    DebugAfterFSFinish,
+    DebugAfterExist,
+    DebugOnRealTime
 };
 
 #define WX_MONITOR_SUCCESS_ON_PAGE(tag, pageName) [WXMonitor monitoringPointDidSuccess:tag onPage:pageName];

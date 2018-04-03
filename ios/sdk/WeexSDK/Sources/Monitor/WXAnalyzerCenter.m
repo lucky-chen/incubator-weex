@@ -29,16 +29,20 @@
 
 + (void) transDataOnState:(CommitState) timeState withInstaneId:(NSString *)instanceId data:(NSDictionary *)data
 {
-    if(![self needTransfer] || !instanceId){
+//    if(![self needTransfer] || !instanceId){
+//        return;
+//    }
+#ifndef DEBUG
+    return;
+#endif
+    if (!instanceId) {
         return;
     }
     WXSDKInstance * instance = [WXSDKManager instanceForID:instanceId];
     if (!instance) {
         return;
     }
-#ifdef DEBUG
     WXLogDebug(@"test --> transDataOnState :%ld",timeState);
-#endif
 
     NSDictionary *commitDimenKeys = [self getKeys:TRUE];
     NSDictionary *commitMeasureKeys = [self getKeys:FALSE];
@@ -48,7 +52,7 @@
        }else if([self checkDataWithSate:timeState checkKey:key limitDic:commitDimenKeys]){
            [self _transDimenValue:instance key:key withVal:[data valueForKey:key]];
        }else{
-           WXLogDebug(@"WXAnalyzerDataTransfer -> unKnowPerformanceKey :%@",key);
+          // WXLogDebug(@"WXAnalyzerDataTransfer -> unKnowPerformanceKey :%@",key);
        }
     }
 }
@@ -79,42 +83,42 @@
         // non-standard perf commit names, remove this hopefully.
         
         commitDimenKeys =@{
-                           BIZTYPE:             [NSNumber numberWithInt:AfterFirstSreenFinish],
-                           PAGENAME:            [NSNumber numberWithInt:AfterRequest],
-                           WXSDKVERSION:        [NSNumber numberWithInt:AfterRequest],
-                           JSLIBVERSION:        [NSNumber numberWithInt:AfterRequest],
-                           JSLIBSIZE:           [NSNumber numberWithInt:AfterRequest],
-                           WXREQUESTTYPE:       [NSNumber numberWithInt:AfterRequest],
-                           WXCONNECTIONTYPE:    [NSNumber numberWithInt:AfterRequest],
-                           NETWORKTYPE:         [NSNumber numberWithInt:AfterRequest],
-                           CACHETYPE:           [NSNumber numberWithInt:AfterRequest],
-                           WXCUSTOMMONITORINFO: [NSNumber numberWithInt:AfterRequest]
+                           BIZTYPE:             [NSNumber numberWithInt:DebugAfterFSFinish],
+                           PAGENAME:            [NSNumber numberWithInt:DebugAfterRequest],
+                           WXSDKVERSION:        [NSNumber numberWithInt:DebugAfterRequest],
+                           JSLIBVERSION:        [NSNumber numberWithInt:DebugAfterRequest],
+                           JSLIBSIZE:           [NSNumber numberWithInt:DebugAfterRequest],
+                           WXREQUESTTYPE:       [NSNumber numberWithInt:DebugAfterRequest],
+                           WXCONNECTIONTYPE:    [NSNumber numberWithInt:DebugAfterRequest],
+                           NETWORKTYPE:         [NSNumber numberWithInt:DebugAfterRequest],
+                           CACHETYPE:           [NSNumber numberWithInt:DebugAfterRequest],
+                           WXCUSTOMMONITORINFO: [NSNumber numberWithInt:DebugAfterRequest]
         };
         commitMeasureKeys =@{
-                             SDKINITTIME:                   [NSNumber numberWithInt:AfterFirstSreenFinish],
-                             SDKINITINVOKETIME:             [NSNumber numberWithInt:AfterFirstSreenFinish],
-                             JSLIBINITTIME:                 [NSNumber numberWithInt:AfterFirstSreenFinish],
-                             JSTEMPLATESIZE:                [NSNumber numberWithInt:AfterRequest],
-                             NETWORKTIME:                   [NSNumber numberWithInt:AfterRequest],
-                             COMMUNICATETIME:               [NSNumber numberWithInt:AfterExist],
-                             SCREENRENDERTIME:              [NSNumber numberWithInt:AfterExist],
-                             TOTALTIME:                     [NSNumber numberWithInt:AfterExist],
-                             FIRSETSCREENJSFEXECUTETIME:    [NSNumber numberWithInt:AfterFirstSreenFinish],
-                             CALLCREATEINSTANCETIME:        [NSNumber numberWithInt:AfterFirstSreenFinish],
-                             COMMUNICATETOTALTIME:          [NSNumber numberWithInt:AfterExist],
-                             FSRENDERTIME:                  [NSNumber numberWithInt:AfterExist],
-                             COMPONENTCOUNT:                [NSNumber numberWithInt:AfterExist],
-                             CACHEPROCESSTIME:              [NSNumber numberWithInt:AfterRequest],
-                             CACHERATIO:                    [NSNumber numberWithInt:AfterRequest],
-                             M_FS_CALL_JS_TIME:             [NSNumber numberWithInt:AfterFirstSreenFinish],
-                             M_FS_CALL_JS_NUM:              [NSNumber numberWithInt:AfterFirstSreenFinish],
-                             M_FS_CALL_NATIVE_TIME:         [NSNumber numberWithInt:AfterFirstSreenFinish],
-                             M_FS_CALL_NATIVE_NUM:          [NSNumber numberWithInt:AfterFirstSreenFinish],
-                             M_FS_CALL_EVENT_NUM:           [NSNumber numberWithInt:AfterFirstSreenFinish],
-                             M_CELL_EXCEED_NUM:             [NSNumber numberWithInt:AfterFirstSreenFinish],
-                             M_MAX_DEEP_VDOM:               [NSNumber numberWithInt:AfterExist],
-                             M_IMG_WRONG_SIZE_NUM:          [NSNumber numberWithInt:AfterExist],
-                             M_TIMER_NUM:                   [NSNumber numberWithInt:AfterFirstSreenFinish]
+                             SDKINITTIME:                   [NSNumber numberWithInt:DebugAfterFSFinish],
+                             SDKINITINVOKETIME:             [NSNumber numberWithInt:DebugAfterFSFinish],
+                             JSLIBINITTIME:                 [NSNumber numberWithInt:DebugAfterFSFinish],
+                             JSTEMPLATESIZE:                [NSNumber numberWithInt:DebugAfterRequest],
+                             NETWORKTIME:                   [NSNumber numberWithInt:DebugAfterRequest],
+                             COMMUNICATETIME:               [NSNumber numberWithInt:DebugAfterExist],
+                             SCREENRENDERTIME:              [NSNumber numberWithInt:DebugAfterExist],
+                             TOTALTIME:                     [NSNumber numberWithInt:DebugAfterExist],
+                             FIRSETSCREENJSFEXECUTETIME:    [NSNumber numberWithInt:DebugAfterFSFinish],
+                             CALLCREATEINSTANCETIME:        [NSNumber numberWithInt:DebugAfterFSFinish],
+                             COMMUNICATETOTALTIME:          [NSNumber numberWithInt:DebugAfterExist],
+                             FSRENDERTIME:                  [NSNumber numberWithInt:DebugAfterExist],
+                             COMPONENTCOUNT:                [NSNumber numberWithInt:DebugAfterExist],
+                             CACHEPROCESSTIME:              [NSNumber numberWithInt:DebugAfterRequest],
+                             CACHERATIO:                    [NSNumber numberWithInt:DebugAfterRequest],
+                             M_FS_CALL_JS_TIME:             [NSNumber numberWithInt:DebugAfterFSFinish],
+                             M_FS_CALL_JS_NUM:              [NSNumber numberWithInt:DebugAfterFSFinish],
+                             M_FS_CALL_NATIVE_TIME:         [NSNumber numberWithInt:DebugAfterFSFinish],
+                             M_FS_CALL_NATIVE_NUM:          [NSNumber numberWithInt:DebugAfterFSFinish],
+                             M_FS_CALL_EVENT_NUM:           [NSNumber numberWithInt:DebugAfterFSFinish],
+                             M_CELL_EXCEED_NUM:             [NSNumber numberWithInt:DebugAfterFSFinish],
+                             M_MAX_DEEP_VDOM:               [NSNumber numberWithInt:DebugAfterExist],
+                             M_IMG_WRONG_SIZE_NUM:          [NSNumber numberWithInt:DebugAfterExist],
+                             M_TIMER_NUM:                   [NSNumber numberWithInt:DebugAfterFSFinish]
                              };
         
     });
@@ -148,22 +152,24 @@
     NSMutableDictionary *wrapDic = [data mutableCopy];
     [wrapDic setObject:instance.instanceId forKey:@"instanceId"];
     [wrapDic setObject:[instance.scriptURL absoluteString] forKey:@"url"];
-    NSLog(@"test -> val:%@",wrapDic);
     
     
     NSMutableArray* analyzerList = [self getAnalyzerList];
-    if (nil == analyzerList || analyzerList.count <= 0) {
+    if (nil == analyzerList) {
         return;
     }
     NSMutableDictionary *dic = [[NSMutableDictionary alloc] init];
     [dic setValue:GROUP_ANALYZER forKey:@"group"];
     [dic setValue:module forKey:@"module"];
     [dic setValue:type forKey:@"type"];
-    [dic setValue:data forKey:@"data"];
-    
-#ifdef DEBUG
-    WXLogDebug(@"WXPerformance :%@",dic);
-#endif
+    for (id key in data)
+    {
+        [dic setValue:data[key] forKey:key];
+    }
+    [dic setValue:instance.instanceId forKey:@"instanceId"];
+    [dic setValue:[instance.scriptURL absoluteString] forKey:@"url"];
+
+    WXLogInfo(@"WXPerformance :%@",dic);
     
     for (id analyzer in analyzerList) {
         if ( [analyzer respondsToSelector:(@selector(transfer:))])

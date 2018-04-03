@@ -103,7 +103,7 @@ static WXThreadSafeMutableDictionary *globalPerformanceDict;
 
 + (void)performanceFinish:(WXSDKInstance *)instance
 {
-    [self performanceFinishWithState:Release instance:instance];
+    [self performanceFinishWithState:MonitorCommit instance:instance];
 }
 
 + (void)performanceFinishWithState:(CommitState) state instance:(WXSDKInstance *)instance
@@ -206,7 +206,9 @@ static WXThreadSafeMutableDictionary *globalPerformanceDict;
         NSNumber *end = keyDict[kEndKey];
         
         if (!start || !end) {
-            WXLogWarning(@"Performance point:%d, in instance:%@, did not have a start or end", tag, instance);
+            if (state == MonitorCommit) {
+                WXLogWarning(@"Performance point:%d, in instance:%@, did not have a start or end", tag, instance);
+            }
             continue;
         }
         
@@ -230,7 +232,7 @@ static WXThreadSafeMutableDictionary *globalPerformanceDict;
     else {
         commitDict[FSRENDERTIME] = @"-1";
     }
-    if(state == Release)
+    if(state == MonitorCommit)
     {
         id<WXAppMonitorProtocol> appMonitor = [WXHandlerFactory handlerForProtocol:@protocol(WXAppMonitorProtocol)];
         if (appMonitor && [appMonitor respondsToSelector:@selector(commitAppMonitorArgs:)]){
