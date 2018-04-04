@@ -915,14 +915,16 @@ static css_node_t * rootNodeGetChild(void *context, int i)
   
     BOOL needsLayout = NO;
 
-    NSEnumerator *enumerator = [_indexDict objectEnumerator];
-    WXComponent *component;
-    while ((component = [enumerator nextObject])) {
-        if ([component needsLayout]) {
-            needsLayout = YES;
-            break;
-        }
-    }
+//    NSEnumerator *enumerator = [_indexDict objectEnumerator];
+//    WXComponent *component;
+//    while ((component = [enumerator nextObject])) {
+//        if ([component needsLayout]) {
+//            needsLayout = YES;
+//            break;
+//        }
+//    }
+    
+    needsLayout = [_rootComponent needsLayout];
 
     if (!needsLayout) {
         return;
