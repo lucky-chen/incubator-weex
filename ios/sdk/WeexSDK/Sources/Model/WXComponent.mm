@@ -734,7 +734,8 @@
         [self _transitionUpdateViewProperty:styles];
     }
 #ifdef DEBUG
-    NSLog(@"tempTest -> ref:%@ style before : %@",self.ref,self.styles);
+    NSDictionary *copySelfStyle = [NSDictionary dictionaryWithDictionary:self.styles];
+    NSLog(@"tempTest -> ref:%@ style before : %@",self.ref,copySelfStyle);
     
     if (styles) {
         NSLog(@"tempTest -> ref:%@ update styles : %@",self.ref,styles);
@@ -751,7 +752,9 @@
     [self resetStyles:resetStyles];
     
 #ifdef DEBUG
-    NSLog(@"tempTest -> ref:%@ style after : %@",self.ref,self.styles);
+    //self.styles may change
+    copySelfStyle = [NSDictionary dictionaryWithDictionary:self.styles];
+    NSLog(@"tempTest -> ref:%@ style after : %@",self.ref,copySelfStyle);
 #endif
 }
 
