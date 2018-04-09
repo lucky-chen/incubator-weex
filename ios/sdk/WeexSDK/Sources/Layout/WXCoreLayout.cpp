@@ -160,7 +160,9 @@ namespace WeexCore {
       if(widthMeasureMode == kExactly && !isnan(width)){
         constrainsWidth -= sumPaddingBorderAlongAxis(this, true);
       }
-      WXCoreSize dimension = measureFunc(this, constrainsWidth, widthMeasureMode, height, heightMeasureMode);
+      WXCoreSize dimension = measureFunc(this, constrainsWidth,
+                                         (stretch && !isnan(width)) ? kExactly:widthMeasureMode,
+                                         height, heightMeasureMode);
       if (widthMeasureMode == kUnspecified) {
         float actualWidth = dimension.width + sumPaddingBorderAlongAxis(this, true);
         if (isnan(width)) {
@@ -297,6 +299,14 @@ namespace WeexCore {
                           parentHeight, childWidth, childHeight);
           child->hypotheticalMeasure(childWidth, childHeight, stretch);
         } else {
+          if(isSingleFlexLine(isMainAxisHorizontal(this) ? parentWidth : parentHeight)
+              && !isMainAxisHorizontal(this) && child->widthMeasureMode == kUnspecified){
+            child->setLayoutWidth(parentWidth - sumPaddingBorderAlongAxis(this, true)
+                                      -child->mCssStyle->sumMarginOfDirection(true));
+            if(child->heightMeasureMode == kUnspecified && child->widthDirty) {
+              child->mLayoutResult->mLayoutSize.height = NAN;
+            }
+          }
           child->measure(child->mLayoutResult->mLayoutSize.width,
                          child->mLayoutResult->mLayoutSize.height, hypotheticalMeasurment);
         }
