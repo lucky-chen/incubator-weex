@@ -35,7 +35,7 @@
 {
     self.flexScrollerCSSNode->addChildAt(subcomponent.flexCssNode, (uint32_t) index);
 #ifdef DEBUG
-    NSLog(@"test -> ref:%@,subNodeIndex:%ld,childCount:%ld",self.ref,index,_flexScrollerCSSNode->getChildCount());
+    NSLog(@"test -> ref:%@,subNodeIndex:%ld,childCount:%ld",self.ref,(long)index,_flexScrollerCSSNode->getChildCount());
 #endif
    
 //    WXLogInfo(@"FlexLayout -- P:%@ -> C:%@",self,subcomponent);

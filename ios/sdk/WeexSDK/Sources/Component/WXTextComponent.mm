@@ -169,13 +169,6 @@ CGFloat WXTextDefaultLineThroughWidth = 1.2;
         [self fillCSSStyles:styles];
         [self fillAttributes:attributes];
     }
-
-//#ifdef USE_FLEX
-    if ([WXComponent isUseFlex]) {
-        NSLog(@"test -> textView nod :%x",_flexCssNode);
-    }
-//#endif
-    
     return self;
 }
 

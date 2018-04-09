@@ -179,7 +179,9 @@
 //#else
     else
     {
-        memcpy((void*)component->_flexCssNode,self.flexCssNode,sizeof(WeexCore::WXCoreLayoutNode));
+        //memcpy((void*)component->_flexCssNode,self.flexCssNode,sizeof(WeexCore::WXCoreLayoutNode));
+        component->_flexCssNode->copyStyle(self.flexCssNode);
+        component->_flexCssNode->copyMeasureFunc(self.flexCssNode);
         component->_flexCssNode->setContext((__bridge void *)component);
     }
 //#endif
