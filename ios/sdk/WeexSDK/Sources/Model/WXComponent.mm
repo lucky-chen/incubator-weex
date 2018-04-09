@@ -140,10 +140,10 @@
             _testId = [WXConvert NSString:attributes[@"testId"]];
         }
         
-
+#ifdef DEBUG
         NSLog(@"test -> init component: ref : %@ , styles: %@",ref,styles);
         NSLog(@"test -> init component: ref : %@ , attributes: %@",ref,attributes);
-        
+#endif
         [self _setupNavBarWithStyles:_styles attributes:_attributes];
 
         [self _initCSSNodeWithStyles:_styles];
@@ -222,15 +222,10 @@
     else
     {
         if(self.flexCssNode){
-            
-            
-            
+#ifdef DEBUG
             NSLog(@"test -> dealloc %@",self.ref);
-            
+#endif
             delete self.flexCssNode;
-            
-            //  WeexCore::WXCoreLayoutNode::freeNodeTree(self.flexCssNode);
-            //self.flexCssNode = nullptr;
         }
     }
 //#endif
@@ -361,10 +356,9 @@
         [self viewWillLoad];
         
         _view = [self loadView];
-
+#ifdef DEBUG
         NSLog(@"test -> loadView:addr-(%p),componentRef-(%@)",_view,self.ref);
-
-        
+#endif
         _layer = _view.layer;
         
         if ([_view isKindOfClass:[UITextField class]]) {
@@ -589,13 +583,16 @@
             NSInteger actualIndex = [self getActualNodeIndex:subcomponent atIndex:index];
             [self _insertChildCssNode:subcomponent atIndex:actualIndex];
         }else{
+#ifdef DEBUG
             NSLog(@"test -> no need JoinLayoutSystem parent ref:%@ type:%@, self ref:%@ type:%@ ",
                   self.ref,
                   self.type,
                   subcomponent.ref,
                   subcomponent.type
                   );
+#endif
             return;
+
         }
     }
 //#endif
@@ -736,6 +733,7 @@
     } else {
         [self _transitionUpdateViewProperty:styles];
     }
+#ifdef DEBUG
     NSLog(@"tempTest -> ref:%@ style before : %@",self.ref,self.styles);
     
     if (styles) {
@@ -745,13 +743,16 @@
     if (resetStyles) {
         NSLog(@"tempTest -> ref:%@ update resetStyles : %@",self.ref,resetStyles);
     }
+#endif
     
     [self _resetStyles:resetStyles];
     [self _handleBorders:styles isUpdating:YES];
     [self updateStyles:styles];
     [self resetStyles:resetStyles];
     
+#ifdef DEBUG
     NSLog(@"tempTest -> ref:%@ style after : %@",self.ref,self.styles);
+#endif
 }
 
 - (void)_updateAttributesOnMainThread:(NSDictionary *)attributes

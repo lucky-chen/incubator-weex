@@ -253,9 +253,10 @@
         useFlexLayotEngin = [str isEqualToString:@"true"];
     }
     [WXComponent setUseFlex:useFlexLayotEngin];
-#ifdef DEBUG
-    NSLog(@"test -> layoutEngin :use flexEngin :%d",useFlexLayotEngin);
-#endif
+
+    //just print  use youga or flexEngin on debug or release mode
+    WXLogWarning(@"test -> layoutEngin :use flexEngin :%d",useFlexLayotEngin);
+
 //
     
     

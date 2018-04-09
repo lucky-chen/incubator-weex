@@ -97,7 +97,9 @@
     if (!_refreshEvent || _displayState) {
         return;
     }
+#ifdef DEBUG
     NSLog(@"test -> refreshComponent : refresh ref:%@",self.ref);
+#endif
     [self fireEvent:@"refresh" params:nil];
 }
 
@@ -106,7 +108,9 @@
     if (!_pullingdownEvent) {
         return ;
     }
+#ifdef DEBUG
     NSLog(@"test -> refreshComponent : pullingdown ,ref:%@",self.ref);
+#endif
     
     [self fireEvent:@"pullingdown" params:param];
 }
@@ -137,7 +141,6 @@
 
 - (void)addEvent:(NSString *)eventName
 {
-    NSLog(@"test -> refreshComponent : addEvent %@ ,ref:%@",eventName,self.ref);
     if ([eventName isEqualToString:@"refresh"]) {
         _refreshEvent = YES;
     }
@@ -148,7 +151,6 @@
 
 - (void)removeEvent:(NSString *)evetName
 {
-    NSLog(@"test -> refreshComponent : removeEvent %@,ref:%@",evetName,self.ref);
     if ([evetName isEqualToString:@"refresh"]) {
         _refreshEvent = NO;
     }

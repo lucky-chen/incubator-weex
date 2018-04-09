@@ -74,6 +74,5 @@
 #import "WXAComponent.h"
 #import "NSObject+WXSwizzle.h"
 #import "Layout.h"
-#import "ConstantsName.h"
 
 #endif /* __OBJC__ */

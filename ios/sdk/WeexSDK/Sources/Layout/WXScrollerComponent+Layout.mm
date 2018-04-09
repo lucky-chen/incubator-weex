@@ -33,19 +33,19 @@
 
 - (void)_insertChildCssNode:(WXComponent *)subcomponent atIndex:(NSInteger)index
 {
-    //[super _insertChildCssNode:subcomponent atIndex:(uint32_t)index];
-    
-//    [super _insertChildCssNode:subcomponent withParentNode:self.flexScrollerCSSNode atIndex:index];
-    
     self.flexScrollerCSSNode->addChildAt(subcomponent.flexCssNode, (uint32_t) index);
-    
+#ifdef DEBUG
     NSLog(@"test -> ref:%@,subNodeIndex:%ld,childCount:%ld",self.ref,index,_flexScrollerCSSNode->getChildCount());
+#endif
+   
 //    WXLogInfo(@"FlexLayout -- P:%@ -> C:%@",self,subcomponent);
 }
 - (void)_rmChildCssNode:(WXComponent *)subcomponent
 {
     self.flexScrollerCSSNode->removeChild(subcomponent->_flexCssNode);
+#ifdef DEBUG
     NSLog(@"test -> ref:%@ ,scrollerCSSNode->removeChild ,childRef:%@",self.ref,subcomponent.ref);
+#endif
 }
 
 //#endif

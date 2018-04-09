@@ -23,6 +23,7 @@
 #import "WXAssert.h"
 #import "WXSDKInstance_private.h"
 #import "WXComponent+BoxShadow.h"
+#import "WXLog.h"
 
 bool flexIsUndefined(float value) {
     return isnan(value);
@@ -233,7 +234,9 @@ static BOOL sUseFlex = TRUE;
         for (WXComponent *subcomponent in subcomponents) {
             [subcomponent _calculateFrameWithSuperAbsolutePosition:superAbsolutePosition gatherDirtyComponents:dirtyComponents];
         }
+#ifdef DEBUG
         NSLog(@"test -> newFrame ,type:%@,ref:%@, parentRef:%@,size :%@ ,instance:%@",self.type,self.ref,self.supercomponent.ref,NSStringFromCGRect(newFrame),self.weexInstance.instanceId);
+#endif
     }
     
 //#else
@@ -258,8 +261,9 @@ static BOOL sUseFlex = TRUE;
             }
             
             [self _frameDidCalculated:isFrameChanged];
-            
+#ifdef DEBUG
             NSLog(@"test -> newFrame ,type:%@,ref:%@, parentRef:%@,size :%@ ,instance:%@",self.type,self.ref,self.supercomponent.ref,NSStringFromCGRect(newFrame),self.weexInstance.instanceId);
+#endif
         }
     
         NSArray * subcomponents = [_subcomponents copy];
@@ -755,11 +759,12 @@ static css_dim_t cssNodeMeasure(void *context, float width, css_measure_mode_t w
     
     CGSize constrainedSize = CGSizeMake(width, height);
     CGSize resultSize = measureBlock(constrainedSize);
-    
+#ifdef DEBUG
     NSLog(@"test -> measureblock %@, resultSize:%@",
           component.type,
           NSStringFromCGSize(resultSize)
           );
+#endif
     
     return (css_dim_t){(float)resultSize.width, (float)resultSize.height};
 }
@@ -776,9 +781,6 @@ static WeexCore::WXCoreSize flexCssNodeMeasure(WeexCore::WXCoreLayoutNode *node,
     }
     WXComponent *component = (__bridge WXComponent *)(node->getContext());
     
-//    if ([component objectForKey:@"_text"]) {
-//        NSLog(@"test -> measure Text ref:%@ text->%@, flexCssNodeMeasure start",component.ref,[component objectForKey:@"_text"]);
-//    }
     if (![component respondsToSelector:@selector(measureBlock)]) {
         return WeexCore::WXCoreSize();
     }
@@ -791,11 +793,12 @@ static WeexCore::WXCoreSize flexCssNodeMeasure(WeexCore::WXCoreLayoutNode *node,
     
     CGSize constrainedSize = CGSizeMake(width, height);
     CGSize resultSize = measureBlock(constrainedSize);
-    
+#ifdef DEBUG
     NSLog(@"test -> measureblock %@, resultSize:%@",
           component.type,
           NSStringFromCGSize(resultSize)
           );
+#endif
     WeexCore::WXCoreSize size;
     size.height=(float)resultSize.height;
     size.width=(float)resultSize.width;
@@ -933,7 +936,9 @@ static WeexCore::WXCoreSize flexCssNodeMeasure(WeexCore::WXCoreLayoutNode *node,
 - (void)_rmChildCssNode:(WXComponent *)subcomponent
 {
     self.flexCssNode->removeChild(subcomponent->_flexCssNode);
+#ifdef DEBUG
     NSLog(@"test -> ref:%@ ,flexCssNode->removeChild ,childRef:%@",self.ref,subcomponent.ref);
+#endif
 }
 
 

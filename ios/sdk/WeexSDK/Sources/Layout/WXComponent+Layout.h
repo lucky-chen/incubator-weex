@@ -26,13 +26,7 @@
 #define FlexUndefined NAN
 //#define USE_FLEX
 
-//#ifdef DEBUG
-//#define LOG_PERFORMANCE
-//#endif
 
-//#define IF_NOT_USE_FLEX
-//#define ELSE_USE_FLEX
-//#define FLEX_END
 
 
 
