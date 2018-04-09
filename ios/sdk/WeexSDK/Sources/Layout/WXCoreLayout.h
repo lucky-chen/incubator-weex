@@ -692,7 +692,6 @@ namespace WeexCore {
       return node->mCssStyle->mPositionType == kAbsolute || node->mCssStyle->mPositionType == kFixed;
     }
 
-
     /** ================================ margin =================================== **/
 
     inline float getMarginTop() const {
@@ -844,6 +843,14 @@ namespace WeexCore {
         if(updating) {
           markChildrenDirty(true);
         }
+      }
+    }
+
+    inline void setStyleWidthToNAN() {
+      if (!isnan(mCssStyle->mStyleWidth)) {
+        mCssStyle->mStyleWidth = NAN;
+        markDirty();
+        markChildrenDirty(true);
       }
     }
 
