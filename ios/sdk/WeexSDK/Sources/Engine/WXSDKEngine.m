@@ -249,7 +249,7 @@
     BOOL useFlexLayotEngin = YES;
     id configCenter = [WXSDKEngine handlerForProtocol:@protocol(WXConfigCenterProtocol)];
     if ([configCenter respondsToSelector:@selector(configForKey:defaultValue:isDefault:)]) {
-        NSString *str = [configCenter configForKey:@"iOS_weex_flex_layout_engin" defaultValue:@"true" isDefault:NULL];
+        NSString *str = [configCenter configForKey:@"iOS_weex_ext_config.iOS_weex_flex_layout_engin" defaultValue:@"true" isDefault:NULL];
         useFlexLayotEngin = [str isEqualToString:@"true"];
     }
     [WXComponent setUseFlex:useFlexLayotEngin];
