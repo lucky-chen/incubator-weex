@@ -245,21 +245,6 @@
         [[WXSDKManager bridgeMgr] executeJsFramework:script];
     });
     
-    //switch for use FlexEngin or yougaEngin
-    BOOL useFlexLayotEngin = YES;
-    id configCenter = [WXSDKEngine handlerForProtocol:@protocol(WXConfigCenterProtocol)];
-    if ([configCenter respondsToSelector:@selector(configForKey:defaultValue:isDefault:)]) {
-        NSString *str = [configCenter configForKey:@"iOS_weex_ext_config.iOS_weex_flex_layout_engin" defaultValue:@"true" isDefault:NULL];
-        useFlexLayotEngin = [str isEqualToString:@"true"];
-    }
-    [WXComponent setUseFlex:useFlexLayotEngin];
-
-    //just print  use youga or flexEngin on debug or release mode
-    WXLogWarning(@"test -> layoutEngin :use flexEngin :%d",useFlexLayotEngin);
-
-//
-    
-    
     WX_MONITOR_PERF_END(WXPTInitalizeSync)
     
 }
