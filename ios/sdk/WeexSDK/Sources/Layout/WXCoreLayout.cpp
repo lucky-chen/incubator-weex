@@ -75,8 +75,6 @@ namespace WeexCore {
             containingBlockWidth = renderPageWidth;
           }
           break;
-        default:
-          break;
       }
       if (!isnan(containingBlockWidth)) {
         width = containingBlockWidth -
@@ -105,8 +103,6 @@ namespace WeexCore {
           if (!isnan(renderPageHeight)) {
             containingBlockHeight = renderPageHeight;
           }
-          break;
-        default:
           break;
       }
       if (!isnan(containingBlockHeight)) {
@@ -323,6 +319,15 @@ namespace WeexCore {
                                         const float parentHeight,
                                         float &childWidth,
                                         float &childHeight) const {
+      if(child->measureFunc == nullptr) {
+        if(!isnan(childWidth)){
+          childWidth = std::max(childWidth, child->sumPaddingBorderAlongAxis(child, true));
+        }
+        if(!isnan(childHeight)){
+          childHeight = std::max(childHeight, child->sumPaddingBorderAlongAxis(child, false));
+        }
+      }
+
       if (isSingleFlexLine(isMainAxisHorizontal(this) ? parentWidth : parentHeight)) {
         if (isMainAxisHorizontal(this)) {
           if (!isnan(parentHeight) && isnan(child->mCssStyle->mStyleHeight)
@@ -330,12 +335,6 @@ namespace WeexCore {
               && mCssStyle->mAlignItems == kAlignItemsStretch) {
             childHeight = parentHeight - sumPaddingBorderAlongAxis(this, false) -
                 child->mCssStyle->sumMarginOfDirection(false);
-          }
-
-          if (isnan(child->mCssStyle->mStyleWidth)) {
-            childWidth =
-                calcFreeSpaceAlongMainAxis(parentWidth, parentHeight, currentMainSize) -
-                    child->mCssStyle->sumMarginOfDirection(true);
           }
         } else {
           if (!isnan(parentWidth) && isnan(child->mCssStyle->mStyleWidth)) {
