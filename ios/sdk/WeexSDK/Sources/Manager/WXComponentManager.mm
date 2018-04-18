@@ -289,17 +289,7 @@ static NSThread *WXComponentThread;
         __strong typeof(self) strongSelf = weakSelf;
         
         
-        
         strongSelf.weexInstance.rootView.wx_component = strongSelf->_rootComponent;
-        
-//        NSLog(@"test -> layer node:%@,ref:%@, frame:%@",
-//              strongSelf->_rootComponent->_type,
-//              strongSelf->_rootComponent.ref,
-//              NSStringFromCGRect(strongSelf->_rootComponent.view.layer.frame)
-//              );
-
-        
-        
         [strongSelf.weexInstance.rootView addSubview:strongSelf->_rootComponent.view];
         
         [WXTracingManager startTracingWithInstanceId:weakSelf.weexInstance.instanceId ref:data[@"ref"] className:nil name:data[@"type"] phase:WXTracingEnd functionName:@"createBody" options:@{@"threadName":WXTUIThread}];
@@ -337,6 +327,11 @@ static css_node_t * rootNodeGetChild(void *context, int i)
     WXComponent *supercomponent = [_indexDict objectForKey:superRef];
     WXAssertComponentExist(supercomponent);
     
+    if ([WXComponent isUseFlex] && !supercomponent) {
+        WXLogWarning(@"addComponent,superRef from js never exit ! check JS action, supRef:%@",superRef);
+        return;
+    }
+    
     [self _recursivelyAddComponent:componentData toSupercomponent:supercomponent atIndex:index appendingInTree:appendingInTree];
 }
 
@@ -344,15 +339,13 @@ static css_node_t * rootNodeGetChild(void *context, int i)
 {
     WXComponent *component = [self _buildComponentForData:componentData supercomponent:supercomponent];
     
-    if ([supercomponent.ref isEqualToString:@"_root"]) {
-        NSLog(@"test -> _root add");
-    }
     if (!supercomponent.subcomponents) {
         index = 0;
     } else {
         index = (index == -1 ? supercomponent->_subcomponents.count : index);
     }
     
+#ifdef DEBUG
 //#ifndef USE_FLEX
     if(![WXComponent isUseFlex])
     {
@@ -384,6 +377,7 @@ static css_node_t * rootNodeGetChild(void *context, int i)
               );
     }
 //#endif
+#endif //DEBUG
 
     
     [supercomponent _insertSubcomponent:component atIndex:index];
@@ -451,6 +445,11 @@ static css_node_t * rootNodeGetChild(void *context, int i)
     
     WXComponent *component = [_indexDict objectForKey:ref];
     WXAssertComponentExist(component);
+    
+    if ([WXComponent isUseFlex] && !component) {
+        WXLogWarning(@"removeComponent ref from js never exit ! check JS action, ref :%@",ref);
+        return;
+    }
     
     [component _removeFromSupercomponent];
     
@@ -929,7 +928,9 @@ static css_node_t * rootNodeGetChild(void *context, int i)
     if (!needsLayout) {
         return;
     }
+#ifdef DEBUG
     NSLog(@"test -> action__ calculateLayout root");
+#endif
     
 //#ifndef USE_FLEX
     if(![WXComponent isUseFlex])
@@ -951,10 +952,6 @@ static css_node_t * rootNodeGetChild(void *context, int i)
     NSMutableSet<WXComponent *> *dirtyComponents = [NSMutableSet set];
     [_rootComponent _calculateFrameWithSuperAbsolutePosition:CGPointZero gatherDirtyComponents:dirtyComponents];
     [self _calculateRootFrame];
-#ifdef LOG_PERFORMANCE
-    UInt64 componentCalculateEnd = [[NSDate date] timeIntervalSince1970]*1000;
-    NSLog(@"test -> time : ComponentCalculateEnd :%lld",(componentCalculateEnd - nodeCalculateEnd));
-#endif
   
     for (WXComponent *dirtyComponent in dirtyComponents) {
         [self _addUITask:^{
@@ -1028,8 +1025,9 @@ static css_node_t * rootNodeGetChild(void *context, int i)
             return;
         }
         _rootCSSNode->layout.should_update = false;
-        
+#ifdef DEBUG
         NSLog(@"test -> root _calculateRootFrame");
+#endif
         
         CGRect frame = CGRectMake(WXRoundPixelValue(_rootCSSNode->layout.position[CSS_LEFT]),
                                   WXRoundPixelValue(_rootCSSNode->layout.position[CSS_TOP]),
@@ -1050,8 +1048,9 @@ static css_node_t * rootNodeGetChild(void *context, int i)
             return;
         }
         _rootFlexCSSNode->setHasNewLayout(false);
-        
+#ifdef DEBUG
         NSLog(@"test -> root _calculateRootFrame");
+#endif
         
         
         CGRect frame = CGRectMake(WXRoundPixelValue(_rootFlexCSSNode->getLayoutPositionLeft()),
