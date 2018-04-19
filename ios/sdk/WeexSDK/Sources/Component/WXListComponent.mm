@@ -453,6 +453,10 @@
     WXAssertComponentThread();
     
     NSIndexPath *indexPath = [self indexPathForCell:cell sections:_sections];
+    if(!indexPath){
+        //protect when cell not exist in sections
+        return;
+    }
     [self removeCellForIndexPath:indexPath withSections:_sections];
     
     [self.weexInstance.componentManager _addUITask:^{
