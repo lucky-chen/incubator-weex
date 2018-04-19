@@ -593,8 +593,6 @@
                   subcomponent.type
                   );
 #endif
-            return;
-
         }
     }
 //#endif
