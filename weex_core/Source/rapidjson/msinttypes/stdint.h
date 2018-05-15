@@ -34,7 +34,6 @@
 // THL A29 Limited ("Tencent Modifications"). 
 // All Tencent Modifications are Copyright (C) 2015 THL A29 Limited.
 
-#define _MSC_VER 1500
 
 #ifndef _MSC_VER // [
 #error "Use this header only with Microsoft Visual C++ compilers!"
