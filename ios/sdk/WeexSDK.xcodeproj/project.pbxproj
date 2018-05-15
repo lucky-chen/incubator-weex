@@ -294,6 +294,236 @@
 		841CD1061F974DFA0081196D /* WXExceptionUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = 841CD1041F97399C0081196D /* WXExceptionUtils.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		841CD1071F974E000081196D /* WXExceptionUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 841CD1021F9739890081196D /* WXExceptionUtils.m */; };
 		847E1DE41F9A1BCF00A48124 /* WXCoreStyle.h in Headers */ = {isa = PBXBuildFile; fileRef = 847E1DE01F9A1BCF00A48124 /* WXCoreStyle.h */; };
+		95ED978020AAD6980096332E /* fpconv.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 95ED96F920AAD6980096332E /* fpconv.cpp */; };
+		95ED978120AAD6980096332E /* fpconv.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 95ED96F920AAD6980096332E /* fpconv.cpp */; };
+		95ED978220AAD6980096332E /* TimeUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED96FA20AAD6980096332E /* TimeUtils.h */; };
+		95ED978320AAD6980096332E /* TimeUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED96FA20AAD6980096332E /* TimeUtils.h */; };
+		95ED978420AAD6980096332E /* fpconv.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED96FB20AAD6980096332E /* fpconv.h */; };
+		95ED978520AAD6980096332E /* fpconv.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED96FB20AAD6980096332E /* fpconv.h */; };
+		95ED978620AAD6980096332E /* ViewUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED96FC20AAD6980096332E /* ViewUtils.h */; };
+		95ED978720AAD6980096332E /* ViewUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED96FC20AAD6980096332E /* ViewUtils.h */; };
+		95ED978820AAD6980096332E /* powers.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED96FD20AAD6980096332E /* powers.h */; };
+		95ED978920AAD6980096332E /* powers.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED96FD20AAD6980096332E /* powers.h */; };
+		95ED978A20AAD6980096332E /* CoreConstants.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED96FE20AAD6980096332E /* CoreConstants.h */; };
+		95ED978B20AAD6980096332E /* CoreConstants.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED96FE20AAD6980096332E /* CoreConstants.h */; };
+		95ED978E20AAD6980096332E /* render_performance.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 95ED970220AAD6980096332E /* render_performance.cpp */; };
+		95ED978F20AAD6980096332E /* render_performance.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 95ED970220AAD6980096332E /* render_performance.cpp */; };
+		95ED979020AAD6980096332E /* render_performance.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED970320AAD6980096332E /* render_performance.h */; };
+		95ED979120AAD6980096332E /* render_performance.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED970320AAD6980096332E /* render_performance.h */; };
+		95ED979220AAD6980096332E /* constants_name.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED970520AAD6980096332E /* constants_name.h */; };
+		95ED979320AAD6980096332E /* constants_name.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED970520AAD6980096332E /* constants_name.h */; };
+		95ED979420AAD6980096332E /* constants_value.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED970620AAD6980096332E /* constants_value.h */; };
+		95ED979520AAD6980096332E /* constants_value.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED970620AAD6980096332E /* constants_value.h */; };
+		95ED979620AAD6980096332E /* css_value_getter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 95ED970720AAD6980096332E /* css_value_getter.cpp */; };
+		95ED979720AAD6980096332E /* css_value_getter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 95ED970720AAD6980096332E /* css_value_getter.cpp */; };
+		95ED979820AAD6980096332E /* css_value_getter.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED970820AAD6980096332E /* css_value_getter.h */; };
+		95ED979920AAD6980096332E /* css_value_getter.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED970820AAD6980096332E /* css_value_getter.h */; };
+		95ED979A20AAD6980096332E /* core_environment.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 95ED970A20AAD6980096332E /* core_environment.cpp */; };
+		95ED979B20AAD6980096332E /* core_environment.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 95ED970A20AAD6980096332E /* core_environment.cpp */; };
+		95ED979C20AAD6980096332E /* core_environment.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED970B20AAD6980096332E /* core_environment.h */; };
+		95ED979D20AAD6980096332E /* core_environment.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED970B20AAD6980096332E /* core_environment.h */; };
+		95ED979E20AAD6980096332E /* bridge.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED970D20AAD6980096332E /* bridge.h */; };
+		95ED979F20AAD6980096332E /* bridge.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED970D20AAD6980096332E /* bridge.h */; };
+		95ED97A020AAD6980096332E /* style.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED970F20AAD6980096332E /* style.h */; };
+		95ED97A120AAD6980096332E /* style.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED970F20AAD6980096332E /* style.h */; };
+		95ED97A220AAD6980096332E /* style.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 95ED971020AAD6980096332E /* style.cpp */; };
+		95ED97A320AAD6980096332E /* style.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 95ED971020AAD6980096332E /* style.cpp */; };
+		95ED97A420AAD6980096332E /* layout.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 95ED971120AAD6980096332E /* layout.cpp */; };
+		95ED97A520AAD6980096332E /* layout.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 95ED971120AAD6980096332E /* layout.cpp */; };
+		95ED97A620AAD6980096332E /* layout.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED971220AAD6980096332E /* layout.h */; };
+		95ED97A720AAD6980096332E /* layout.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED971220AAD6980096332E /* layout.h */; };
+		95ED97A820AAD6980096332E /* flex_enum.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED971320AAD6980096332E /* flex_enum.h */; };
+		95ED97A920AAD6980096332E /* flex_enum.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED971320AAD6980096332E /* flex_enum.h */; };
+		95ED97AA20AAD6980096332E /* render_page.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 95ED971620AAD6980096332E /* render_page.cpp */; };
+		95ED97AB20AAD6980096332E /* render_page.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 95ED971620AAD6980096332E /* render_page.cpp */; };
+		95ED97AC20AAD6980096332E /* render_page.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED971720AAD6980096332E /* render_page.h */; };
+		95ED97AD20AAD6980096332E /* render_page.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED971720AAD6980096332E /* render_page.h */; };
+		95ED97AE20AAD6980096332E /* render_manager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 95ED971920AAD6980096332E /* render_manager.cpp */; };
+		95ED97AF20AAD6980096332E /* render_manager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 95ED971920AAD6980096332E /* render_manager.cpp */; };
+		95ED97B020AAD6980096332E /* render_manager.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED971A20AAD6980096332E /* render_manager.h */; };
+		95ED97B120AAD6980096332E /* render_manager.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED971A20AAD6980096332E /* render_manager.h */; };
+		95ED97B220AAD6980096332E /* render_action_appendtree_createfinish.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED971C20AAD6980096332E /* render_action_appendtree_createfinish.h */; };
+		95ED97B320AAD6980096332E /* render_action_appendtree_createfinish.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED971C20AAD6980096332E /* render_action_appendtree_createfinish.h */; };
+		95ED97B420AAD6980096332E /* render_action_update_attr.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED971D20AAD6980096332E /* render_action_update_attr.h */; };
+		95ED97B520AAD6980096332E /* render_action_update_attr.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED971D20AAD6980096332E /* render_action_update_attr.h */; };
+		95ED97B620AAD6980096332E /* render_action_move_element.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED971E20AAD6980096332E /* render_action_move_element.h */; };
+		95ED97B720AAD6980096332E /* render_action_move_element.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED971E20AAD6980096332E /* render_action_move_element.h */; };
+		95ED97B820AAD6980096332E /* render_action_update_attr.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 95ED971F20AAD6980096332E /* render_action_update_attr.cpp */; };
+		95ED97B920AAD6980096332E /* render_action_update_attr.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 95ED971F20AAD6980096332E /* render_action_update_attr.cpp */; };
+		95ED97BA20AAD6980096332E /* render_action_layout.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 95ED972020AAD6980096332E /* render_action_layout.cpp */; };
+		95ED97BB20AAD6980096332E /* render_action_layout.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 95ED972020AAD6980096332E /* render_action_layout.cpp */; };
+		95ED97BC20AAD6980096332E /* render_action_update_style.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED972120AAD6980096332E /* render_action_update_style.h */; };
+		95ED97BD20AAD6980096332E /* render_action_update_style.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED972120AAD6980096332E /* render_action_update_style.h */; };
+		95ED97BE20AAD6980096332E /* render_action_createfinish.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED972220AAD6980096332E /* render_action_createfinish.h */; };
+		95ED97BF20AAD6980096332E /* render_action_createfinish.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED972220AAD6980096332E /* render_action_createfinish.h */; };
+		95ED97C020AAD6980096332E /* render_action.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED972320AAD6980096332E /* render_action.h */; };
+		95ED97C120AAD6980096332E /* render_action.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED972320AAD6980096332E /* render_action.h */; };
+		95ED97C220AAD6980096332E /* render_action_update_style.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 95ED972420AAD6980096332E /* render_action_update_style.cpp */; };
+		95ED97C320AAD6980096332E /* render_action_update_style.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 95ED972420AAD6980096332E /* render_action_update_style.cpp */; };
+		95ED97C420AAD6980096332E /* render_action_add_event.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED972520AAD6980096332E /* render_action_add_event.h */; };
+		95ED97C520AAD6980096332E /* render_action_add_event.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED972520AAD6980096332E /* render_action_add_event.h */; };
+		95ED97C620AAD6980096332E /* render_action_remove_element.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 95ED972620AAD6980096332E /* render_action_remove_element.cpp */; };
+		95ED97C720AAD6980096332E /* render_action_remove_element.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 95ED972620AAD6980096332E /* render_action_remove_element.cpp */; };
+		95ED97C820AAD6980096332E /* render_action_createbody.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED972720AAD6980096332E /* render_action_createbody.h */; };
+		95ED97C920AAD6980096332E /* render_action_createbody.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED972720AAD6980096332E /* render_action_createbody.h */; };
+		95ED97CA20AAD6980096332E /* render_action_add_event.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 95ED972820AAD6980096332E /* render_action_add_event.cpp */; };
+		95ED97CB20AAD6980096332E /* render_action_add_event.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 95ED972820AAD6980096332E /* render_action_add_event.cpp */; };
+		95ED97CC20AAD6980096332E /* render_action_remove_event.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 95ED972920AAD6980096332E /* render_action_remove_event.cpp */; };
+		95ED97CD20AAD6980096332E /* render_action_remove_event.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 95ED972920AAD6980096332E /* render_action_remove_event.cpp */; };
+		95ED97CE20AAD6980096332E /* render_action_move_element.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 95ED972A20AAD6980096332E /* render_action_move_element.cpp */; };
+		95ED97CF20AAD6980096332E /* render_action_move_element.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 95ED972A20AAD6980096332E /* render_action_move_element.cpp */; };
+		95ED97D020AAD6980096332E /* render_action_add_element.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 95ED972B20AAD6980096332E /* render_action_add_element.cpp */; };
+		95ED97D120AAD6980096332E /* render_action_add_element.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 95ED972B20AAD6980096332E /* render_action_add_element.cpp */; };
+		95ED97D220AAD6980096332E /* render_action_remove_event.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED972C20AAD6980096332E /* render_action_remove_event.h */; };
+		95ED97D320AAD6980096332E /* render_action_remove_event.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED972C20AAD6980096332E /* render_action_remove_event.h */; };
+		95ED97D420AAD6980096332E /* render_action_createbody.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 95ED972D20AAD6980096332E /* render_action_createbody.cpp */; };
+		95ED97D520AAD6980096332E /* render_action_createbody.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 95ED972D20AAD6980096332E /* render_action_createbody.cpp */; };
+		95ED97D620AAD6980096332E /* render_action_createfinish.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 95ED972E20AAD6980096332E /* render_action_createfinish.cpp */; };
+		95ED97D720AAD6980096332E /* render_action_createfinish.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 95ED972E20AAD6980096332E /* render_action_createfinish.cpp */; };
+		95ED97D820AAD6980096332E /* render_action_layout.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED972F20AAD6980096332E /* render_action_layout.h */; };
+		95ED97D920AAD6980096332E /* render_action_layout.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED972F20AAD6980096332E /* render_action_layout.h */; };
+		95ED97DA20AAD6980096332E /* render_action_remove_element.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED973020AAD6980096332E /* render_action_remove_element.h */; };
+		95ED97DB20AAD6980096332E /* render_action_remove_element.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED973020AAD6980096332E /* render_action_remove_element.h */; };
+		95ED97DC20AAD6980096332E /* render_action_add_element.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED973120AAD6980096332E /* render_action_add_element.h */; };
+		95ED97DD20AAD6980096332E /* render_action_add_element.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED973120AAD6980096332E /* render_action_add_element.h */; };
+		95ED97DE20AAD6980096332E /* render_action_appendtree_createfinish.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 95ED973220AAD6980096332E /* render_action_appendtree_createfinish.cpp */; };
+		95ED97DF20AAD6980096332E /* render_action_appendtree_createfinish.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 95ED973220AAD6980096332E /* render_action_appendtree_createfinish.cpp */; };
+		95ED97E020AAD6980096332E /* render_cell.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED973420AAD6980096332E /* render_cell.h */; };
+		95ED97E120AAD6980096332E /* render_cell.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED973420AAD6980096332E /* render_cell.h */; };
+		95ED97E220AAD6980096332E /* render_mask.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED973520AAD6980096332E /* render_mask.h */; };
+		95ED97E320AAD6980096332E /* render_mask.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED973520AAD6980096332E /* render_mask.h */; };
+		95ED97E420AAD6980096332E /* render_scroller.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED973620AAD6980096332E /* render_scroller.h */; };
+		95ED97E520AAD6980096332E /* render_scroller.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED973620AAD6980096332E /* render_scroller.h */; };
+		95ED97E620AAD6980096332E /* render_text.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED973720AAD6980096332E /* render_text.h */; };
+		95ED97E720AAD6980096332E /* render_text.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED973720AAD6980096332E /* render_text.h */; };
+		95ED97E820AAD6980096332E /* render_object.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 95ED973820AAD6980096332E /* render_object.cpp */; };
+		95ED97E920AAD6980096332E /* render_object.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 95ED973820AAD6980096332E /* render_object.cpp */; };
+		95ED97EA20AAD6980096332E /* render_object.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED973920AAD6980096332E /* render_object.h */; };
+		95ED97EB20AAD6980096332E /* render_object.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED973920AAD6980096332E /* render_object.h */; };
+		95ED97EC20AAD6980096332E /* render_appbar.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED973A20AAD6980096332E /* render_appbar.h */; };
+		95ED97ED20AAD6980096332E /* render_appbar.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED973A20AAD6980096332E /* render_appbar.h */; };
+		95ED97EE20AAD6980096332E /* render_input.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED973B20AAD6980096332E /* render_input.h */; };
+		95ED97EF20AAD6980096332E /* render_input.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED973B20AAD6980096332E /* render_input.h */; };
+		95ED97F020AAD6980096332E /* render_list.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED973C20AAD6980096332E /* render_list.h */; };
+		95ED97F120AAD6980096332E /* render_list.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED973C20AAD6980096332E /* render_list.h */; };
+		95ED97F220AAD6980096332E /* render_textarea.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED973D20AAD6980096332E /* render_textarea.h */; };
+		95ED97F320AAD6980096332E /* render_textarea.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED973D20AAD6980096332E /* render_textarea.h */; };
+		95ED97F420AAD6980096332E /* render_indicator.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED973E20AAD6980096332E /* render_indicator.h */; };
+		95ED97F520AAD6980096332E /* render_indicator.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED973E20AAD6980096332E /* render_indicator.h */; };
+		95ED97F620AAD6980096332E /* i_render_object.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED974020AAD6980096332E /* i_render_object.h */; };
+		95ED97F720AAD6980096332E /* i_render_object.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED974020AAD6980096332E /* i_render_object.h */; };
+		95ED97F820AAD6980096332E /* render_textarea_factory.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED974120AAD6980096332E /* render_textarea_factory.h */; };
+		95ED97F920AAD6980096332E /* render_textarea_factory.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED974120AAD6980096332E /* render_textarea_factory.h */; };
+		95ED97FA20AAD6980096332E /* render_mask_factory.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED974220AAD6980096332E /* render_mask_factory.h */; };
+		95ED97FB20AAD6980096332E /* render_mask_factory.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED974220AAD6980096332E /* render_mask_factory.h */; };
+		95ED97FC20AAD6980096332E /* render_text_factory.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED974320AAD6980096332E /* render_text_factory.h */; };
+		95ED97FD20AAD6980096332E /* render_text_factory.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED974320AAD6980096332E /* render_text_factory.h */; };
+		95ED97FE20AAD6980096332E /* render_indicator_factory.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED974420AAD6980096332E /* render_indicator_factory.h */; };
+		95ED97FF20AAD6980096332E /* render_indicator_factory.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED974420AAD6980096332E /* render_indicator_factory.h */; };
+		95ED980020AAD6980096332E /* render_scroller_factory.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED974520AAD6980096332E /* render_scroller_factory.h */; };
+		95ED980120AAD6980096332E /* render_scroller_factory.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED974520AAD6980096332E /* render_scroller_factory.h */; };
+		95ED980220AAD6980096332E /* render_type.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED974620AAD6980096332E /* render_type.h */; };
+		95ED980320AAD6980096332E /* render_type.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED974620AAD6980096332E /* render_type.h */; };
+		95ED980420AAD6980096332E /* render_creator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 95ED974720AAD6980096332E /* render_creator.cpp */; };
+		95ED980520AAD6980096332E /* render_creator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 95ED974720AAD6980096332E /* render_creator.cpp */; };
+		95ED980620AAD6980096332E /* i_render_factory.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED974820AAD6980096332E /* i_render_factory.h */; };
+		95ED980720AAD6980096332E /* i_render_factory.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED974820AAD6980096332E /* i_render_factory.h */; };
+		95ED980820AAD6980096332E /* render_input_factory.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED974920AAD6980096332E /* render_input_factory.h */; };
+		95ED980920AAD6980096332E /* render_input_factory.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED974920AAD6980096332E /* render_input_factory.h */; };
+		95ED980A20AAD6980096332E /* render_appbar_factory.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED974A20AAD6980096332E /* render_appbar_factory.h */; };
+		95ED980B20AAD6980096332E /* render_appbar_factory.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED974A20AAD6980096332E /* render_appbar_factory.h */; };
+		95ED980C20AAD6980096332E /* render_switch_factory.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED974B20AAD6980096332E /* render_switch_factory.h */; };
+		95ED980D20AAD6980096332E /* render_switch_factory.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED974B20AAD6980096332E /* render_switch_factory.h */; };
+		95ED980E20AAD6980096332E /* simple_render_factory.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED974C20AAD6980096332E /* simple_render_factory.h */; };
+		95ED980F20AAD6980096332E /* simple_render_factory.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED974C20AAD6980096332E /* simple_render_factory.h */; };
+		95ED981020AAD6980096332E /* render_list_factory.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED974D20AAD6980096332E /* render_list_factory.h */; };
+		95ED981120AAD6980096332E /* render_list_factory.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED974D20AAD6980096332E /* render_list_factory.h */; };
+		95ED981220AAD6980096332E /* render_creator.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED974E20AAD6980096332E /* render_creator.h */; };
+		95ED981320AAD6980096332E /* render_creator.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED974E20AAD6980096332E /* render_creator.h */; };
+		95ED981420AAD6980096332E /* render_cell_factory.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED974F20AAD6980096332E /* render_cell_factory.h */; };
+		95ED981520AAD6980096332E /* render_cell_factory.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED974F20AAD6980096332E /* render_cell_factory.h */; };
+		95ED981620AAD6980096332E /* render_switch.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED975020AAD6980096332E /* render_switch.h */; };
+		95ED981720AAD6980096332E /* render_switch.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED975020AAD6980096332E /* render_switch.h */; };
+		95ED981820AAD6980096332E /* dom_parser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 95ED975220AAD6980096332E /* dom_parser.cpp */; };
+		95ED981920AAD6980096332E /* dom_parser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 95ED975220AAD6980096332E /* dom_parser.cpp */; };
+		95ED981A20AAD6980096332E /* dom_parser.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED975320AAD6980096332E /* dom_parser.h */; };
+		95ED981B20AAD6980096332E /* dom_parser.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED975320AAD6980096332E /* dom_parser.h */; };
+		95ED981C20AAD6980096332E /* WeexJSCoreApi.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED975520AAD6980096332E /* WeexJSCoreApi.h */; };
+		95ED981D20AAD6980096332E /* WeexJSCoreApi.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED975520AAD6980096332E /* WeexJSCoreApi.h */; };
+		95ED981E20AAD6980096332E /* WeexJSCoreApi.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 95ED975620AAD6980096332E /* WeexJSCoreApi.cpp */; };
+		95ED981F20AAD6980096332E /* WeexJSCoreApi.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 95ED975620AAD6980096332E /* WeexJSCoreApi.cpp */; };
+		95ED982020AAD6980096332E /* fwd.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED975820AAD6980096332E /* fwd.h */; };
+		95ED982120AAD6980096332E /* fwd.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED975820AAD6980096332E /* fwd.h */; };
+		95ED982220AAD6980096332E /* memorystream.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED975920AAD6980096332E /* memorystream.h */; };
+		95ED982320AAD6980096332E /* memorystream.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED975920AAD6980096332E /* memorystream.h */; };
+		95ED982420AAD6980096332E /* reader.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED975A20AAD6980096332E /* reader.h */; };
+		95ED982520AAD6980096332E /* reader.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED975A20AAD6980096332E /* reader.h */; };
+		95ED982620AAD6980096332E /* prettywriter.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED975B20AAD6980096332E /* prettywriter.h */; };
+		95ED982720AAD6980096332E /* prettywriter.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED975B20AAD6980096332E /* prettywriter.h */; };
+		95ED982820AAD6980096332E /* ostreamwrapper.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED975C20AAD6980096332E /* ostreamwrapper.h */; };
+		95ED982920AAD6980096332E /* ostreamwrapper.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED975C20AAD6980096332E /* ostreamwrapper.h */; };
+		95ED982A20AAD6980096332E /* encodedstream.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED975D20AAD6980096332E /* encodedstream.h */; };
+		95ED982B20AAD6980096332E /* encodedstream.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED975D20AAD6980096332E /* encodedstream.h */; };
+		95ED982C20AAD6980096332E /* filereadstream.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED975E20AAD6980096332E /* filereadstream.h */; };
+		95ED982D20AAD6980096332E /* filereadstream.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED975E20AAD6980096332E /* filereadstream.h */; };
+		95ED982E20AAD6980096332E /* istreamwrapper.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED975F20AAD6980096332E /* istreamwrapper.h */; };
+		95ED982F20AAD6980096332E /* istreamwrapper.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED975F20AAD6980096332E /* istreamwrapper.h */; };
+		95ED983020AAD6980096332E /* stringbuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED976020AAD6980096332E /* stringbuffer.h */; };
+		95ED983120AAD6980096332E /* stringbuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED976020AAD6980096332E /* stringbuffer.h */; };
+		95ED983220AAD6980096332E /* ieee754.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED976220AAD6980096332E /* ieee754.h */; };
+		95ED983320AAD6980096332E /* ieee754.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED976220AAD6980096332E /* ieee754.h */; };
+		95ED983420AAD6980096332E /* strtod.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED976320AAD6980096332E /* strtod.h */; };
+		95ED983520AAD6980096332E /* strtod.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED976320AAD6980096332E /* strtod.h */; };
+		95ED983620AAD6980096332E /* swap.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED976420AAD6980096332E /* swap.h */; };
+		95ED983720AAD6980096332E /* swap.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED976420AAD6980096332E /* swap.h */; };
+		95ED983820AAD6980096332E /* regex.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED976520AAD6980096332E /* regex.h */; };
+		95ED983920AAD6980096332E /* regex.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED976520AAD6980096332E /* regex.h */; };
+		95ED983A20AAD6980096332E /* diyfp.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED976620AAD6980096332E /* diyfp.h */; };
+		95ED983B20AAD6980096332E /* diyfp.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED976620AAD6980096332E /* diyfp.h */; };
+		95ED983C20AAD6980096332E /* biginteger.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED976720AAD6980096332E /* biginteger.h */; };
+		95ED983D20AAD6980096332E /* biginteger.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED976720AAD6980096332E /* biginteger.h */; };
+		95ED983E20AAD6980096332E /* strfunc.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED976820AAD6980096332E /* strfunc.h */; };
+		95ED983F20AAD6980096332E /* strfunc.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED976820AAD6980096332E /* strfunc.h */; };
+		95ED984020AAD6980096332E /* itoa.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED976920AAD6980096332E /* itoa.h */; };
+		95ED984120AAD6980096332E /* itoa.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED976920AAD6980096332E /* itoa.h */; };
+		95ED984220AAD6980096332E /* stack.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED976A20AAD6980096332E /* stack.h */; };
+		95ED984320AAD6980096332E /* stack.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED976A20AAD6980096332E /* stack.h */; };
+		95ED984420AAD6980096332E /* dtoa.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED976B20AAD6980096332E /* dtoa.h */; };
+		95ED984520AAD6980096332E /* dtoa.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED976B20AAD6980096332E /* dtoa.h */; };
+		95ED984620AAD6980096332E /* meta.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED976C20AAD6980096332E /* meta.h */; };
+		95ED984720AAD6980096332E /* meta.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED976C20AAD6980096332E /* meta.h */; };
+		95ED984820AAD6980096332E /* pow10.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED976D20AAD6980096332E /* pow10.h */; };
+		95ED984920AAD6980096332E /* pow10.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED976D20AAD6980096332E /* pow10.h */; };
+		95ED984A20AAD6980096332E /* encodings.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED976E20AAD6980096332E /* encodings.h */; };
+		95ED984B20AAD6980096332E /* encodings.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED976E20AAD6980096332E /* encodings.h */; };
+		95ED984C20AAD6980096332E /* schema.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED976F20AAD6980096332E /* schema.h */; };
+		95ED984D20AAD6980096332E /* schema.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED976F20AAD6980096332E /* schema.h */; };
+		95ED984E20AAD6980096332E /* stream.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED977020AAD6980096332E /* stream.h */; };
+		95ED984F20AAD6980096332E /* stream.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED977020AAD6980096332E /* stream.h */; };
+		95ED985020AAD6980096332E /* filewritestream.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED977120AAD6980096332E /* filewritestream.h */; };
+		95ED985120AAD6980096332E /* filewritestream.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED977120AAD6980096332E /* filewritestream.h */; };
+		95ED985220AAD6980096332E /* rapidjson.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED977220AAD6980096332E /* rapidjson.h */; };
+		95ED985320AAD6980096332E /* rapidjson.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED977220AAD6980096332E /* rapidjson.h */; };
+		95ED985420AAD6990096332E /* document.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED977320AAD6980096332E /* document.h */; };
+		95ED985520AAD6990096332E /* document.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED977320AAD6980096332E /* document.h */; };
+		95ED985620AAD6990096332E /* allocators.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED977420AAD6980096332E /* allocators.h */; };
+		95ED985720AAD6990096332E /* allocators.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED977420AAD6980096332E /* allocators.h */; };
+		95ED985820AAD6990096332E /* writer.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED977520AAD6980096332E /* writer.h */; };
+		95ED985920AAD6990096332E /* writer.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED977520AAD6980096332E /* writer.h */; };
+		95ED985A20AAD6990096332E /* error.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED977720AAD6980096332E /* error.h */; };
+		95ED985B20AAD6990096332E /* error.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED977720AAD6980096332E /* error.h */; };
+		95ED985C20AAD6990096332E /* en.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED977820AAD6980096332E /* en.h */; };
+		95ED985D20AAD6990096332E /* en.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED977820AAD6980096332E /* en.h */; };
+		95ED985E20AAD6990096332E /* memorybuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED977920AAD6980096332E /* memorybuffer.h */; };
+		95ED985F20AAD6990096332E /* memorybuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED977920AAD6980096332E /* memorybuffer.h */; };
+		95ED986020AAD6990096332E /* pointer.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED977A20AAD6980096332E /* pointer.h */; };
+		95ED986120AAD6990096332E /* pointer.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED977A20AAD6980096332E /* pointer.h */; };
+		95ED986220AAD6990096332E /* inttypes.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED977C20AAD6980096332E /* inttypes.h */; };
+		95ED986320AAD6990096332E /* inttypes.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED977C20AAD6980096332E /* inttypes.h */; };
+		95ED986420AAD6990096332E /* stdint.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED977D20AAD6980096332E /* stdint.h */; };
+		95ED986520AAD6990096332E /* stdint.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED977D20AAD6980096332E /* stdint.h */; };
+		95ED986620AAD6990096332E /* WeexApiHeader.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED977F20AAD6980096332E /* WeexApiHeader.h */; };
+		95ED986720AAD6990096332E /* WeexApiHeader.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED977F20AAD6980096332E /* WeexApiHeader.h */; };
 		9B9E74791FA2DB5800DAAEA9 /* WXTestBridgeMethodDummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B9E74781FA2DB5800DAAEA9 /* WXTestBridgeMethodDummy.m */; };
 		BA5F00F11FC5AFFE00F76B5C /* WXLocaleModule.h in Headers */ = {isa = PBXBuildFile; fileRef = BA5F00EF1FC5AFFE00F76B5C /* WXLocaleModule.h */; };
 		BA5F00F21FC5AFFE00F76B5C /* WXLocaleModule.m in Sources */ = {isa = PBXBuildFile; fileRef = BA5F00F01FC5AFFE00F76B5C /* WXLocaleModule.m */; };
@@ -909,6 +1139,121 @@
 		841CD1041F97399C0081196D /* WXExceptionUtils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WXExceptionUtils.h; sourceTree = "<group>"; };
 		8431F8DD1F9EFCC100C76E1E /* WXScrollerComponent+Layout.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = "WXScrollerComponent+Layout.mm"; path = "Layout/WXScrollerComponent+Layout.mm"; sourceTree = "<group>"; };
 		847E1DE01F9A1BCF00A48124 /* WXCoreStyle.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.h; fileEncoding = 4; name = WXCoreStyle.h; path = Layout/WXCoreStyle.h; sourceTree = "<group>"; };
+		95ED96F920AAD6980096332E /* fpconv.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = fpconv.cpp; sourceTree = "<group>"; };
+		95ED96FA20AAD6980096332E /* TimeUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TimeUtils.h; sourceTree = "<group>"; };
+		95ED96FB20AAD6980096332E /* fpconv.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = fpconv.h; sourceTree = "<group>"; };
+		95ED96FC20AAD6980096332E /* ViewUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ViewUtils.h; sourceTree = "<group>"; };
+		95ED96FD20AAD6980096332E /* powers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = powers.h; sourceTree = "<group>"; };
+		95ED96FE20AAD6980096332E /* CoreConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CoreConstants.h; sourceTree = "<group>"; };
+		95ED970220AAD6980096332E /* render_performance.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = render_performance.cpp; sourceTree = "<group>"; };
+		95ED970320AAD6980096332E /* render_performance.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = render_performance.h; sourceTree = "<group>"; };
+		95ED970520AAD6980096332E /* constants_name.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = constants_name.h; sourceTree = "<group>"; };
+		95ED970620AAD6980096332E /* constants_value.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = constants_value.h; sourceTree = "<group>"; };
+		95ED970720AAD6980096332E /* css_value_getter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = css_value_getter.cpp; sourceTree = "<group>"; };
+		95ED970820AAD6980096332E /* css_value_getter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = css_value_getter.h; sourceTree = "<group>"; };
+		95ED970A20AAD6980096332E /* core_environment.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = core_environment.cpp; sourceTree = "<group>"; };
+		95ED970B20AAD6980096332E /* core_environment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = core_environment.h; sourceTree = "<group>"; };
+		95ED970D20AAD6980096332E /* bridge.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = bridge.h; sourceTree = "<group>"; };
+		95ED970F20AAD6980096332E /* style.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = style.h; sourceTree = "<group>"; };
+		95ED971020AAD6980096332E /* style.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = style.cpp; sourceTree = "<group>"; };
+		95ED971120AAD6980096332E /* layout.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = layout.cpp; sourceTree = "<group>"; };
+		95ED971220AAD6980096332E /* layout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = layout.h; sourceTree = "<group>"; };
+		95ED971320AAD6980096332E /* flex_enum.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = flex_enum.h; sourceTree = "<group>"; };
+		95ED971620AAD6980096332E /* render_page.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = render_page.cpp; sourceTree = "<group>"; };
+		95ED971720AAD6980096332E /* render_page.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = render_page.h; sourceTree = "<group>"; };
+		95ED971920AAD6980096332E /* render_manager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = render_manager.cpp; sourceTree = "<group>"; };
+		95ED971A20AAD6980096332E /* render_manager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = render_manager.h; sourceTree = "<group>"; };
+		95ED971C20AAD6980096332E /* render_action_appendtree_createfinish.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = render_action_appendtree_createfinish.h; sourceTree = "<group>"; };
+		95ED971D20AAD6980096332E /* render_action_update_attr.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = render_action_update_attr.h; sourceTree = "<group>"; };
+		95ED971E20AAD6980096332E /* render_action_move_element.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = render_action_move_element.h; sourceTree = "<group>"; };
+		95ED971F20AAD6980096332E /* render_action_update_attr.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = render_action_update_attr.cpp; sourceTree = "<group>"; };
+		95ED972020AAD6980096332E /* render_action_layout.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = render_action_layout.cpp; sourceTree = "<group>"; };
+		95ED972120AAD6980096332E /* render_action_update_style.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = render_action_update_style.h; sourceTree = "<group>"; };
+		95ED972220AAD6980096332E /* render_action_createfinish.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = render_action_createfinish.h; sourceTree = "<group>"; };
+		95ED972320AAD6980096332E /* render_action.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = render_action.h; sourceTree = "<group>"; };
+		95ED972420AAD6980096332E /* render_action_update_style.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = render_action_update_style.cpp; sourceTree = "<group>"; };
+		95ED972520AAD6980096332E /* render_action_add_event.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = render_action_add_event.h; sourceTree = "<group>"; };
+		95ED972620AAD6980096332E /* render_action_remove_element.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = render_action_remove_element.cpp; sourceTree = "<group>"; };
+		95ED972720AAD6980096332E /* render_action_createbody.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = render_action_createbody.h; sourceTree = "<group>"; };
+		95ED972820AAD6980096332E /* render_action_add_event.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = render_action_add_event.cpp; sourceTree = "<group>"; };
+		95ED972920AAD6980096332E /* render_action_remove_event.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = render_action_remove_event.cpp; sourceTree = "<group>"; };
+		95ED972A20AAD6980096332E /* render_action_move_element.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = render_action_move_element.cpp; sourceTree = "<group>"; };
+		95ED972B20AAD6980096332E /* render_action_add_element.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = render_action_add_element.cpp; sourceTree = "<group>"; };
+		95ED972C20AAD6980096332E /* render_action_remove_event.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = render_action_remove_event.h; sourceTree = "<group>"; };
+		95ED972D20AAD6980096332E /* render_action_createbody.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = render_action_createbody.cpp; sourceTree = "<group>"; };
+		95ED972E20AAD6980096332E /* render_action_createfinish.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = render_action_createfinish.cpp; sourceTree = "<group>"; };
+		95ED972F20AAD6980096332E /* render_action_layout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = render_action_layout.h; sourceTree = "<group>"; };
+		95ED973020AAD6980096332E /* render_action_remove_element.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = render_action_remove_element.h; sourceTree = "<group>"; };
+		95ED973120AAD6980096332E /* render_action_add_element.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = render_action_add_element.h; sourceTree = "<group>"; };
+		95ED973220AAD6980096332E /* render_action_appendtree_createfinish.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = render_action_appendtree_createfinish.cpp; sourceTree = "<group>"; };
+		95ED973420AAD6980096332E /* render_cell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = render_cell.h; sourceTree = "<group>"; };
+		95ED973520AAD6980096332E /* render_mask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = render_mask.h; sourceTree = "<group>"; };
+		95ED973620AAD6980096332E /* render_scroller.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = render_scroller.h; sourceTree = "<group>"; };
+		95ED973720AAD6980096332E /* render_text.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = render_text.h; sourceTree = "<group>"; };
+		95ED973820AAD6980096332E /* render_object.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = render_object.cpp; sourceTree = "<group>"; };
+		95ED973920AAD6980096332E /* render_object.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = render_object.h; sourceTree = "<group>"; };
+		95ED973A20AAD6980096332E /* render_appbar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = render_appbar.h; sourceTree = "<group>"; };
+		95ED973B20AAD6980096332E /* render_input.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = render_input.h; sourceTree = "<group>"; };
+		95ED973C20AAD6980096332E /* render_list.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = render_list.h; sourceTree = "<group>"; };
+		95ED973D20AAD6980096332E /* render_textarea.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = render_textarea.h; sourceTree = "<group>"; };
+		95ED973E20AAD6980096332E /* render_indicator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = render_indicator.h; sourceTree = "<group>"; };
+		95ED974020AAD6980096332E /* i_render_object.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = i_render_object.h; sourceTree = "<group>"; };
+		95ED974120AAD6980096332E /* render_textarea_factory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = render_textarea_factory.h; sourceTree = "<group>"; };
+		95ED974220AAD6980096332E /* render_mask_factory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = render_mask_factory.h; sourceTree = "<group>"; };
+		95ED974320AAD6980096332E /* render_text_factory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = render_text_factory.h; sourceTree = "<group>"; };
+		95ED974420AAD6980096332E /* render_indicator_factory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = render_indicator_factory.h; sourceTree = "<group>"; };
+		95ED974520AAD6980096332E /* render_scroller_factory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = render_scroller_factory.h; sourceTree = "<group>"; };
+		95ED974620AAD6980096332E /* render_type.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = render_type.h; sourceTree = "<group>"; };
+		95ED974720AAD6980096332E /* render_creator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = render_creator.cpp; sourceTree = "<group>"; };
+		95ED974820AAD6980096332E /* i_render_factory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = i_render_factory.h; sourceTree = "<group>"; };
+		95ED974920AAD6980096332E /* render_input_factory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = render_input_factory.h; sourceTree = "<group>"; };
+		95ED974A20AAD6980096332E /* render_appbar_factory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = render_appbar_factory.h; sourceTree = "<group>"; };
+		95ED974B20AAD6980096332E /* render_switch_factory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = render_switch_factory.h; sourceTree = "<group>"; };
+		95ED974C20AAD6980096332E /* simple_render_factory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = simple_render_factory.h; sourceTree = "<group>"; };
+		95ED974D20AAD6980096332E /* render_list_factory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = render_list_factory.h; sourceTree = "<group>"; };
+		95ED974E20AAD6980096332E /* render_creator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = render_creator.h; sourceTree = "<group>"; };
+		95ED974F20AAD6980096332E /* render_cell_factory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = render_cell_factory.h; sourceTree = "<group>"; };
+		95ED975020AAD6980096332E /* render_switch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = render_switch.h; sourceTree = "<group>"; };
+		95ED975220AAD6980096332E /* dom_parser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = dom_parser.cpp; sourceTree = "<group>"; };
+		95ED975320AAD6980096332E /* dom_parser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dom_parser.h; sourceTree = "<group>"; };
+		95ED975520AAD6980096332E /* WeexJSCoreApi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WeexJSCoreApi.h; sourceTree = "<group>"; };
+		95ED975620AAD6980096332E /* WeexJSCoreApi.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = WeexJSCoreApi.cpp; sourceTree = "<group>"; };
+		95ED975820AAD6980096332E /* fwd.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = fwd.h; sourceTree = "<group>"; };
+		95ED975920AAD6980096332E /* memorystream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = memorystream.h; sourceTree = "<group>"; };
+		95ED975A20AAD6980096332E /* reader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = reader.h; sourceTree = "<group>"; };
+		95ED975B20AAD6980096332E /* prettywriter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = prettywriter.h; sourceTree = "<group>"; };
+		95ED975C20AAD6980096332E /* ostreamwrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ostreamwrapper.h; sourceTree = "<group>"; };
+		95ED975D20AAD6980096332E /* encodedstream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = encodedstream.h; sourceTree = "<group>"; };
+		95ED975E20AAD6980096332E /* filereadstream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = filereadstream.h; sourceTree = "<group>"; };
+		95ED975F20AAD6980096332E /* istreamwrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = istreamwrapper.h; sourceTree = "<group>"; };
+		95ED976020AAD6980096332E /* stringbuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stringbuffer.h; sourceTree = "<group>"; };
+		95ED976220AAD6980096332E /* ieee754.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ieee754.h; sourceTree = "<group>"; };
+		95ED976320AAD6980096332E /* strtod.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = strtod.h; sourceTree = "<group>"; };
+		95ED976420AAD6980096332E /* swap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = swap.h; sourceTree = "<group>"; };
+		95ED976520AAD6980096332E /* regex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = regex.h; sourceTree = "<group>"; };
+		95ED976620AAD6980096332E /* diyfp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = diyfp.h; sourceTree = "<group>"; };
+		95ED976720AAD6980096332E /* biginteger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = biginteger.h; sourceTree = "<group>"; };
+		95ED976820AAD6980096332E /* strfunc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = strfunc.h; sourceTree = "<group>"; };
+		95ED976920AAD6980096332E /* itoa.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = itoa.h; sourceTree = "<group>"; };
+		95ED976A20AAD6980096332E /* stack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stack.h; sourceTree = "<group>"; };
+		95ED976B20AAD6980096332E /* dtoa.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dtoa.h; sourceTree = "<group>"; };
+		95ED976C20AAD6980096332E /* meta.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = meta.h; sourceTree = "<group>"; };
+		95ED976D20AAD6980096332E /* pow10.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pow10.h; sourceTree = "<group>"; };
+		95ED976E20AAD6980096332E /* encodings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = encodings.h; sourceTree = "<group>"; };
+		95ED976F20AAD6980096332E /* schema.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = schema.h; sourceTree = "<group>"; };
+		95ED977020AAD6980096332E /* stream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stream.h; sourceTree = "<group>"; };
+		95ED977120AAD6980096332E /* filewritestream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = filewritestream.h; sourceTree = "<group>"; };
+		95ED977220AAD6980096332E /* rapidjson.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = rapidjson.h; sourceTree = "<group>"; };
+		95ED977320AAD6980096332E /* document.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = document.h; sourceTree = "<group>"; };
+		95ED977420AAD6980096332E /* allocators.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = allocators.h; sourceTree = "<group>"; };
+		95ED977520AAD6980096332E /* writer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = writer.h; sourceTree = "<group>"; };
+		95ED977720AAD6980096332E /* error.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = error.h; sourceTree = "<group>"; };
+		95ED977820AAD6980096332E /* en.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = en.h; sourceTree = "<group>"; };
+		95ED977920AAD6980096332E /* memorybuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = memorybuffer.h; sourceTree = "<group>"; };
+		95ED977A20AAD6980096332E /* pointer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pointer.h; sourceTree = "<group>"; };
+		95ED977C20AAD6980096332E /* inttypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = inttypes.h; sourceTree = "<group>"; };
+		95ED977D20AAD6980096332E /* stdint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stdint.h; sourceTree = "<group>"; };
+		95ED977F20AAD6980096332E /* WeexApiHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WeexApiHeader.h; sourceTree = "<group>"; };
 		9B9E74771FA2DB5800DAAEA9 /* WXTestBridgeMethodDummy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WXTestBridgeMethodDummy.h; sourceTree = "<group>"; };
 		9B9E74781FA2DB5800DAAEA9 /* WXTestBridgeMethodDummy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WXTestBridgeMethodDummy.m; sourceTree = "<group>"; };
 		BA5F00EF1FC5AFFE00F76B5C /* WXLocaleModule.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WXLocaleModule.h; sourceTree = "<group>"; };
@@ -1324,6 +1669,7 @@
 		77D161181C02DCB90010B15B /* Sources */ = {
 			isa = PBXGroup;
 			children = (
+				95ED96F720AAD6070096332E /* WeexCore */,
 				DCA446261EFA5DAF00D0CFA8 /* WeexSDK.h */,
 				C4F012711E1502A6003378D0 /* WebSocket */,
 				2AF626C61C191E2200E71A38 /* Layout */,
@@ -1601,6 +1947,292 @@
 			path = Component;
 			sourceTree = "<group>";
 		};
+		95ED96F720AAD6070096332E /* WeexCore */ = {
+			isa = PBXGroup;
+			children = (
+				95ED96F820AAD6980096332E /* base */,
+				95ED970020AAD6980096332E /* core */,
+				95ED977E20AAD6980096332E /* include */,
+				95ED975720AAD6980096332E /* rapidjson */,
+			);
+			path = WeexCore;
+			sourceTree = "<group>";
+		};
+		95ED96F820AAD6980096332E /* base */ = {
+			isa = PBXGroup;
+			children = (
+				95ED96F920AAD6980096332E /* fpconv.cpp */,
+				95ED96FA20AAD6980096332E /* TimeUtils.h */,
+				95ED96FB20AAD6980096332E /* fpconv.h */,
+				95ED96FC20AAD6980096332E /* ViewUtils.h */,
+				95ED96FD20AAD6980096332E /* powers.h */,
+				95ED96FE20AAD6980096332E /* CoreConstants.h */,
+			);
+			name = base;
+			path = ../../../../../weex_core/Source/base;
+			sourceTree = "<group>";
+		};
+		95ED970020AAD6980096332E /* core */ = {
+			isa = PBXGroup;
+			children = (
+				95ED970120AAD6980096332E /* moniter */,
+				95ED970420AAD6980096332E /* css */,
+				95ED970920AAD6980096332E /* config */,
+				95ED970C20AAD6980096332E /* bridge */,
+				95ED970E20AAD6980096332E /* layout */,
+				95ED971420AAD6980096332E /* render */,
+				95ED975120AAD6980096332E /* parser */,
+				95ED975420AAD6980096332E /* api */,
+			);
+			name = core;
+			path = ../../../../../weex_core/Source/core;
+			sourceTree = "<group>";
+		};
+		95ED970120AAD6980096332E /* moniter */ = {
+			isa = PBXGroup;
+			children = (
+				95ED970220AAD6980096332E /* render_performance.cpp */,
+				95ED970320AAD6980096332E /* render_performance.h */,
+			);
+			path = moniter;
+			sourceTree = "<group>";
+		};
+		95ED970420AAD6980096332E /* css */ = {
+			isa = PBXGroup;
+			children = (
+				95ED970520AAD6980096332E /* constants_name.h */,
+				95ED970620AAD6980096332E /* constants_value.h */,
+				95ED970720AAD6980096332E /* css_value_getter.cpp */,
+				95ED970820AAD6980096332E /* css_value_getter.h */,
+			);
+			path = css;
+			sourceTree = "<group>";
+		};
+		95ED970920AAD6980096332E /* config */ = {
+			isa = PBXGroup;
+			children = (
+				95ED970A20AAD6980096332E /* core_environment.cpp */,
+				95ED970B20AAD6980096332E /* core_environment.h */,
+			);
+			path = config;
+			sourceTree = "<group>";
+		};
+		95ED970C20AAD6980096332E /* bridge */ = {
+			isa = PBXGroup;
+			children = (
+				95ED970D20AAD6980096332E /* bridge.h */,
+			);
+			path = bridge;
+			sourceTree = "<group>";
+		};
+		95ED970E20AAD6980096332E /* layout */ = {
+			isa = PBXGroup;
+			children = (
+				95ED970F20AAD6980096332E /* style.h */,
+				95ED971020AAD6980096332E /* style.cpp */,
+				95ED971120AAD6980096332E /* layout.cpp */,
+				95ED971220AAD6980096332E /* layout.h */,
+				95ED971320AAD6980096332E /* flex_enum.h */,
+			);
+			path = layout;
+			sourceTree = "<group>";
+		};
+		95ED971420AAD6980096332E /* render */ = {
+			isa = PBXGroup;
+			children = (
+				95ED971520AAD6980096332E /* page */,
+				95ED971820AAD6980096332E /* manager */,
+				95ED971B20AAD6980096332E /* action */,
+				95ED973320AAD6980096332E /* node */,
+			);
+			path = render;
+			sourceTree = "<group>";
+		};
+		95ED971520AAD6980096332E /* page */ = {
+			isa = PBXGroup;
+			children = (
+				95ED971620AAD6980096332E /* render_page.cpp */,
+				95ED971720AAD6980096332E /* render_page.h */,
+			);
+			path = page;
+			sourceTree = "<group>";
+		};
+		95ED971820AAD6980096332E /* manager */ = {
+			isa = PBXGroup;
+			children = (
+				95ED971920AAD6980096332E /* render_manager.cpp */,
+				95ED971A20AAD6980096332E /* render_manager.h */,
+			);
+			path = manager;
+			sourceTree = "<group>";
+		};
+		95ED971B20AAD6980096332E /* action */ = {
+			isa = PBXGroup;
+			children = (
+				95ED971C20AAD6980096332E /* render_action_appendtree_createfinish.h */,
+				95ED971D20AAD6980096332E /* render_action_update_attr.h */,
+				95ED971E20AAD6980096332E /* render_action_move_element.h */,
+				95ED971F20AAD6980096332E /* render_action_update_attr.cpp */,
+				95ED972020AAD6980096332E /* render_action_layout.cpp */,
+				95ED972120AAD6980096332E /* render_action_update_style.h */,
+				95ED972220AAD6980096332E /* render_action_createfinish.h */,
+				95ED972320AAD6980096332E /* render_action.h */,
+				95ED972420AAD6980096332E /* render_action_update_style.cpp */,
+				95ED972520AAD6980096332E /* render_action_add_event.h */,
+				95ED972620AAD6980096332E /* render_action_remove_element.cpp */,
+				95ED972720AAD6980096332E /* render_action_createbody.h */,
+				95ED972820AAD6980096332E /* render_action_add_event.cpp */,
+				95ED972920AAD6980096332E /* render_action_remove_event.cpp */,
+				95ED972A20AAD6980096332E /* render_action_move_element.cpp */,
+				95ED972B20AAD6980096332E /* render_action_add_element.cpp */,
+				95ED972C20AAD6980096332E /* render_action_remove_event.h */,
+				95ED972D20AAD6980096332E /* render_action_createbody.cpp */,
+				95ED972E20AAD6980096332E /* render_action_createfinish.cpp */,
+				95ED972F20AAD6980096332E /* render_action_layout.h */,
+				95ED973020AAD6980096332E /* render_action_remove_element.h */,
+				95ED973120AAD6980096332E /* render_action_add_element.h */,
+				95ED973220AAD6980096332E /* render_action_appendtree_createfinish.cpp */,
+			);
+			path = action;
+			sourceTree = "<group>";
+		};
+		95ED973320AAD6980096332E /* node */ = {
+			isa = PBXGroup;
+			children = (
+				95ED973420AAD6980096332E /* render_cell.h */,
+				95ED973520AAD6980096332E /* render_mask.h */,
+				95ED973620AAD6980096332E /* render_scroller.h */,
+				95ED973720AAD6980096332E /* render_text.h */,
+				95ED973820AAD6980096332E /* render_object.cpp */,
+				95ED973920AAD6980096332E /* render_object.h */,
+				95ED973A20AAD6980096332E /* render_appbar.h */,
+				95ED973B20AAD6980096332E /* render_input.h */,
+				95ED973C20AAD6980096332E /* render_list.h */,
+				95ED973D20AAD6980096332E /* render_textarea.h */,
+				95ED973E20AAD6980096332E /* render_indicator.h */,
+				95ED973F20AAD6980096332E /* factory */,
+				95ED975020AAD6980096332E /* render_switch.h */,
+			);
+			path = node;
+			sourceTree = "<group>";
+		};
+		95ED973F20AAD6980096332E /* factory */ = {
+			isa = PBXGroup;
+			children = (
+				95ED974020AAD6980096332E /* i_render_object.h */,
+				95ED974120AAD6980096332E /* render_textarea_factory.h */,
+				95ED974220AAD6980096332E /* render_mask_factory.h */,
+				95ED974320AAD6980096332E /* render_text_factory.h */,
+				95ED974420AAD6980096332E /* render_indicator_factory.h */,
+				95ED974520AAD6980096332E /* render_scroller_factory.h */,
+				95ED974620AAD6980096332E /* render_type.h */,
+				95ED974720AAD6980096332E /* render_creator.cpp */,
+				95ED974820AAD6980096332E /* i_render_factory.h */,
+				95ED974920AAD6980096332E /* render_input_factory.h */,
+				95ED974A20AAD6980096332E /* render_appbar_factory.h */,
+				95ED974B20AAD6980096332E /* render_switch_factory.h */,
+				95ED974C20AAD6980096332E /* simple_render_factory.h */,
+				95ED974D20AAD6980096332E /* render_list_factory.h */,
+				95ED974E20AAD6980096332E /* render_creator.h */,
+				95ED974F20AAD6980096332E /* render_cell_factory.h */,
+			);
+			path = factory;
+			sourceTree = "<group>";
+		};
+		95ED975120AAD6980096332E /* parser */ = {
+			isa = PBXGroup;
+			children = (
+				95ED975220AAD6980096332E /* dom_parser.cpp */,
+				95ED975320AAD6980096332E /* dom_parser.h */,
+			);
+			path = parser;
+			sourceTree = "<group>";
+		};
+		95ED975420AAD6980096332E /* api */ = {
+			isa = PBXGroup;
+			children = (
+				95ED975520AAD6980096332E /* WeexJSCoreApi.h */,
+				95ED975620AAD6980096332E /* WeexJSCoreApi.cpp */,
+			);
+			path = api;
+			sourceTree = "<group>";
+		};
+		95ED975720AAD6980096332E /* rapidjson */ = {
+			isa = PBXGroup;
+			children = (
+				95ED975820AAD6980096332E /* fwd.h */,
+				95ED975920AAD6980096332E /* memorystream.h */,
+				95ED975A20AAD6980096332E /* reader.h */,
+				95ED975B20AAD6980096332E /* prettywriter.h */,
+				95ED975C20AAD6980096332E /* ostreamwrapper.h */,
+				95ED975D20AAD6980096332E /* encodedstream.h */,
+				95ED975E20AAD6980096332E /* filereadstream.h */,
+				95ED975F20AAD6980096332E /* istreamwrapper.h */,
+				95ED976020AAD6980096332E /* stringbuffer.h */,
+				95ED976120AAD6980096332E /* internal */,
+				95ED976E20AAD6980096332E /* encodings.h */,
+				95ED976F20AAD6980096332E /* schema.h */,
+				95ED977020AAD6980096332E /* stream.h */,
+				95ED977120AAD6980096332E /* filewritestream.h */,
+				95ED977220AAD6980096332E /* rapidjson.h */,
+				95ED977320AAD6980096332E /* document.h */,
+				95ED977420AAD6980096332E /* allocators.h */,
+				95ED977520AAD6980096332E /* writer.h */,
+				95ED977620AAD6980096332E /* error */,
+				95ED977920AAD6980096332E /* memorybuffer.h */,
+				95ED977A20AAD6980096332E /* pointer.h */,
+				95ED977B20AAD6980096332E /* msinttypes */,
+			);
+			name = rapidjson;
+			path = ../../../../../weex_core/Source/rapidjson;
+			sourceTree = "<group>";
+		};
+		95ED976120AAD6980096332E /* internal */ = {
+			isa = PBXGroup;
+			children = (
+				95ED976220AAD6980096332E /* ieee754.h */,
+				95ED976320AAD6980096332E /* strtod.h */,
+				95ED976420AAD6980096332E /* swap.h */,
+				95ED976520AAD6980096332E /* regex.h */,
+				95ED976620AAD6980096332E /* diyfp.h */,
+				95ED976720AAD6980096332E /* biginteger.h */,
+				95ED976820AAD6980096332E /* strfunc.h */,
+				95ED976920AAD6980096332E /* itoa.h */,
+				95ED976A20AAD6980096332E /* stack.h */,
+				95ED976B20AAD6980096332E /* dtoa.h */,
+				95ED976C20AAD6980096332E /* meta.h */,
+				95ED976D20AAD6980096332E /* pow10.h */,
+			);
+			path = internal;
+			sourceTree = "<group>";
+		};
+		95ED977620AAD6980096332E /* error */ = {
+			isa = PBXGroup;
+			children = (
+				95ED977720AAD6980096332E /* error.h */,
+				95ED977820AAD6980096332E /* en.h */,
+			);
+			path = error;
+			sourceTree = "<group>";
+		};
+		95ED977B20AAD6980096332E /* msinttypes */ = {
+			isa = PBXGroup;
+			children = (
+				95ED977C20AAD6980096332E /* inttypes.h */,
+				95ED977D20AAD6980096332E /* stdint.h */,
+			);
+			path = msinttypes;
+			sourceTree = "<group>";
+		};
+		95ED977E20AAD6980096332E /* include */ = {
+			isa = PBXGroup;
+			children = (
+				95ED977F20AAD6980096332E /* WeexApiHeader.h */,
+			);
+			name = include;
+			path = ../../../../../weex_core/Source/include;
+			sourceTree = "<group>";
+		};
 		A5818E244F9E235722E3B938 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -1652,33 +2284,52 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				95ED984420AAD6980096332E /* dtoa.h in Headers */,
 				7408C48E1CFB345D000BCCD0 /* WXComponent+Events.h in Headers */,
+				95ED97B020AAD6980096332E /* render_manager.h in Headers */,
 				775BEE711C1BD977008D1629 /* WXModuleProtocol.h in Headers */,
 				7469869F1C4E2C000054A57E /* NSArray+Weex.h in Headers */,
 				74CC7A201C2BF9DC00829368 /* WXListComponent.h in Headers */,
 				7423EB511F4ADE30001662D1 /* WXComponent+DataBinding.h in Headers */,
 				74FD6E041C7C0E9600DBEB6D /* WXScrollerProtocol.h in Headers */,
 				74CFDD3D1F459400007A1A66 /* WXRecycleListDataManager.h in Headers */,
+				95ED983C20AAD6980096332E /* biginteger.h in Headers */,
+				95ED980820AAD6980096332E /* render_input_factory.h in Headers */,
 				77D161201C02DDB40010B15B /* WXSDKEngine.h in Headers */,
 				745ED2DA1C5F2C7E002DB5A8 /* WXView.h in Headers */,
 				17B122252090AAB000387E33 /* WXSDKError.h in Headers */,
 				59D3CA411CF9ED57008835DC /* Layout.h in Headers */,
+				95ED97D820AAD6980096332E /* render_action_layout.h in Headers */,
+				95ED978A20AAD6980096332E /* CoreConstants.h in Headers */,
 				2AE5B7521CAB7DBD0082FDDB /* WXAComponent.h in Headers */,
 				77D1614F1C02E3880010B15B /* WXUtility.h in Headers */,
+				95ED97FC20AAD6980096332E /* render_text_factory.h in Headers */,
 				743933B41C7ED9AA00773BB7 /* WXSimulatorShortcutManager.h in Headers */,
 				74862F811E03A24500B7A041 /* WXComponentMethod.h in Headers */,
 				74915F471C8EB02B00BEBCC0 /* WXAssert.h in Headers */,
 				2A8E658A1C7C7AA20025C7B7 /* WXVideoComponent.h in Headers */,
 				59A5961C1CB630F10012CD52 /* WXComponent+Navigation.h in Headers */,
 				775BEE6E1C1BD8F4008D1629 /* WXImgLoaderProtocol.h in Headers */,
+				95ED982220AAD6980096332E /* memorystream.h in Headers */,
+				95ED97B220AAD6980096332E /* render_action_appendtree_createfinish.h in Headers */,
 				7410811F1CED585A001BC6E5 /* WXComponentManager.h in Headers */,
+				95ED97C420AAD6980096332E /* render_action_add_event.h in Headers */,
+				95ED97E220AAD6980096332E /* render_mask.h in Headers */,
+				95ED984E20AAD6980096332E /* stream.h in Headers */,
 				74CFDD411F45941E007A1A66 /* WXRecycleListTemplateManager.h in Headers */,
 				1D3000F11D40B9AC004F3B4F /* WXClipboardModule.h in Headers */,
+				95ED983620AAD6980096332E /* swap.h in Headers */,
 				59A583081CF5B2FD0081FD3E /* WXNavigationDefaultImpl.h in Headers */,
+				95ED97FA20AAD6980096332E /* render_mask_factory.h in Headers */,
 				17B122222090AA9300387E33 /* WXSDKInstance_performance.h in Headers */,
+				95ED986420AAD6990096332E /* stdint.h in Headers */,
 				775BEE4E1C16F993008D1629 /* WXDefine.h in Headers */,
+				95ED983820AAD6980096332E /* regex.h in Headers */,
 				77D161241C02DDD10010B15B /* WXSDKInstance.h in Headers */,
 				DC6836E61EBB12B200AD2D84 /* WXConfigCenterProtocol.h in Headers */,
+				95ED979020AAD6980096332E /* render_performance.h in Headers */,
+				95ED981020AAD6980096332E /* render_list_factory.h in Headers */,
+				95ED985620AAD6990096332E /* allocators.h in Headers */,
 				DC7764941F3C2CA300B5727E /* WXRecyclerDragController.h in Headers */,
 				74A4BAA61CB4F98300195969 /* WXStreamModule.h in Headers */,
 				740451EA1E14BB26004157CB /* WXServiceFactory.h in Headers */,
@@ -1688,77 +2339,128 @@
 				747A787C1D1BAAC900DED9D0 /* WXComponent+ViewManagement.h in Headers */,
 				2AE5B7561CABA04E0082FDDB /* WXEventModuleProtocol.h in Headers */,
 				C4C30DE91E1B833D00786B6C /* WXComponent+PseudoClassManagement.h in Headers */,
+				95ED982E20AAD6980096332E /* istreamwrapper.h in Headers */,
 				591DD3321D23AD5800BE8709 /* WXErrorView.h in Headers */,
+				95ED979820AAD6980096332E /* css_value_getter.h in Headers */,
 				17C74F0B2072145100AB4CAB /* WXAnalyzerCenter+Transfer.h in Headers */,
 				D362F94F1C83EDA20003F546 /* WXWebViewModule.h in Headers */,
+				95ED97C820AAD6980096332E /* render_action_createbody.h in Headers */,
+				95ED981A20AAD6980096332E /* dom_parser.h in Headers */,
 				C4F012861E150307003378D0 /* WXWebSocketLoader.h in Headers */,
+				95ED984620AAD6980096332E /* meta.h in Headers */,
+				95ED97EE20AAD6980096332E /* render_input.h in Headers */,
+				95ED97E620AAD6980096332E /* render_text.h in Headers */,
 				C4E97D331F1EF46D00ABC314 /* WXTracingManager.h in Headers */,
+				95ED982A20AAD6980096332E /* encodedstream.h in Headers */,
 				77D161381C02DE940010B15B /* WXBridgeManager.h in Headers */,
+				95ED97E020AAD6980096332E /* render_cell.h in Headers */,
 				C4D872251E5DDF7500E39BC1 /* WXBoxShadow.h in Headers */,
 				042013AD1E66CD6A001FC79C /* WXValidateProtocol.h in Headers */,
 				C4D872221E5DDEDA00E39BC1 /* WXInnerLayer.h in Headers */,
 				2A919DA61E321F1F006EB6B5 /* WXBridgeMethod.h in Headers */,
+				95ED97D220AAD6980096332E /* render_action_remove_event.h in Headers */,
+				95ED985A20AAD6990096332E /* error.h in Headers */,
 				37B51EE41E97804D0040A743 /* WXCycleSliderComponent.h in Headers */,
+				95ED97EA20AAD6980096332E /* render_object.h in Headers */,
 				77D161281C02DE1A0010B15B /* WXSDKManager.h in Headers */,
+				95ED97C020AAD6980096332E /* render_action.h in Headers */,
 				59CE27E81CC387DB000BE37A /* WXEmbedComponent.h in Headers */,
 				DCE2CF9B1F46D4220021BDC4 /* WXVoiceOverModule.h in Headers */,
 				74BB5FB91DFEE81A004FC3DF /* WXMetaModule.h in Headers */,
+				95ED978620AAD6980096332E /* ViewUtils.h in Headers */,
 				DCA0EF641D6EED6F00CB18B9 /* WXGlobalEventModule.h in Headers */,
 				2A837AB21CD9DE9200AEDF03 /* WXLoadingComponent.h in Headers */,
 				17E5ACD82091F02D00EE81F1 /* WXCoreLayout.h in Headers */,
 				DCA446271EFA5DAF00D0CFA8 /* WeexSDK.h in Headers */,
 				841CD1051F974DFA0081196D /* WXExceptionUtils.h in Headers */,
+				95ED982820AAD6980096332E /* ostreamwrapper.h in Headers */,
+				95ED97BC20AAD6980096332E /* render_action_update_style.h in Headers */,
 				745B2D6A1E5A8E1E0092D38A /* WXRecyclerComponent.h in Headers */,
+				95ED97AC20AAD6980096332E /* render_page.h in Headers */,
 				C42E8F9B1F39DF07001EBE9D /* WXTracingProtocol.h in Headers */,
 				7423899F1C32733800D748CA /* WXType.h in Headers */,
+				95ED984220AAD6980096332E /* stack.h in Headers */,
 				59A582FC1CF5B17B0081FD3E /* WXBridgeContext.h in Headers */,
 				77D161621C02ED790010B15B /* WXLog.h in Headers */,
 				77D1614B1C02E3790010B15B /* WXConvert.h in Headers */,
+				95ED984C20AAD6980096332E /* schema.h in Headers */,
 				59A596221CB6311F0012CD52 /* WXNavigatorModule.h in Headers */,
+				95ED97FE20AAD6980096332E /* render_indicator_factory.h in Headers */,
 				C47B78CE1F2998EE001D3B0C /* WXExtendCallNativeManager.h in Headers */,
+				95ED97A620AAD6980096332E /* layout.h in Headers */,
 				749DC27B1D40827B009E1C91 /* WXMonitor.h in Headers */,
+				95ED985820AAD6990096332E /* writer.h in Headers */,
 				77E659DA1C07F594008B8775 /* WXDomModule.h in Headers */,
+				95ED985220AAD6980096332E /* rapidjson.h in Headers */,
+				95ED984A20AAD6980096332E /* encodings.h in Headers */,
 				74EF31AD1DE58BE200667A07 /* WXURLRewriteDefaultImpl.h in Headers */,
 				746B923B1F46BE36009AE86B /* WXCellSlotComponent.h in Headers */,
 				744D61101E49979000B624B3 /* WXFooterComponent.h in Headers */,
 				744D61141E4AF23E00B624B3 /* WXDiffUtil.h in Headers */,
+				95ED983A20AAD6980096332E /* diyfp.h in Headers */,
 				74862F791E02B88D00B7A041 /* JSValue+Weex.h in Headers */,
+				95ED985E20AAD6990096332E /* memorybuffer.h in Headers */,
 				2A1F57B71C75C6A600B58017 /* WXTextInputComponent.h in Headers */,
 				74CFDD451F459443007A1A66 /* WXRecycleListUpdateManager.h in Headers */,
+				95ED978820AAD6980096332E /* powers.h in Headers */,
 				74A4BA9A1CB3BAA100195969 /* WXThreadSafeMutableDictionary.h in Headers */,
 				74A4BA9E1CB3C0A100195969 /* WXHandlerFactory.h in Headers */,
 				741DFE021DDD7D18009B020F /* WXRoundedRect.h in Headers */,
 				17C74F0F2072147B00AB4CAB /* WXAnalyzerProtocol.h in Headers */,
 				7423899B1C3174EB00D748CA /* WXWeakObjectWrapper.h in Headers */,
+				95ED985420AAD6990096332E /* document.h in Headers */,
 				17C7B50A20452E1800A2296A /* WXCoreFlexEnum.h in Headers */,
 				74BF19F81F5139BB00AEE3D7 /* WXJSASTParser.h in Headers */,
+				95ED981420AAD6980096332E /* render_cell_factory.h in Headers */,
+				95ED982C20AAD6980096332E /* filereadstream.h in Headers */,
 				59A596191CB630E50012CD52 /* WXNavigationProtocol.h in Headers */,
+				95ED982020AAD6980096332E /* fwd.h in Headers */,
 				59A5962F1CB632050012CD52 /* WXBaseViewController.h in Headers */,
+				95ED986620AAD6990096332E /* WeexApiHeader.h in Headers */,
+				95ED986220AAD6990096332E /* inttypes.h in Headers */,
 				74AD99841D5B0E59008F0336 /* WXPolyfillSet.h in Headers */,
+				95ED985020AAD6980096332E /* filewritestream.h in Headers */,
 				74A4BA961CB365D100195969 /* WXAppConfiguration.h in Headers */,
 				7461F8921CFB373100F62D44 /* WXLayer.h in Headers */,
 				594C28931CF9E61A009793A4 /* WXAnimationModule.h in Headers */,
 				745B2D701E5A8E1E0092D38A /* WXSectionDataController.h in Headers */,
+				95ED980E20AAD6980096332E /* simple_render_factory.h in Headers */,
+				95ED978420AAD6980096332E /* fpconv.h in Headers */,
 				745B2D6E1E5A8E1E0092D38A /* WXRecyclerUpdateController.h in Headers */,
+				95ED979220AAD6980096332E /* constants_name.h in Headers */,
+				95ED97DA20AAD6980096332E /* render_action_remove_element.h in Headers */,
 				D3FC0DF71C508B2A002B9E31 /* WXTimerModule.h in Headers */,
 				D312CE3B1C730DEB00046D68 /* WXWebComponent.h in Headers */,
+				95ED980C20AAD6980096332E /* render_switch_factory.h in Headers */,
 				741081261CEDB4EC001BC6E5 /* WXComponent_internal.h in Headers */,
 				77E65A191C155F25008B8775 /* WXScrollerComponent.h in Headers */,
+				95ED97E420AAD6980096332E /* render_scroller.h in Headers */,
+				95ED97F220AAD6980096332E /* render_textarea.h in Headers */,
 				C4E375381E5FCBD3009B2D9C /* WXComponent+BoxShadow.h in Headers */,
 				74BA4AB31F70F4B600AC29BF /* WXRecycleListLayout.h in Headers */,
 				742AD7311DF98C45007DC46C /* WXResourceRequestHandlerDefaultImpl.h in Headers */,
 				C4F0127D1E1502A6003378D0 /* WXWebSocketHandler.h in Headers */,
 				DC03ADBA1D508719003F76E7 /* WXTextAreaComponent.h in Headers */,
+				95ED978220AAD6980096332E /* TimeUtils.h in Headers */,
 				2AC750241C7565690041D390 /* WXIndicatorComponent.h in Headers */,
 				DCAB35FE1D658EB700C0EA70 /* WXRuleManager.h in Headers */,
+				95ED982620AAD6980096332E /* prettywriter.h in Headers */,
 				748B25181C44A6F9005D491E /* WXSDKInstance_private.h in Headers */,
+				95ED980620AAD6980096332E /* i_render_factory.h in Headers */,
+				95ED983220AAD6980096332E /* ieee754.h in Headers */,
+				95ED97A020AAD6980096332E /* style.h in Headers */,
 				74862F7D1E03A0F300B7A041 /* WXModuleMethod.h in Headers */,
 				742AD7331DF98C45007DC46C /* WXResourceResponse.h in Headers */,
 				77E65A0D1C155E99008B8775 /* WXDivComponent.h in Headers */,
+				95ED97A820AAD6980096332E /* flex_enum.h in Headers */,
+				95ED97F820AAD6980096332E /* render_textarea_factory.h in Headers */,
+				95ED983020AAD6980096332E /* stringbuffer.h in Headers */,
+				95ED981220AAD6980096332E /* render_creator.h in Headers */,
 				C41E1A971DC1FD15009C7F90 /* WXDatePickerManager.h in Headers */,
 				333D9A271F41507A007CED39 /* WXTransition.h in Headers */,
 				7461F8901CFB373100F62D44 /* WXDisplayQueue.h in Headers */,
 				DCC77C141D770AE300CE7288 /* WXSliderNeighborComponent.h in Headers */,
+				95ED980A20AAD6980096332E /* render_appbar_factory.h in Headers */,
 				747DF6821E31AEE4005C53A8 /* WXLength.h in Headers */,
 				77E659F11C0C3612008B8775 /* WXModuleFactory.h in Headers */,
 				77D161431C02DEE40010B15B /* WXBridgeProtocol.h in Headers */,
@@ -1767,24 +2469,37 @@
 				2A837AB61CD9DE9200AEDF03 /* WXRefreshComponent.h in Headers */,
 				C43C03E81EC8ACA40044C7FF /* WXPrerenderManager.h in Headers */,
 				17C74F0C2072145100AB4CAB /* WXAnalyzerCenter.h in Headers */,
+				95ED984020AAD6980096332E /* itoa.h in Headers */,
 				17C7B50B20452E1800A2296A /* WXCoreStyle.h in Headers */,
 				74B232D21D2A2BA4006322EA /* WXLayoutDefine.h in Headers */,
 				C4B834281DE69B09007AD27E /* WXPickerModule.h in Headers */,
 				59A596311CB632050012CD52 /* WXRootViewController.h in Headers */,
 				DCF087611DCAE161005CD6EB /* WXInvocationConfig.h in Headers */,
+				95ED981620AAD6980096332E /* render_switch.h in Headers */,
+				95ED97F420AAD6980096332E /* render_indicator.h in Headers */,
+				95ED97BE20AAD6980096332E /* render_action_createfinish.h in Headers */,
 				742AD7301DF98C45007DC46C /* WXResourceRequestHandler.h in Headers */,
+				95ED985C20AAD6990096332E /* en.h in Headers */,
 				77E65A151C155EB5008B8775 /* WXTextComponent.h in Headers */,
 				C4B3D6D41E6954300013F38D /* WXEditComponent.h in Headers */,
 				74CC7A1C1C2BC5F800829368 /* WXCellComponent.h in Headers */,
 				74896F301D1AC79400D1D593 /* NSObject+WXSwizzle.h in Headers */,
 				DCF343671E49CAEE00A2FB34 /* WXJSExceptionInfo.h in Headers */,
 				17C7B50820452E1800A2296A /* WXScrollerComponent+Layout.h in Headers */,
+				95ED97F620AAD6980096332E /* i_render_object.h in Headers */,
 				C4F012821E1502E9003378D0 /* WXWebSocketModule.h in Headers */,
+				95ED97B620AAD6980096332E /* render_action_move_element.h in Headers */,
 				74EF31AA1DE58AE600667A07 /* WXURLRewriteProtocol.h in Headers */,
+				95ED983420AAD6980096332E /* strtod.h in Headers */,
+				95ED982420AAD6980096332E /* reader.h in Headers */,
 				59A596241CB6311F0012CD52 /* WXStorageModule.h in Headers */,
 				74A4BA851CAD453400195969 /* WXNetworkProtocol.h in Headers */,
+				95ED984820AAD6980096332E /* pow10.h in Headers */,
+				95ED979420AAD6980096332E /* constants_value.h in Headers */,
+				95ED983E20AAD6980096332E /* strfunc.h in Headers */,
 				7461F8A81CFC33A800F62D44 /* WXThreadSafeMutableArray.h in Headers */,
 				D33451081D3E19480083598A /* WXCanvasComponent.h in Headers */,
+				95ED97F020AAD6980096332E /* render_list.h in Headers */,
 				74B8BEFE1DC47B72004A6027 /* WXRootView.h in Headers */,
 				77E65A111C155EA8008B8775 /* WXImageComponent.h in Headers */,
 				745B2D6C1E5A8E1E0092D38A /* WXRecyclerDataController.h in Headers */,
@@ -1794,6 +2509,7 @@
 				2A4445BF1CA8FD56009E7C6D /* WXTextComponentProtocol.h in Headers */,
 				746319021C60AFC100EFEBD4 /* WXThreadSafeCounter.h in Headers */,
 				744D610C1E49978200B624B3 /* WXHeaderComponent.h in Headers */,
+				95ED980020AAD6980096332E /* render_scroller_factory.h in Headers */,
 				77D1613C1C02DEA60010B15B /* WXJSCoreBridge.h in Headers */,
 				74D205201E091B8000128F44 /* WXCallJSMethod.h in Headers */,
 				741DFE061DDD9B30009B020F /* UIBezierPath+Weex.h in Headers */,
@@ -1802,15 +2518,23 @@
 				D317338C1C57257000BB7539 /* WXTransform.h in Headers */,
 				77D161301C02DE4E0010B15B /* WXComponent.h in Headers */,
 				2AFEB17B1C747139000507FA /* WXInstanceWrap.h in Headers */,
+				95ED97EC20AAD6980096332E /* render_appbar.h in Headers */,
 				744BEA551D05178F00452B5D /* WXComponent+Display.h in Headers */,
 				741081231CED6756001BC6E5 /* WXComponentFactory.h in Headers */,
+				95ED979E20AAD6980096332E /* bridge.h in Headers */,
 				59D3CA4A1CFC3CE1008835DC /* NSTimer+Weex.h in Headers */,
+				95ED97B420AAD6980096332E /* render_action_update_attr.h in Headers */,
 				C4424E5B1F24DA3D009F52E2 /* WXExtendCallNativeProtocol.h in Headers */,
+				95ED980220AAD6980096332E /* render_type.h in Headers */,
+				95ED979C20AAD6980096332E /* core_environment.h in Headers */,
+				95ED986020AAD6990096332E /* pointer.h in Headers */,
 				74CFDD391F45939C007A1A66 /* WXRecycleListComponent.h in Headers */,
 				ED053500207F4DEB007B4568 /* JSContext+Weex.h in Headers */,
 				D334510C1D3E19B80083598A /* WXCanvasModule.h in Headers */,
 				742AD73A1DF98C8B007DC46C /* WXResourceLoader.h in Headers */,
+				95ED981C20AAD6980096332E /* WeexJSCoreApi.h in Headers */,
 				746319291C71B92600EFEBD4 /* WXModalUIModule.h in Headers */,
+				95ED97DC20AAD6980096332E /* render_action_add_element.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1818,9 +2542,14 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				95ED97F520AAD6980096332E /* render_indicator.h in Headers */,
+				95ED985F20AAD6990096332E /* memorybuffer.h in Headers */,
+				95ED981520AAD6980096332E /* render_cell_factory.h in Headers */,
 				DCA445D21EFA594600D0CFA8 /* WXComponent+Display.h in Headers */,
 				DCA445A81EFA572B00D0CFA8 /* WXResourceResponse.h in Headers */,
+				95ED978520AAD6980096332E /* fpconv.h in Headers */,
 				DCA445BC1EFA57B000D0CFA8 /* WXConvert.h in Headers */,
+				95ED982F20AAD6980096332E /* istreamwrapper.h in Headers */,
 				DCA445C11EFA57D000D0CFA8 /* WXBridgeManager.h in Headers */,
 				DCA445A31EFA570800D0CFA8 /* WXSDKManager.h in Headers */,
 				DCA445BE1EFA57BB00D0CFA8 /* WXComponentManager.h in Headers */,
@@ -1828,15 +2557,20 @@
 				DCA445B91EFA579D00D0CFA8 /* WXErrorView.h in Headers */,
 				170B4665208733BF00562666 /* WXAnalyzerCenter+Transfer.h in Headers */,
 				DCA445A01EFA56F400D0CFA8 /* WXType.h in Headers */,
+				95ED983520AAD6980096332E /* strtod.h in Headers */,
+				95ED978B20AAD6980096332E /* CoreConstants.h in Headers */,
 				DCA445B21EFA576D00D0CFA8 /* WXListComponent.h in Headers */,
+				95ED982520AAD6980096332E /* reader.h in Headers */,
 				DCA445AD1EFA575100D0CFA8 /* WXNavigationProtocol.h in Headers */,
 				DCA445B01EFA576200D0CFA8 /* WXModalUIModule.h in Headers */,
 				DCA445A61EFA571E00D0CFA8 /* WXSDKEngine.h in Headers */,
 				17E5ACDA2091F05000EE81F1 /* WXCoreFlexEnum.h in Headers */,
 				DCA445AA1EFA573900D0CFA8 /* WXResourceRequest.h in Headers */,
+				95ED985B20AAD6990096332E /* error.h in Headers */,
 				DCA445C61EFA57EE00D0CFA8 /* NSObject+WXSwizzle.h in Headers */,
 				74B81AEB1F73C3E900D3A61D /* WXRecycleListLayout.h in Headers */,
 				DCA445B41EFA577F00D0CFA8 /* WXJSExceptionProtocol.h in Headers */,
+				95ED978920AAD6980096332E /* powers.h in Headers */,
 				74B81AEF1F73C3E900D3A61D /* WXComponent+DataBinding.h in Headers */,
 				DCA445B51EFA578400D0CFA8 /* WXJSExceptionInfo.h in Headers */,
 				DCA445B61EFA578B00D0CFA8 /* WXIndicatorComponent.h in Headers */,
@@ -1844,18 +2578,29 @@
 				DCA445A71EFA572300D0CFA8 /* WXRootViewController.h in Headers */,
 				74B81AE91F73C3E900D3A61D /* WXRecycleListUpdateManager.h in Headers */,
 				DCA445C01EFA57C900D0CFA8 /* WXBridgeProtocol.h in Headers */,
+				95ED986520AAD6990096332E /* stdint.h in Headers */,
+				95ED986120AAD6990096332E /* pointer.h in Headers */,
+				95ED983D20AAD6980096332E /* biginteger.h in Headers */,
 				DCA445AC1EFA574A00D0CFA8 /* WXNetworkProtocol.h in Headers */,
 				DCA445C31EFA57DC00D0CFA8 /* WXAppMonitorProtocol.h in Headers */,
 				DCA445AF1EFA575D00D0CFA8 /* WXModuleProtocol.h in Headers */,
 				ED053501207F4DEB007B4568 /* JSContext+Weex.h in Headers */,
+				95ED97ED20AAD6980096332E /* render_appbar.h in Headers */,
+				95ED97F720AAD6980096332E /* i_render_object.h in Headers */,
 				DCA445B31EFA577300D0CFA8 /* WXLayoutDefine.h in Headers */,
 				DCA4459F1EFA56EC00D0CFA8 /* WXURLRewriteProtocol.h in Headers */,
 				DCA445A21EFA570100D0CFA8 /* WXScrollerComponent.h in Headers */,
 				DCA445C71EFA57F300D0CFA8 /* Layout.h in Headers */,
+				95ED97C520AAD6980096332E /* render_action_add_event.h in Headers */,
+				95ED983720AAD6980096332E /* swap.h in Headers */,
+				95ED97F120AAD6980096332E /* render_list.h in Headers */,
 				DCA445B71EFA579200D0CFA8 /* WXImgLoaderProtocol.h in Headers */,
 				DCA445C21EFA57D700D0CFA8 /* WXBaseViewController.h in Headers */,
 				DCA445AB1EFA574100D0CFA8 /* WXPrerenderManager.h in Headers */,
+				95ED986320AAD6990096332E /* inttypes.h in Headers */,
+				95ED984D20AAD6980096332E /* schema.h in Headers */,
 				DCA445BB1EFA57AA00D0CFA8 /* WXDebugTool.h in Headers */,
+				95ED97AD20AAD6980096332E /* render_page.h in Headers */,
 				DCA445A91EFA573200D0CFA8 /* WXResourceRequestHandler.h in Headers */,
 				DCA445C41EFA57E300D0CFA8 /* WXAppConfiguration.h in Headers */,
 				DCA445BA1EFA57A200D0CFA8 /* WXDefine.h in Headers */,
@@ -1865,6 +2610,7 @@
 				DCA4459D1EFA56DB00D0CFA8 /* WXValidateProtocol.h in Headers */,
 				DCA445B81EFA579800D0CFA8 /* WXEventModuleProtocol.h in Headers */,
 				DCA445AE1EFA575700D0CFA8 /* WXMonitor.h in Headers */,
+				95ED980120AAD6980096332E /* render_scroller_factory.h in Headers */,
 				DCA445BD1EFA57B500D0CFA8 /* WXConfigCenterProtocol.h in Headers */,
 				DCA445A11EFA56FA00D0CFA8 /* WXScrollerProtocol.h in Headers */,
 				DCA445DE1EFA59B800D0CFA8 /* WXSectionDataController.h in Headers */,
@@ -1874,20 +2620,33 @@
 				DCA445ED1EFA5A1200D0CFA8 /* WXTransform.h in Headers */,
 				DCA445DB1EFA59AA00D0CFA8 /* WXRecyclerComponent.h in Headers */,
 				DCA445CD1EFA592E00D0CFA8 /* WXComponent+Events.h in Headers */,
+				95ED979920AAD6980096332E /* css_value_getter.h in Headers */,
 				DCA445EC1EFA5A0E00D0CFA8 /* WXTextAreaComponent.h in Headers */,
 				17E5ACD92091F03700EE81F1 /* WXCoreStyle.h in Headers */,
 				DCA445D81EFA599400D0CFA8 /* WXRootView.h in Headers */,
+				95ED979F20AAD6980096332E /* bridge.h in Headers */,
+				95ED97B320AAD6980096332E /* render_action_appendtree_createfinish.h in Headers */,
 				DCA446131EFA5A8C00D0CFA8 /* WXCallJSMethod.h in Headers */,
 				BA5F00F31FC6834900F76B5C /* WXLocaleModule.h in Headers */,
+				95ED978320AAD6980096332E /* TimeUtils.h in Headers */,
 				74B81AED1F73C3E900D3A61D /* WXCellSlotComponent.h in Headers */,
 				DCA445E41EFA59DC00D0CFA8 /* WXVideoComponent.h in Headers */,
 				DCA4460B1EFA5A7200D0CFA8 /* WXAssert.h in Headers */,
+				95ED984920AAD6980096332E /* pow10.h in Headers */,
+				95ED97B120AAD6980096332E /* render_manager.h in Headers */,
 				DCA445F71EFA5A3100D0CFA8 /* WXPickerModule.h in Headers */,
+				95ED979520AAD6980096332E /* constants_value.h in Headers */,
 				DCA445E71EFA59E900D0CFA8 /* WXTextComponent.h in Headers */,
 				DCA445D01EFA593E00D0CFA8 /* WXDisplayQueue.h in Headers */,
+				95ED983920AAD6980096332E /* regex.h in Headers */,
 				DCA445E21EFA59D700D0CFA8 /* WXRefreshComponent.h in Headers */,
+				95ED985320AAD6980096332E /* rapidjson.h in Headers */,
 				DCA445E81EFA59EF00D0CFA8 /* WXCycleSliderComponent.h in Headers */,
+				95ED985120AAD6980096332E /* filewritestream.h in Headers */,
+				95ED97A720AAD6980096332E /* layout.h in Headers */,
 				DCA4461F1EFA5AB100D0CFA8 /* WXRuleManager.h in Headers */,
+				95ED97A120AAD6980096332E /* style.h in Headers */,
+				95ED982920AAD6980096332E /* ostreamwrapper.h in Headers */,
 				DCA445E31EFA59DA00D0CFA8 /* WXEmbedComponent.h in Headers */,
 				DCA445DF1EFA59BC00D0CFA8 /* WXLoadingComponent.h in Headers */,
 				C42E8FAD1F3C7C3F001EBE9D /* WXExtendCallNativeManager.h in Headers */,
@@ -1895,6 +2654,7 @@
 				DCA4460F1EFA5A8100D0CFA8 /* WXDiffUtil.h in Headers */,
 				DCA445F91EFA5A3700D0CFA8 /* WXClipboardModule.h in Headers */,
 				DCA445FD1EFA5A4000D0CFA8 /* WXAnimationModule.h in Headers */,
+				95ED981D20AAD6980096332E /* WeexJSCoreApi.h in Headers */,
 				DCA446101EFA5A8500D0CFA8 /* WXBridgeMethod.h in Headers */,
 				DCA446171EFA5A9900D0CFA8 /* WXPolyfillSet.h in Headers */,
 				DCA446291EFA688B00D0CFA8 /* WeexSDK.h in Headers */,
@@ -1902,7 +2662,9 @@
 				17F2D6E72087227300084378 /* WXAnalyzerProtocol.h in Headers */,
 				DC7764961F3C685600B5727E /* WXRecyclerDragController.h in Headers */,
 				DCA446161EFA5A9600D0CFA8 /* WXJSCoreBridge.h in Headers */,
+				95ED97FB20AAD6980096332E /* render_mask_factory.h in Headers */,
 				DCA445F51EFA5A2A00D0CFA8 /* WXURLRewriteDefaultImpl.h in Headers */,
+				95ED982720AAD6980096332E /* prettywriter.h in Headers */,
 				DCA445CF1EFA593A00D0CFA8 /* WXInnerLayer.h in Headers */,
 				DCA446041EFA5A5500D0CFA8 /* WXMetaModule.h in Headers */,
 				DCA445FC1EFA5A3E00D0CFA8 /* WXStreamModule.h in Headers */,
@@ -1911,8 +2673,12 @@
 				DCA445D51EFA598200D0CFA8 /* WXComponent+PseudoClassManagement.h in Headers */,
 				DCA4460E1EFA5A7E00D0CFA8 /* WXLength.h in Headers */,
 				DCA445FA1EFA5A3A00D0CFA8 /* WXNavigatorModule.h in Headers */,
+				95ED97BD20AAD6980096332E /* render_action_update_style.h in Headers */,
+				95ED984320AAD6980096332E /* stack.h in Headers */,
 				841CD1061F974DFA0081196D /* WXExceptionUtils.h in Headers */,
+				95ED97EF20AAD6980096332E /* render_input.h in Headers */,
 				DCA446081EFA5A6A00D0CFA8 /* NSArray+Weex.h in Headers */,
+				95ED983F20AAD6980096332E /* strfunc.h in Headers */,
 				74B81AE51F73C3E900D3A61D /* WXRecycleListDataManager.h in Headers */,
 				DCA445F21EFA5A2300D0CFA8 /* WXHeaderComponent.h in Headers */,
 				DCA445DD1EFA59B300D0CFA8 /* WXRecyclerUpdateController.h in Headers */,
@@ -1923,56 +2689,106 @@
 				DCA4461D1EFA5AAA00D0CFA8 /* WXHandlerFactory.h in Headers */,
 				DCA445EE1EFA5A1500D0CFA8 /* WXWebComponent.h in Headers */,
 				DCA4460D1EFA5A7900D0CFA8 /* WXThreadSafeMutableArray.h in Headers */,
+				95ED984120AAD6980096332E /* itoa.h in Headers */,
 				74B81AE31F73C3E300D3A61D /* WXRecycleListComponent.h in Headers */,
 				DCA445DA1EFA59A600D0CFA8 /* WXMultiColumnLayout.h in Headers */,
+				95ED978720AAD6980096332E /* ViewUtils.h in Headers */,
+				95ED984B20AAD6980096332E /* encodings.h in Headers */,
+				95ED981320AAD6980096332E /* render_creator.h in Headers */,
+				95ED97B520AAD6980096332E /* render_action_update_attr.h in Headers */,
+				95ED982320AAD6980096332E /* memorystream.h in Headers */,
 				DCA445E01EFA59CD00D0CFA8 /* WXLoadingIndicator.h in Headers */,
 				DCA445E61EFA59E500D0CFA8 /* WXImageComponent.h in Headers */,
+				95ED97DB20AAD6980096332E /* render_action_remove_element.h in Headers */,
+				95ED986720AAD6990096332E /* WeexApiHeader.h in Headers */,
 				DCA4461B1EFA5AA200D0CFA8 /* WXDatePickerManager.h in Headers */,
 				DCA445D71EFA598D00D0CFA8 /* WXComponent+ViewManagement.h in Headers */,
 				178EDF0D204FEC1300917F6B /* WXScrollerComponent+Layout.h in Headers */,
 				DCA445DB1EFA59AA00D0CFA8 /* WXRecyclerComponent.h in Headers */,
+				95ED981120AAD6980096332E /* render_list_factory.h in Headers */,
+				95ED97C920AAD6980096332E /* render_action_createbody.h in Headers */,
 				DCA445D31EFA594A00D0CFA8 /* WXRoundedRect.h in Headers */,
 				DCA445EA1EFA5A0300D0CFA8 /* WXCellComponent.h in Headers */,
 				DCA446201EFA5AB800D0CFA8 /* WXComponent+Navigation.h in Headers */,
+				95ED97D920AAD6980096332E /* render_action_layout.h in Headers */,
+				95ED97BF20AAD6980096332E /* render_action_createfinish.h in Headers */,
 				DCA445F81EFA5A3500D0CFA8 /* WXGlobalEventModule.h in Headers */,
+				95ED97E720AAD6980096332E /* render_text.h in Headers */,
+				95ED981B20AAD6980096332E /* dom_parser.h in Headers */,
 				DCA446221EFA5AC400D0CFA8 /* WXResourceRequestHandlerDefaultImpl.h in Headers */,
+				95ED97E120AAD6980096332E /* render_cell.h in Headers */,
+				95ED979120AAD6980096332E /* render_performance.h in Headers */,
 				DCA446071EFA5A6500D0CFA8 /* WXWeakObjectWrapper.h in Headers */,
+				95ED979320AAD6980096332E /* constants_name.h in Headers */,
 				DCA446111EFA5A8800D0CFA8 /* WXModuleMethod.h in Headers */,
 				DCA446011EFA5A4B00D0CFA8 /* WXTimerModule.h in Headers */,
 				DCA446001EFA5A4800D0CFA8 /* WXDomModule.h in Headers */,
 				DCA446021EFA5A5000D0CFA8 /* WXWebViewModule.h in Headers */,
+				95ED984F20AAD6980096332E /* stream.h in Headers */,
+				95ED97E320AAD6980096332E /* render_mask.h in Headers */,
 				C42E8FAA1F3C7AA1001EBE9D /* WXTracingProtocol.h in Headers */,
+				95ED982B20AAD6980096332E /* encodedstream.h in Headers */,
 				DCA446181EFA5A9B00D0CFA8 /* JSValue+Weex.h in Headers */,
 				DCA446061EFA5A5B00D0CFA8 /* NSTimer+Weex.h in Headers */,
 				DCA445D61EFA598600D0CFA8 /* WXView.h in Headers */,
 				DCA445FF1EFA5A4600D0CFA8 /* WXInstanceWrap.h in Headers */,
 				DCE2CF9C1F46D4310021BDC4 /* WXVoiceOverModule.h in Headers */,
+				95ED980D20AAD6980096332E /* render_switch_factory.h in Headers */,
 				C42E8FAB1F3C7C09001EBE9D /* WXExtendCallNativeProtocol.h in Headers */,
 				17E5ACE3209211C200EE81F1 /* WXTransition.h in Headers */,
 				DCA445F31EFA5A2500D0CFA8 /* WXFooterComponent.h in Headers */,
+				95ED981720AAD6980096332E /* render_switch.h in Headers */,
+				95ED980320AAD6980096332E /* render_type.h in Headers */,
 				DCA446151EFA5A9000D0CFA8 /* WXBridgeContext.h in Headers */,
 				DCA4461A1EFA5AA000D0CFA8 /* WXInvocationConfig.h in Headers */,
+				95ED97B720AAD6980096332E /* render_action_move_element.h in Headers */,
+				95ED985D20AAD6990096332E /* en.h in Headers */,
+				95ED97DD20AAD6980096332E /* render_action_add_element.h in Headers */,
+				95ED982120AAD6980096332E /* fwd.h in Headers */,
+				95ED97F320AAD6980096332E /* render_textarea.h in Headers */,
+				95ED97F920AAD6980096332E /* render_textarea_factory.h in Headers */,
+				95ED97C120AAD6980096332E /* render_action.h in Headers */,
 				DCA445DC1EFA59AD00D0CFA8 /* WXRecyclerDataController.h in Headers */,
 				DCA446191EFA5A9E00D0CFA8 /* WXServiceFactory.h in Headers */,
 				DCA446121EFA5A8A00D0CFA8 /* WXComponentMethod.h in Headers */,
 				DCA445D41EFA594E00D0CFA8 /* UIBezierPath+Weex.h in Headers */,
+				95ED985920AAD6990096332E /* writer.h in Headers */,
+				95ED980720AAD6980096332E /* i_render_factory.h in Headers */,
 				DCA446031EFA5A5200D0CFA8 /* WXCanvasModule.h in Headers */,
 				DCA445EF1EFA5A1800D0CFA8 /* WXSwitchComponent.h in Headers */,
 				C49642EC1F73E6DF0092CC5A /* WXWebSocketHandler.h in Headers */,
+				95ED980B20AAD6980096332E /* render_appbar_factory.h in Headers */,
 				DCA445EB1EFA5A0B00D0CFA8 /* WXTextInputComponent.h in Headers */,
+				95ED97A920AAD6980096332E /* flex_enum.h in Headers */,
 				DCA4460C1EFA5A7600D0CFA8 /* WXThreadSafeMutableDictionary.h in Headers */,
 				DCA445CE1EFA593500D0CFA8 /* WXComponent+BoxShadow.h in Headers */,
+				95ED979D20AAD6980096332E /* core_environment.h in Headers */,
 				74B81AF11F73C3E900D3A61D /* WXJSASTParser.h in Headers */,
+				95ED980920AAD6980096332E /* render_input_factory.h in Headers */,
+				95ED97FF20AAD6980096332E /* render_indicator_factory.h in Headers */,
 				178EDF0F204FF11700917F6B /* WXCoreLayout.h in Headers */,
+				95ED985520AAD6990096332E /* document.h in Headers */,
 				DCA4461C1EFA5AA600D0CFA8 /* WXModuleFactory.h in Headers */,
+				95ED97E520AAD6980096332E /* render_scroller.h in Headers */,
+				95ED985720AAD6990096332E /* allocators.h in Headers */,
+				95ED983320AAD6980096332E /* ieee754.h in Headers */,
+				95ED97FD20AAD6980096332E /* render_text_factory.h in Headers */,
 				DCA445D91EFA59A100D0CFA8 /* WXEditComponent.h in Headers */,
 				DCA445FB1EFA5A3C00D0CFA8 /* WXStorageModule.h in Headers */,
+				95ED983120AAD6980096332E /* stringbuffer.h in Headers */,
 				DCA446051EFA5A5800D0CFA8 /* WXBoxShadow.h in Headers */,
 				DCEA54621F2B7DB4000ECB23 /* WXTracingManager.h in Headers */,
+				95ED984520AAD6980096332E /* dtoa.h in Headers */,
+				95ED984720AAD6980096332E /* meta.h in Headers */,
 				DCA445D11EFA594200D0CFA8 /* WXLayer.h in Headers */,
 				DCA4460A1EFA5A6F00D0CFA8 /* WXSimulatorShortcutManager.h in Headers */,
+				95ED97D320AAD6980096332E /* render_action_remove_event.h in Headers */,
+				95ED983B20AAD6980096332E /* diyfp.h in Headers */,
+				95ED980F20AAD6980096332E /* simple_render_factory.h in Headers */,
+				95ED982D20AAD6980096332E /* filereadstream.h in Headers */,
 				DCA445E11EFA59D100D0CFA8 /* WXSliderNeighborComponent.h in Headers */,
 				DCA445CC1EFA592800D0CFA8 /* WXResourceLoader.h in Headers */,
+				95ED97EB20AAD6980096332E /* render_object.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2221,6 +3037,7 @@
 				176BE43E209172E20086B6AF /* WXScrollerComponent+Layout.mm in Sources */,
 				77D161291C02DE1A0010B15B /* WXSDKManager.m in Sources */,
 				7461F8911CFB373100F62D44 /* WXDisplayQueue.m in Sources */,
+				95ED979620AAD6980096332E /* css_value_getter.cpp in Sources */,
 				74896F311D1AC79400D1D593 /* NSObject+WXSwizzle.m in Sources */,
 				746986A01C4E2C010054A57E /* NSArray+Weex.m in Sources */,
 				74B8BEFF1DC47B72004A6027 /* WXRootView.m in Sources */,
@@ -2233,9 +3050,12 @@
 				2A60CE9D1C91733E00857B9F /* WXSwitchComponent.mm in Sources */,
 				744D61111E49979000B624B3 /* WXFooterComponent.m in Sources */,
 				745B2D6F1E5A8E1E0092D38A /* WXRecyclerUpdateController.m in Sources */,
+				95ED97D620AAD6980096332E /* render_action_createfinish.cpp in Sources */,
 				745B2D6B1E5A8E1E0092D38A /* WXRecyclerComponent.mm in Sources */,
 				2A837AB71CD9DE9200AEDF03 /* WXRefreshComponent.mm in Sources */,
+				95ED978E20AAD6980096332E /* render_performance.cpp in Sources */,
 				74A4BA9B1CB3BAA100195969 /* WXThreadSafeMutableDictionary.m in Sources */,
+				95ED97CC20AAD6980096332E /* render_action_remove_event.cpp in Sources */,
 				77E65A1A1C155F25008B8775 /* WXScrollerComponent.mm in Sources */,
 				747A787D1D1BAAC900DED9D0 /* WXComponent+ViewManagement.mm in Sources */,
 				C4E375371E5FCBD3009B2D9C /* WXComponent+BoxShadow.m in Sources */,
@@ -2245,9 +3065,13 @@
 				59D3CA401CF9ED57008835DC /* Layout.c in Sources */,
 				DCF087621DCAE161005CD6EB /* WXInvocationConfig.m in Sources */,
 				C47B78CF1F2998EE001D3B0C /* WXExtendCallNativeManager.m in Sources */,
+				95ED97D420AAD6980096332E /* render_action_createbody.cpp in Sources */,
+				95ED97C220AAD6980096332E /* render_action_update_style.cpp in Sources */,
 				77D161311C02DE4E0010B15B /* WXComponent.mm in Sources */,
 				74CFDD461F459443007A1A66 /* WXRecycleListUpdateManager.m in Sources */,
+				95ED981820AAD6980096332E /* dom_parser.cpp in Sources */,
 				74862F7A1E02B88D00B7A041 /* JSValue+Weex.m in Sources */,
+				95ED97D020AAD6980096332E /* render_action_add_element.cpp in Sources */,
 				740451EB1E14BB26004157CB /* WXServiceFactory.m in Sources */,
 				77E659DB1C07F594008B8775 /* WXDomModule.m in Sources */,
 				D3FC0DF81C508B2A002B9E31 /* WXTimerModule.m in Sources */,
@@ -2256,6 +3080,7 @@
 				77D161631C02ED790010B15B /* WXLog.m in Sources */,
 				17C74F0D2072145100AB4CAB /* WXAnalyzerCenter.m in Sources */,
 				59A582FD1CF5B17B0081FD3E /* WXBridgeContext.m in Sources */,
+				95ED97CA20AAD6980096332E /* render_action_add_event.cpp in Sources */,
 				17C7B50620452E1800A2296A /* WXCoreLayout.cpp in Sources */,
 				743933B51C7ED9AA00773BB7 /* WXSimulatorShortcutManager.m in Sources */,
 				BA5F00F21FC5AFFE00F76B5C /* WXLocaleModule.m in Sources */,
@@ -2272,18 +3097,23 @@
 				591DD3311D23AD5800BE8709 /* WXErrorView.m in Sources */,
 				59D3CA4B1CFC3CE1008835DC /* NSTimer+Weex.m in Sources */,
 				59A596321CB632050012CD52 /* WXRootViewController.m in Sources */,
+				95ED97B820AAD6980096332E /* render_action_update_attr.cpp in Sources */,
 				DCC77C131D770AE300CE7288 /* WXSliderNeighborComponent.mm in Sources */,
 				2A8E658B1C7C7AA20025C7B7 /* WXVideoComponent.m in Sources */,
 				74862F7E1E03A0F300B7A041 /* WXModuleMethod.m in Sources */,
 				742AD7341DF98C45007DC46C /* WXResourceResponse.m in Sources */,
 				77E65A161C155EB5008B8775 /* WXTextComponent.mm in Sources */,
 				C4D872261E5DDF7500E39BC1 /* WXBoxShadow.m in Sources */,
+				95ED97CE20AAD6980096332E /* render_action_move_element.cpp in Sources */,
 				746319031C60AFC100EFEBD4 /* WXThreadSafeCounter.m in Sources */,
+				95ED97AE20AAD6980096332E /* render_manager.cpp in Sources */,
 				74A4BAA71CB4F98300195969 /* WXStreamModule.m in Sources */,
 				744D610D1E49978200B624B3 /* WXHeaderComponent.mm in Sources */,
 				77E659F21C0C3612008B8775 /* WXModuleFactory.m in Sources */,
 				DCF343681E49CAEE00A2FB34 /* WXJSExceptionInfo.m in Sources */,
+				95ED97E820AAD6980096332E /* render_object.cpp in Sources */,
 				59CE27E91CC387DB000BE37A /* WXEmbedComponent.m in Sources */,
+				95ED97C620AAD6980096332E /* render_action_remove_element.cpp in Sources */,
 				DCA0EF651D6EED6F00CB18B9 /* WXGlobalEventModule.m in Sources */,
 				2A919DA71E321F1F006EB6B5 /* WXBridgeMethod.m in Sources */,
 				7423EB521F4ADE30001662D1 /* WXComponent+DataBinding.mm in Sources */,
@@ -2295,11 +3125,14 @@
 				17B122262090AAB000387E33 /* WXSDKError.m in Sources */,
 				C4B3D6D51E6954300013F38D /* WXEditComponent.mm in Sources */,
 				C4C30DE81E1B833D00786B6C /* WXComponent+PseudoClassManagement.m in Sources */,
+				95ED97AA20AAD6980096332E /* render_page.cpp in Sources */,
 				17C7B50920452E1800A2296A /* WXCoreStyle.cpp in Sources */,
+				95ED97A420AAD6980096332E /* layout.cpp in Sources */,
 				74915F481C8EB02B00BEBCC0 /* WXAssert.m in Sources */,
 				59A596251CB6311F0012CD52 /* WXStorageModule.m in Sources */,
 				2AFEB17C1C747139000507FA /* WXInstanceWrap.m in Sources */,
 				74A4BA5C1CABBBD000195969 /* WXDebugTool.m in Sources */,
+				95ED97A220AAD6980096332E /* style.cpp in Sources */,
 				742AD73B1DF98C8B007DC46C /* WXResourceLoader.m in Sources */,
 				D334510D1D3E19B80083598A /* WXCanvasModule.m in Sources */,
 				741081241CED6756001BC6E5 /* WXComponentFactory.m in Sources */,
@@ -2320,11 +3153,16 @@
 				74CC7A211C2BF9DC00829368 /* WXListComponent.mm in Sources */,
 				7423899C1C3174EB00D748CA /* WXWeakObjectWrapper.m in Sources */,
 				744BEA561D05178F00452B5D /* WXComponent+Display.m in Sources */,
+				95ED97BA20AAD6980096332E /* render_action_layout.cpp in Sources */,
 				7408C48F1CFB345D000BCCD0 /* WXComponent+Events.m in Sources */,
 				C4F012871E150307003378D0 /* WXWebSocketLoader.m in Sources */,
 				C4D872211E5DDEDA00E39BC1 /* WXInnerLayer.m in Sources */,
+				95ED978020AAD6980096332E /* fpconv.cpp in Sources */,
 				74BA4AB41F70F4B600AC29BF /* WXRecycleListLayout.m in Sources */,
 				745ED2DB1C5F2C7E002DB5A8 /* WXView.m in Sources */,
+				95ED981E20AAD6980096332E /* WeexJSCoreApi.cpp in Sources */,
+				95ED980420AAD6980096332E /* render_creator.cpp in Sources */,
+				95ED979A20AAD6980096332E /* core_environment.cpp in Sources */,
 				DC03ADB91D508719003F76E7 /* WXTextAreaComponent.mm in Sources */,
 				59A596231CB6311F0012CD52 /* WXNavigatorModule.m in Sources */,
 				37B51EE51E97804D0040A743 /* WXCycleSliderComponent.mm in Sources */,
@@ -2345,6 +3183,7 @@
 				77D1613D1C02DEA60010B15B /* WXJSCoreBridge.m in Sources */,
 				C41E1A981DC1FD15009C7F90 /* WXDatePickerManager.m in Sources */,
 				77D1614C1C02E3790010B15B /* WXConvert.m in Sources */,
+				95ED97DE20AAD6980096332E /* render_action_appendtree_createfinish.cpp in Sources */,
 				749DC27C1D40827B009E1C91 /* WXMonitor.m in Sources */,
 				C4B834271DE69B09007AD27E /* WXPickerModule.m in Sources */,
 				745B2D691E5A8E1E0092D38A /* WXMultiColumnLayout.m in Sources */,
@@ -2360,7 +3199,9 @@
 				BA5F00F41FC6834C00F76B5C /* WXLocaleModule.m in Sources */,
 				DCA4452F1EFA55B300D0CFA8 /* WXResourceLoader.m in Sources */,
 				DCA445301EFA55B300D0CFA8 /* WXComponent+Events.m in Sources */,
+				95ED97D520AAD6980096332E /* render_action_createbody.cpp in Sources */,
 				DCA445311EFA55B300D0CFA8 /* WXComponent+BoxShadow.m in Sources */,
+				95ED97AB20AAD6980096332E /* render_page.cpp in Sources */,
 				DCA445321EFA55B300D0CFA8 /* WXInnerLayer.m in Sources */,
 				DCA445331EFA55B300D0CFA8 /* WXDisplayQueue.m in Sources */,
 				DCA445341EFA55B300D0CFA8 /* WXLayer.m in Sources */,
@@ -2373,10 +3214,14 @@
 				DCA4453B1EFA55B300D0CFA8 /* WXErrorView.m in Sources */,
 				74B81AEC1F73C3E900D3A61D /* WXRecycleListLayout.m in Sources */,
 				DCA4453C1EFA55B300D0CFA8 /* WXComponent+ViewManagement.mm in Sources */,
+				95ED97AF20AAD6980096332E /* render_manager.cpp in Sources */,
 				74B81AE41F73C3E500D3A61D /* WXRecycleListComponent.mm in Sources */,
+				95ED97CD20AAD6980096332E /* render_action_remove_event.cpp in Sources */,
 				DC7764951F3C685200B5727E /* WXRecyclerDragController.m in Sources */,
 				DCA4453D1EFA55B300D0CFA8 /* WXRootView.m in Sources */,
+				95ED981920AAD6980096332E /* dom_parser.cpp in Sources */,
 				DCA4453E1EFA55B300D0CFA8 /* WXBaseViewController.m in Sources */,
+				95ED97A520AAD6980096332E /* layout.cpp in Sources */,
 				DCA4453F1EFA55B300D0CFA8 /* WXRootViewController.m in Sources */,
 				DCA445401EFA55B300D0CFA8 /* WXEditComponent.mm in Sources */,
 				176BE43D209172A30086B6AF /* WXScrollerComponent+Layout.mm in Sources */,
@@ -2396,11 +3241,13 @@
 				DCA4454C1EFA55B300D0CFA8 /* WXComponent.mm in Sources */,
 				DCA4454D1EFA55B300D0CFA8 /* WXDivComponent.m in Sources */,
 				DCA4454E1EFA55B300D0CFA8 /* WXImageComponent.m in Sources */,
+				95ED97D720AAD6980096332E /* render_action_createfinish.cpp in Sources */,
 				DCA4454F1EFA55B300D0CFA8 /* WXTextComponent.mm in Sources */,
 				DCA445501EFA55B300D0CFA8 /* WXScrollerComponent.mm in Sources */,
 				DCA445511EFA55B300D0CFA8 /* WXCycleSliderComponent.mm in Sources */,
 				DCE2CF9D1F46D4370021BDC4 /* WXVoiceOverModule.m in Sources */,
 				DCA445531EFA55B300D0CFA8 /* WXCellComponent.mm in Sources */,
+				95ED97D120AAD6980096332E /* render_action_add_element.cpp in Sources */,
 				DCA445541EFA55B300D0CFA8 /* WXListComponent.mm in Sources */,
 				DCA445551EFA55B300D0CFA8 /* WXIndicatorComponent.m in Sources */,
 				17E5ACDB2091F05700EE81F1 /* WXComponent+Layout.mm in Sources */,
@@ -2413,16 +3260,20 @@
 				DCA4455B1EFA55B300D0CFA8 /* WXAComponent.m in Sources */,
 				DCA4455C1EFA55B300D0CFA8 /* WXCanvasComponent.m in Sources */,
 				DCA4455D1EFA55B300D0CFA8 /* WXHeaderComponent.mm in Sources */,
+				95ED97BB20AAD6980096332E /* render_action_layout.cpp in Sources */,
 				DCA4455E1EFA55B300D0CFA8 /* WXFooterComponent.m in Sources */,
 				DCA4455F1EFA55B300D0CFA8 /* WXNavigationDefaultImpl.m in Sources */,
+				95ED97A320AAD6980096332E /* style.cpp in Sources */,
 				74B81AF21F73C3E900D3A61D /* WXJSASTParser.mm in Sources */,
 				841CD1071F974E000081196D /* WXExceptionUtils.m in Sources */,
 				DCA445601EFA55B300D0CFA8 /* WXURLRewriteDefaultImpl.m in Sources */,
 				DCA445611EFA55B300D0CFA8 /* WXPrerenderManager.m in Sources */,
 				DCA445631EFA55B300D0CFA8 /* WXPickerModule.m in Sources */,
 				DCA445641EFA55B300D0CFA8 /* WXGlobalEventModule.m in Sources */,
+				95ED979B20AAD6980096332E /* core_environment.cpp in Sources */,
 				DCA445651EFA55B300D0CFA8 /* WXClipboardModule.m in Sources */,
 				DCA445661EFA55B300D0CFA8 /* WXNavigatorModule.m in Sources */,
+				95ED97E920AAD6980096332E /* render_object.cpp in Sources */,
 				DCA445671EFA55B300D0CFA8 /* WXStorageModule.m in Sources */,
 				DCA445681EFA55B300D0CFA8 /* WXStreamModule.m in Sources */,
 				C42E8FAC1F3C7C3B001EBE9D /* WXExtendCallNativeManager.m in Sources */,
@@ -2434,7 +3285,9 @@
 				DCA4456E1EFA55B300D0CFA8 /* WXModalUIModule.m in Sources */,
 				DCA4456F1EFA55B300D0CFA8 /* WXWebViewModule.m in Sources */,
 				DCA445701EFA55B300D0CFA8 /* WXCanvasModule.m in Sources */,
+				95ED97CB20AAD6980096332E /* render_action_add_event.cpp in Sources */,
 				170B4668208733E500562666 /* WXAnalyzerCenter.m in Sources */,
+				95ED978F20AAD6980096332E /* render_performance.cpp in Sources */,
 				DCA445711EFA55B300D0CFA8 /* WXMetaModule.m in Sources */,
 				DCA445721EFA55B300D0CFA8 /* WXBoxShadow.m in Sources */,
 				DCA445731EFA55B300D0CFA8 /* NSTimer+Weex.m in Sources */,
@@ -2454,15 +3307,20 @@
 				DCA4457C1EFA55B300D0CFA8 /* WXAppConfiguration.m in Sources */,
 				DCA4457D1EFA55B300D0CFA8 /* WXThreadSafeMutableDictionary.m in Sources */,
 				DCA4457E1EFA55B300D0CFA8 /* WXThreadSafeMutableArray.m in Sources */,
+				95ED97CF20AAD6980096332E /* render_action_move_element.cpp in Sources */,
 				DCA4457F1EFA55B300D0CFA8 /* NSObject+WXSwizzle.m in Sources */,
 				DCA445801EFA55B300D0CFA8 /* WXLength.m in Sources */,
 				DCA445811EFA55B300D0CFA8 /* WXDiffUtil.m in Sources */,
+				95ED97C720AAD6980096332E /* render_action_remove_element.cpp in Sources */,
+				95ED97B920AAD6980096332E /* render_action_update_attr.cpp in Sources */,
 				DCA445821EFA55B300D0CFA8 /* WXSDKEngine.m in Sources */,
 				DCEA54631F2B7DBA000ECB23 /* WXTracingManager.m in Sources */,
 				DCA445831EFA55B300D0CFA8 /* WXBridgeMethod.m in Sources */,
 				DCA445841EFA55B300D0CFA8 /* WXModuleMethod.m in Sources */,
 				DCA445851EFA55B300D0CFA8 /* WXComponentMethod.m in Sources */,
 				DCA445861EFA55B300D0CFA8 /* WXCallJSMethod.m in Sources */,
+				95ED97DF20AAD6980096332E /* render_action_appendtree_createfinish.cpp in Sources */,
+				95ED979720AAD6980096332E /* css_value_getter.cpp in Sources */,
 				DCA445881EFA55B300D0CFA8 /* WXBridgeContext.m in Sources */,
 				DCA445891EFA55B300D0CFA8 /* WXJSCoreBridge.m in Sources */,
 				DCA4458A1EFA55B300D0CFA8 /* WXPolyfillSet.m in Sources */,
@@ -2477,13 +3335,17 @@
 				DCA445921EFA55B300D0CFA8 /* WXHandlerFactory.m in Sources */,
 				DCA445931EFA55B300D0CFA8 /* WXComponentManager.mm in Sources */,
 				DCA445941EFA55B300D0CFA8 /* WXComponentFactory.m in Sources */,
+				95ED978120AAD6980096332E /* fpconv.cpp in Sources */,
 				DCA445951EFA55B300D0CFA8 /* WXRuleManager.m in Sources */,
 				DCA445961EFA55B300D0CFA8 /* WXMonitor.m in Sources */,
 				DCA445971EFA55B300D0CFA8 /* WXComponent+Navigation.m in Sources */,
+				95ED97C320AAD6980096332E /* render_action_update_style.cpp in Sources */,
 				DCA445981EFA55B300D0CFA8 /* WXSDKInstance.m in Sources */,
 				DCA445991EFA55B300D0CFA8 /* WXJSExceptionInfo.m in Sources */,
+				95ED981F20AAD6980096332E /* WeexJSCoreApi.cpp in Sources */,
 				DCA4459A1EFA55B300D0CFA8 /* WXResourceRequest.m in Sources */,
 				DCA4459B1EFA55B300D0CFA8 /* WXResourceRequestHandlerDefaultImpl.m in Sources */,
+				95ED980520AAD6980096332E /* render_creator.cpp in Sources */,
 				DCA4459C1EFA55B300D0CFA8 /* WXResourceResponse.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2707,6 +3569,7 @@
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/WeexSDK/Dependency",
+					"$(PROJECT_DIR)/../../weex_core/Source/",
 				);
 				INFOPLIST_FILE = WeexSDK/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
@@ -2753,6 +3616,7 @@
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/WeexSDK/Dependency",
+					"$(PROJECT_DIR)/../../weex_core/Source/",
 				);
 				INFOPLIST_FILE = WeexSDK/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";

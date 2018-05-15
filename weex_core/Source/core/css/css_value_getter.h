@@ -19,7 +19,7 @@
 #ifndef WEEX_PROJECT_STYLEGETTER_H
 #define WEEX_PROJECT_STYLEGETTER_H
 
-#include "core/layout/flex_enum.h"
+#include "flex_enum.h"
 #include <string>
 
 namespace WeexCore {

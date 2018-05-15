@@ -17,7 +17,7 @@
 
 #include "rapidjson.h"
 
-#ifdef _MSC_VER
+#if defined(_MSC_VER) && !defined(__clang__)
 RAPIDJSON_DIAG_PUSH
 RAPIDJSON_DIAG_OFF(4244) // conversion from 'type1' to 'type2', possible loss of data
 RAPIDJSON_DIAG_OFF(4702)  // unreachable code
@@ -384,7 +384,7 @@ struct UTF16BE : UTF16<CharType> {
     static CharType Take(InputByteStream& is) {
         RAPIDJSON_STATIC_ASSERT(sizeof(typename InputByteStream::Ch) == 1);
         unsigned c = static_cast<unsigned>(static_cast<uint8_t>(is.Take())) << 8;
-        c |= static_cast<uint8_t>(is.Take());
+        c |= static_cast<unsigned>(static_cast<uint8_t>(is.Take()));
         return static_cast<CharType>(c);
     }
 
@@ -709,7 +709,7 @@ struct Transcoder<Encoding, Encoding> {
 
 RAPIDJSON_NAMESPACE_END
 
-#if defined(__GNUC__) || defined(_MSC_VER)
+#if defined(__GNUC__) || (defined(_MSC_VER) && !defined(__clang__))
 RAPIDJSON_DIAG_POP
 #endif
 
