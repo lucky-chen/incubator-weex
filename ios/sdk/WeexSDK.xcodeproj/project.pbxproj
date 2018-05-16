@@ -1271,6 +1271,13 @@
 			name = "Recovered References";
 			sourceTree = "<group>";
 		};
+		17C95A4320AC16E600E4AE1B /* WeexCoreIOS */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = WeexCoreIOS;
+			sourceTree = "<group>";
+		};
 		2A42AF861C23B33E00818EA6 /* WeexSDK_MTL */ = {
 			isa = PBXGroup;
 			children = (
@@ -1558,6 +1565,7 @@
 			isa = PBXGroup;
 			children = (
 				95ED986A20ABD8C60096332E /* WeexCore */,
+				17C95A4320AC16E600E4AE1B /* WeexCoreIOS */,
 				DCA446261EFA5DAF00D0CFA8 /* WeexSDK.h */,
 				C4F012711E1502A6003378D0 /* WebSocket */,
 				2AF626C61C191E2200E71A38 /* Layout */,
