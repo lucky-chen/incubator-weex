@@ -19,7 +19,9 @@
 #ifndef Bridge_h
 #define Bridge_h
 
+#ifdef __ANDROID__
 #include <jni.h>
+#endif
 #include <string>
 #include <map>
 #include <set>
@@ -41,9 +43,11 @@ namespace WeexCore {
 
     virtual int callNative(const char* pageId, const char *task, const char *callback) = 0;
 
+#ifdef __ANDROID__
     virtual jobject callNativeModule(const char* pageId, const char *module, const char *method,
                                      const char *argString, const char *optString) = 0;
-
+#endif
+      
     virtual void callNativeComponent(const char* pageId, const char* ref, const char *method,
                                      const char *argString, const char *optString) = 0;
 

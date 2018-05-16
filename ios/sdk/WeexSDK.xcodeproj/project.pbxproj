@@ -3323,7 +3323,7 @@
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/WeexSDK/Dependency",
-					"$(PROJECT_DIR)/../../weex_core/Source/",
+					"$(PROJECT_DIR)/../../weex_core/Source",
 				);
 				INFOPLIST_FILE = WeexSDK/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
@@ -3370,7 +3370,7 @@
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/WeexSDK/Dependency",
-					"$(PROJECT_DIR)/../../weex_core/Source/",
+					"$(PROJECT_DIR)/../../weex_core/Source",
 				);
 				INFOPLIST_FILE = WeexSDK/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";

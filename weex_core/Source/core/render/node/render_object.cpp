@@ -16,12 +16,15 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-#include <core/render/node/render_object.h>
+
+#ifdef __ANDROID__
 #include <android/bridge/impl/content_box_measurement_impl_android.h>
 #include <android/bridge/impl/measure_mode_impl_android.h>
 #include <android/base/jni/scoped_java_ref.h>
 #include <android/bridge/impl/weexcore_impl_android.h>
 #include <android/base/string/string_utils.h>
+#endif
+#include <core/render/node/render_object.h>
 #include <string.h>
 
 using namespace std;
@@ -31,14 +34,16 @@ namespace WeexCore {
     mStyles = new StylesMap();
     mAttributes = new AttributesMap();
     mEvents = new EventsSet();
+#ifdef __ANDROID__
     mMeasureFunc_Impl_Android = nullptr;
+#endif
     mIsRootRender = false;
   }
 
   RenderObject::~RenderObject() {
-
+#ifdef __ANDROID__
     JNIEnv *env = getJNIEnv();
-
+#endif
     mParentRender = nullptr;
 
     if (mStyles != nullptr) {
@@ -53,12 +58,12 @@ namespace WeexCore {
       delete mEvents;
       mEvents = nullptr;
     }
-
+#ifdef __ANDROID__
     if (mMeasureFunc_Impl_Android != nullptr) {
       env->DeleteGlobalRef(mMeasureFunc_Impl_Android);
       mMeasureFunc_Impl_Android = nullptr;
     }
-
+#endif
     for(auto it = ChildListIterBegin(); it != ChildListIterEnd(); it++) {
       RenderObject* child = static_cast<RenderObject*>(*it);
       if (child != nullptr) {
@@ -101,11 +106,13 @@ namespace WeexCore {
 
   WXCoreSize measureFunc_Impl(WXCoreLayoutNode *node, float width, MeasureMode widthMeasureMode,
                               float height, MeasureMode heightMeasureMode) {
-    JNIEnv *env = getJNIEnv();
+
     WXCoreSize size;
     size.height = 0;
     size.width = 0;
-
+#ifdef __ANDROID__
+    JNIEnv *env = getJNIEnv();
+      
     jobject measureFunc = ((RenderObject *) node)->GetMeasureFuncImplAndroid();
 
     if (node == nullptr || measureFunc == nullptr)
@@ -122,10 +129,11 @@ namespace WeexCore {
                               widthMode, heightMode);
     size.width = GetLayoutWidth(env, measureFunc);
     size.height = GetLayoutHeight(env, measureFunc);
-
+#endif
     return size;
   }
 
+#ifdef __ANDROID__
   bool RenderObject::BindMeasureFuncImplAndroid(jobject measureFunc_impl_android) {
     if (measureFunc_impl_android == nullptr)
       return false;
@@ -133,7 +141,8 @@ namespace WeexCore {
     setMeasureFunc(measureFunc_Impl);
     return true;
   }
-
+#endif
+    
   bool RenderObject::BindMeasureFuncImplIOS(WXCoreMeasureFunc measureFunc_impl_ios) {
     if (measureFunc_impl_ios == nullptr)
       return false;
@@ -142,16 +151,20 @@ namespace WeexCore {
   }
 
   void RenderObject::onLayoutBefore() {
+#ifdef __ANDROID__
     if (this->GetMeasureFuncImplAndroid() == nullptr)
       return;
     JNIEnv *env = getJNIEnv();
     LayoutBeforeImplAndroid(env, this->GetMeasureFuncImplAndroid());
+#endif
   }
 
   void RenderObject::onLayoutAfter(float width, float height) {
+#ifdef __ANDROID__
     if (this->GetMeasureFuncImplAndroid() == nullptr)
       return;
     JNIEnv *env = getJNIEnv();
     LayoutAfterImplAndroid(env, this->GetMeasureFuncImplAndroid(), width, height);
+#endif
   }
 } //end WeexCore

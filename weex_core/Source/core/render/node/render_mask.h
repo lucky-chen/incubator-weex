@@ -21,7 +21,9 @@
 
 #include <core/render/node/render_object.h>
 #include <core/config/core_environment.h>
+#ifdef __ANDROID__
 #include <android/bridge/impl/bridge_impl_android.h>
+#endif
 #include <base/ViewUtils.h>
 #include <cstdlib>
 

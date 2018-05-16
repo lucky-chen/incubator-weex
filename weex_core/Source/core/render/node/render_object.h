@@ -16,13 +16,13 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+
 #ifndef RenderObject_h
 #define RenderObject_h
 
 #include <string>
 #include <map>
 #include <set>
-//#include <jni.h>
 #include <core/css/constants_name.h>
 #include <core/css/css_value_getter.h>
 #include <core/layout/layout.h>
@@ -31,7 +31,10 @@
 #include <base/ViewUtils.h>
 #include <core/render/page/render_page.h>
 #include <core/css/constants_value.h>
+#ifdef __ANDROID__
 #include <android/base/log_utils.h>
+#include <jni.h>
+#endif
 
 
 #define JSON_OBJECT_MARK_CHAR  '{'
@@ -142,15 +145,14 @@ namespace WeexCore {
 
     ~RenderObject();
 
+#ifdef __ANDROID__
     bool BindMeasureFuncImplAndroid(jobject measureFunc_impl_android);
-
+#elif __APPLE__
     bool BindMeasureFuncImplIOS(WXCoreMeasureFunc measureFunc_impl_ios);
-
+#endif
     void onLayoutBefore();
 
     void onLayoutAfter(float width, float height);
-
-
 
     virtual StyleType ApplyStyle(const std::string &key, const std::string &value, const bool updating) {
       bool  insert = false;
@@ -279,10 +281,18 @@ namespace WeexCore {
 
     void ApplyDefaultAttr();
 
+#ifdef __ANDROID__
     inline jobject GetMeasureFuncImplAndroid() {
       return mMeasureFunc_Impl_Android;
     }
+#elif __APPLE__
+    inline WXCoreMeasureFunc GetMeasureFuncImplIOS(){
+      return mMeasureFunc_Impl_iOS;
+    }
+#endif
 
+      
+      
     inline RenderObject *GetChild(const Index &index) {
       return static_cast<RenderObject*>(getChildAt(index));
     }
@@ -446,7 +456,11 @@ namespace WeexCore {
     StylesMap *mStyles;
     AttributesMap *mAttributes;
     EventsSet *mEvents;
+#ifdef __ANDROID__
     jobject mMeasureFunc_Impl_Android;
+#elif __APPLE__
+    WXCoreMeasureFunc mMeasureFunc_Impl_iOS;
+#endif
     float mViewPortWidth = -1;
     bool mIsRootRender;
   };

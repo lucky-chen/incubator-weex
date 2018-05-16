@@ -19,7 +19,9 @@
 #ifndef WEEX_PROJECT_RENDERSCROLLER_H
 #define WEEX_PROJECT_RENDERSCROLLER_H
 
+#ifdef __ANDROID__
 #include <android/bridge/impl/bridge_impl_android.h>
+#endif
 #include <core/render/node/render_object.h>
 
 namespace WeexCore {

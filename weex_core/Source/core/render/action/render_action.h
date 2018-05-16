@@ -23,7 +23,9 @@
 #include <core/render/node/render_object.h>
 #include <core/render/manager/render_manager.h>
 #include <core/render/page/render_page.h>
+#ifdef __ANDROID__
 #include <android/bridge/impl/bridge_impl_android.h>
+#endif
 #include <string>
 #include <base/TimeUtils.h>
 

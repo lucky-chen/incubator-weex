@@ -27,7 +27,9 @@
 #include <core/render/action/render_action_createfinish.h>
 #include <core/render/action/render_action_appendtree_createfinish.h>
 #include <core/layout/layout.h>
+#ifdef __ANDROID__
 #include <android/base/string/string_utils.h>
+#endif
 #include <core/moniter/render_performance.h>
 #include <core/config/core_environment.h>
 #include <base/ViewUtils.h>
@@ -254,8 +256,12 @@ namespace WeexCore {
 
     bool flag = false;
 
+#ifdef __ANDROID__
     int result = Bridge_Impl_Android::getInstance()->callHasTransitionPros(mPageId.c_str(), ref.c_str(), src);
-
+#elif __APPLE__
+    int result = 1;
+#endif
+      
     if (result == 1) {
       BuildRenderTreeTime(getCurrentTime() - startTime);
       SendUpdateStyleAction(render, src, margin, padding, border);

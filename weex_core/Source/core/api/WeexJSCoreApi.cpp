@@ -21,10 +21,12 @@
 //
 
 #include "WeexJSCoreApi.h"
-#include <android/bridge/impl/bridge_impl_android.h>
 #include <core/render/manager/render_manager.h>
+#ifdef __ANDROID__
+#include <android/bridge/impl/bridge_impl_android.h>
 #include <android/jsengine/multiprocess/ExtendJSApi.h>
 #include <android/base/string/string_utils.h>
+#endif
 
 using namespace WeexCore;
 
@@ -33,7 +35,7 @@ extern WeexCore::FunTypeT3d t3dFunc;
 
 void _setJSVersion(const char *jsVersion) {
     LOGA("init JSFrm version %s", jsVersion);
-    Bridge_Impl_Android::getInstance()->setJSVersion(jsVersion);
+    Br idge_Impl_Android::getInstance()->setJSVersion(jsVersion);
 }
 
 void _reportException(const char *pageId, const char *func, const char *exception_string) {
@@ -64,6 +66,7 @@ _callNativeModule(const char *pageId, const char *module, const char *method,
          pageId, module, method, argString, optString);
 #endif
 
+#ifdef __ANDROID__
         // add for android support
         jobject result;
         result = Bridge_Impl_Android::getInstance()->callNativeModule(pageId, module, method,
@@ -95,7 +98,7 @@ _callNativeModule(const char *pageId, const char *module, const char *method,
         }
         env->DeleteLocalRef(jDataObj);
     }
-
+#endif
     return ret;
 }
 

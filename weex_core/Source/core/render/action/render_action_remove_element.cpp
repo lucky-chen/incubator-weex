@@ -31,7 +31,9 @@ namespace WeexCore {
       return;
 
     long long startTime = getCurrentTime();
+#ifdef __ANDROID__
     Bridge_Impl_Android::getInstance()->callRemoveElement(mPageId.c_str(), mRef.c_str());
+#endif
     page->JniCallTime(getCurrentTime() - startTime);
   }
 }

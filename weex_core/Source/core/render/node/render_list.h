@@ -22,11 +22,14 @@
 #include <core/css/constants_name.h>
 #include <core/render/node/render_object.h>
 #include <core/css/constants_value.h>
-#include <android/base/log_utils.h>
 #include <cmath>
 #include <base/ViewUtils.h>
 #include <core/render/node/factory/render_type.h>
 #include "render_object.h"
+
+#ifdef __ANDROID__
+#include <android/base/log_utils.h>
+#endif
 
 namespace WeexCore {
 

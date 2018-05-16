@@ -23,8 +23,11 @@
 #ifndef WEEXV8_WEEXJSCOREAPI_H
 #define WEEXV8_WEEXJSCOREAPI_H
 
+#ifdef __ANDROID__
 #include "jni.h"
 #include "IPCResult.h"
+#endif
+
 #include "WeexJSCoreApi.h"
 
 extern "C" {

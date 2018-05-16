@@ -201,6 +201,7 @@ namespace WeexCore {
     mPages.erase(pageId);
     delete page;
     page = nullptr;
+    return true;
   }
 
   void RenderManager::Batch(const std::string &pageId) {

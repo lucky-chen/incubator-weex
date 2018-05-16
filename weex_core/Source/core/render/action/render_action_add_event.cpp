@@ -32,9 +32,9 @@ namespace WeexCore {
       return;
 
     long long startTime = getCurrentTime();
-
+#ifdef __ANDROID__
     Bridge_Impl_Android::getInstance()->callAddEvent(mPageId.c_str(), mRef.c_str(), mEvent.c_str());
-
+#endif
     page->JniCallTime(getCurrentTime() - startTime);
     page->AddEventActionJNITime(getCurrentTime() - startTime);
   }
