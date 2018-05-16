@@ -38,9 +38,10 @@ void _reportException(const char *pageId, const char *func, const char *exceptio
 
 void _callNative(const char *pageId, const char *task, const char *callback);
 
-
+#ifdef __ANDROID__
 std::unique_ptr<IPCResult> _callNativeModule(const char *pageId, const char *module, const char *method,
                        const char *argString, const char *optString);
+#endif
 
 void _callNativeComponent(const char *pageId, const char *ref,
                           const char *method, const char *argString,

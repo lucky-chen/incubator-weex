@@ -376,7 +376,6 @@
 		95ED993F20ABD90A0096332E /* dom_parser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 95ED98C520ABD90A0096332E /* dom_parser.cpp */; };
 		95ED994020ABD90A0096332E /* dom_parser.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED98C620ABD90A0096332E /* dom_parser.h */; };
 		95ED994120ABD90A0096332E /* WeexJSCoreApi.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED98C820ABD90A0096332E /* WeexJSCoreApi.h */; };
-		95ED994220ABD90A0096332E /* WeexJSCoreApi.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 95ED98C920ABD90A0096332E /* WeexJSCoreApi.cpp */; };
 		95ED994320ABD90A0096332E /* fwd.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED98CB20ABD90A0096332E /* fwd.h */; };
 		95ED994420ABD90A0096332E /* memorystream.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED98CC20ABD90A0096332E /* memorystream.h */; };
 		95ED994520ABD90A0096332E /* reader.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED98CD20ABD90A0096332E /* reader.h */; };
@@ -1107,7 +1106,6 @@
 		95ED98C520ABD90A0096332E /* dom_parser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = dom_parser.cpp; sourceTree = "<group>"; };
 		95ED98C620ABD90A0096332E /* dom_parser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dom_parser.h; sourceTree = "<group>"; };
 		95ED98C820ABD90A0096332E /* WeexJSCoreApi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WeexJSCoreApi.h; sourceTree = "<group>"; };
-		95ED98C920ABD90A0096332E /* WeexJSCoreApi.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = WeexJSCoreApi.cpp; sourceTree = "<group>"; };
 		95ED98CB20ABD90A0096332E /* fwd.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = fwd.h; sourceTree = "<group>"; };
 		95ED98CC20ABD90A0096332E /* memorystream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = memorystream.h; sourceTree = "<group>"; };
 		95ED98CD20ABD90A0096332E /* reader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = reader.h; sourceTree = "<group>"; };
@@ -2050,7 +2048,6 @@
 			isa = PBXGroup;
 			children = (
 				95ED98C820ABD90A0096332E /* WeexJSCoreApi.h */,
-				95ED98C920ABD90A0096332E /* WeexJSCoreApi.cpp */,
 				17C95A3B20AC04CA00E4AE1B /* WXTypeDefine.h */,
 			);
 			path = api;
@@ -2958,7 +2955,6 @@
 				95ED98F320ABD90A0096332E /* fpconv.cpp in Sources */,
 				74BA4AB41F70F4B600AC29BF /* WXRecycleListLayout.m in Sources */,
 				745ED2DB1C5F2C7E002DB5A8 /* WXView.m in Sources */,
-				95ED994220ABD90A0096332E /* WeexJSCoreApi.cpp in Sources */,
 				95ED993520ABD90A0096332E /* render_creator.cpp in Sources */,
 				95ED990020ABD90A0096332E /* core_environment.cpp in Sources */,
 				DC03ADB91D508719003F76E7 /* WXTextAreaComponent.mm in Sources */,
