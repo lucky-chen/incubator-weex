@@ -22,7 +22,7 @@
 #include <string>
 #include <map>
 #include <set>
-#include <jni.h>
+//#include <jni.h>
 #include <core/css/constants_name.h>
 #include <core/css/css_value_getter.h>
 #include <core/layout/layout.h>
