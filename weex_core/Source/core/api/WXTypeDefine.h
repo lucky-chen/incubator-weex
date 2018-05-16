@@ -14,31 +14,31 @@
 namespace WeexCore {
     
     enum WXTypeDefine {
-        INTEGER,
+        INTEGER = 1,
         DOUBLE,
         STRING,
         JSON,
         WSON
-    }
+    };
     
-    enum WXValeDefine {
-        int64_t;
-        double,
-        char*
-    }
+    union WXValeDefine {
+        int64_t intValue;
+        double doubleValue;
+        char* string;
+    };
     
     
     struct WXValue {
         WXTypeDefine type;
         WXValeDefine value;
-    }
+    };
     
     struct WXFuncSignature {
         char*           methodName;
         WXTypeDefine    returnType;
-        WXTypeDefine[]  argsType;
+        WXTypeDefine   *argsType;
         void*           fucnAddr;
-    }
+    };
 }
 
 
