@@ -20,12 +20,13 @@
 // Created by Darin on 13/02/2018.
 //
 
-#include "WeexJSCoreApi.h"
+
 #include <core/render/manager/render_manager.h>
 #ifdef __ANDROID__
 #include <android/bridge/impl/bridge_impl_android.h>
 #include <android/jsengine/multiprocess/ExtendJSApi.h>
 #include <android/base/string/string_utils.h>
+#include "WeexJSCoreApi.h"
 #endif
 
 using namespace WeexCore;

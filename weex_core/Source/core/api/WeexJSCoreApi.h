@@ -30,6 +30,7 @@
 
 #include "WeexJSCoreApi.h"
 
+
 extern "C" {
 
 void _setJSVersion(const char *jsVersion);
@@ -43,6 +44,8 @@ std::unique_ptr<IPCResult> _callNativeModule(const char *pageId, const char *mod
                        const char *argString, const char *optString);
 #endif
 
+
+    
 void _callNativeComponent(const char *pageId, const char *ref,
                           const char *method, const char *argString,
                           const char *optString);

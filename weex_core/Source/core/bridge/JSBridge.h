@@ -33,8 +33,10 @@ namespace WeexCore {
         virtual WXValue execNative          (int32_t runTimeId, int32_t contextId,char *args)=0;
         virtual WXValue executeJavascript   (int32_t runTimeId, int32_t contextId,char *script)=0;
         
+        virtual bool setJSVale              (int32_t runTimeId,int32_t contextId,char* name,WXValue value)=0;
+        virtual bool getJSVale              (int32_t runTimeId,int32_t contextId,char* name,WXValue value)=0;
         
-        virtual void reigsterJSFunc  (int32_t runTimeId,int32_t contextId,WXFuncSignature func)=0;
+        virtual void reigsterJSFunc         (int32_t runTimeId,int32_t contextId,WXFuncSignature func)=0;
         
         
        // virtual JSExceptionHandler getJSExceptionHandler ()=0;
