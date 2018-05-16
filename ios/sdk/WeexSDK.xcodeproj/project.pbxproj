@@ -518,10 +518,6 @@
 		95ED985F20AAD6990096332E /* memorybuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED977920AAD6980096332E /* memorybuffer.h */; };
 		95ED986020AAD6990096332E /* pointer.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED977A20AAD6980096332E /* pointer.h */; };
 		95ED986120AAD6990096332E /* pointer.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED977A20AAD6980096332E /* pointer.h */; };
-		95ED986220AAD6990096332E /* inttypes.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED977C20AAD6980096332E /* inttypes.h */; };
-		95ED986320AAD6990096332E /* inttypes.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED977C20AAD6980096332E /* inttypes.h */; };
-		95ED986420AAD6990096332E /* stdint.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED977D20AAD6980096332E /* stdint.h */; };
-		95ED986520AAD6990096332E /* stdint.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED977D20AAD6980096332E /* stdint.h */; };
 		95ED986620AAD6990096332E /* WeexApiHeader.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED977F20AAD6980096332E /* WeexApiHeader.h */; };
 		95ED986720AAD6990096332E /* WeexApiHeader.h in Headers */ = {isa = PBXBuildFile; fileRef = 95ED977F20AAD6980096332E /* WeexApiHeader.h */; };
 		9B9E74791FA2DB5800DAAEA9 /* WXTestBridgeMethodDummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B9E74781FA2DB5800DAAEA9 /* WXTestBridgeMethodDummy.m */; };
@@ -1251,8 +1247,6 @@
 		95ED977820AAD6980096332E /* en.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = en.h; sourceTree = "<group>"; };
 		95ED977920AAD6980096332E /* memorybuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = memorybuffer.h; sourceTree = "<group>"; };
 		95ED977A20AAD6980096332E /* pointer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pointer.h; sourceTree = "<group>"; };
-		95ED977C20AAD6980096332E /* inttypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = inttypes.h; sourceTree = "<group>"; };
-		95ED977D20AAD6980096332E /* stdint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stdint.h; sourceTree = "<group>"; };
 		95ED977F20AAD6980096332E /* WeexApiHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WeexApiHeader.h; sourceTree = "<group>"; };
 		9B9E74771FA2DB5800DAAEA9 /* WXTestBridgeMethodDummy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WXTestBridgeMethodDummy.h; sourceTree = "<group>"; };
 		9B9E74781FA2DB5800DAAEA9 /* WXTestBridgeMethodDummy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WXTestBridgeMethodDummy.m; sourceTree = "<group>"; };
@@ -2181,7 +2175,6 @@
 				95ED977620AAD6980096332E /* error */,
 				95ED977920AAD6980096332E /* memorybuffer.h */,
 				95ED977A20AAD6980096332E /* pointer.h */,
-				95ED977B20AAD6980096332E /* msinttypes */,
 			);
 			name = rapidjson;
 			path = ../../../../../weex_core/Source/rapidjson;
@@ -2213,15 +2206,6 @@
 				95ED977820AAD6980096332E /* en.h */,
 			);
 			path = error;
-			sourceTree = "<group>";
-		};
-		95ED977B20AAD6980096332E /* msinttypes */ = {
-			isa = PBXGroup;
-			children = (
-				95ED977C20AAD6980096332E /* inttypes.h */,
-				95ED977D20AAD6980096332E /* stdint.h */,
-			);
-			path = msinttypes;
 			sourceTree = "<group>";
 		};
 		95ED977E20AAD6980096332E /* include */ = {
@@ -2322,7 +2306,6 @@
 				59A583081CF5B2FD0081FD3E /* WXNavigationDefaultImpl.h in Headers */,
 				95ED97FA20AAD6980096332E /* render_mask_factory.h in Headers */,
 				17B122222090AA9300387E33 /* WXSDKInstance_performance.h in Headers */,
-				95ED986420AAD6990096332E /* stdint.h in Headers */,
 				775BEE4E1C16F993008D1629 /* WXDefine.h in Headers */,
 				95ED983820AAD6980096332E /* regex.h in Headers */,
 				77D161241C02DDD10010B15B /* WXSDKInstance.h in Headers */,
@@ -2417,7 +2400,6 @@
 				95ED982020AAD6980096332E /* fwd.h in Headers */,
 				59A5962F1CB632050012CD52 /* WXBaseViewController.h in Headers */,
 				95ED986620AAD6990096332E /* WeexApiHeader.h in Headers */,
-				95ED986220AAD6990096332E /* inttypes.h in Headers */,
 				74AD99841D5B0E59008F0336 /* WXPolyfillSet.h in Headers */,
 				95ED985020AAD6980096332E /* filewritestream.h in Headers */,
 				74A4BA961CB365D100195969 /* WXAppConfiguration.h in Headers */,
@@ -2578,7 +2560,6 @@
 				DCA445A71EFA572300D0CFA8 /* WXRootViewController.h in Headers */,
 				74B81AE91F73C3E900D3A61D /* WXRecycleListUpdateManager.h in Headers */,
 				DCA445C01EFA57C900D0CFA8 /* WXBridgeProtocol.h in Headers */,
-				95ED986520AAD6990096332E /* stdint.h in Headers */,
 				95ED986120AAD6990096332E /* pointer.h in Headers */,
 				95ED983D20AAD6980096332E /* biginteger.h in Headers */,
 				DCA445AC1EFA574A00D0CFA8 /* WXNetworkProtocol.h in Headers */,
@@ -2597,7 +2578,6 @@
 				DCA445B71EFA579200D0CFA8 /* WXImgLoaderProtocol.h in Headers */,
 				DCA445C21EFA57D700D0CFA8 /* WXBaseViewController.h in Headers */,
 				DCA445AB1EFA574100D0CFA8 /* WXPrerenderManager.h in Headers */,
-				95ED986320AAD6990096332E /* inttypes.h in Headers */,
 				95ED984D20AAD6980096332E /* schema.h in Headers */,
 				DCA445BB1EFA57AA00D0CFA8 /* WXDebugTool.h in Headers */,
 				95ED97AD20AAD6980096332E /* render_page.h in Headers */,
