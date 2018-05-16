@@ -258,7 +258,7 @@ namespace WeexCore {
 
 #ifdef __ANDROID__
     int result = Bridge_Impl_Android::getInstance()->callHasTransitionPros(mPageId.c_str(), ref.c_str(), src);
-#elif __APPLE__
+#elif TARGET_OS_IPHONE
     int result = 1;
 #endif
       
