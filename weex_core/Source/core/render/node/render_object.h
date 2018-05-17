@@ -147,9 +147,9 @@ namespace WeexCore {
 
 #ifdef __ANDROID__
     bool BindMeasureFuncImplAndroid(jobject measureFunc_impl_android);
-#elif __APPLE__
-    bool BindMeasureFuncImplIOS(WXCoreMeasureFunc measureFunc_impl_ios);
 #endif
+    bool BindMeasureFuncImplIOS(WXCoreMeasureFunc measureFunc_impl_ios);
+
     void onLayoutBefore();
 
     void onLayoutAfter(float width, float height);
@@ -285,7 +285,7 @@ namespace WeexCore {
     inline jobject GetMeasureFuncImplAndroid() {
       return mMeasureFunc_Impl_Android;
     }
-#elif __APPLE__
+#elif TARGET_OS_IPHONE
     inline WXCoreMeasureFunc GetMeasureFuncImplIOS(){
       return mMeasureFunc_Impl_iOS;
     }
@@ -458,7 +458,7 @@ namespace WeexCore {
     EventsSet *mEvents;
 #ifdef __ANDROID__
     jobject mMeasureFunc_Impl_Android;
-#elif __APPLE__
+#elif TARGET_OS_IPHONE
     WXCoreMeasureFunc mMeasureFunc_Impl_iOS;
 #endif
     float mViewPortWidth = -1;

@@ -255,11 +255,11 @@ namespace WeexCore {
     std::vector<std::pair<std::string, std::string>> *border = nullptr;
 
     bool flag = false;
-
-#ifdef __ANDROID__
-    int result = Bridge_Impl_Android::getInstance()->callHasTransitionPros(mPageId.c_str(), ref.c_str(), src);
-#elif __APPLE__
     int result = 1;
+#ifdef __ANDROID__
+    result = Bridge_Impl_Android::getInstance()->callHasTransitionPros(mPageId.c_str(), ref.c_str(), src);
+#elif TARGET_OS_IPHONE
+   
 #endif
       
     if (result == 1) {
