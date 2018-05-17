@@ -10,6 +10,7 @@
 #include <map>
 #include <set>
 #include <core/layout/style.h>
+#include <core/layout/layout.h>
 
 namespace WeexCore {
     class RenderBridge{
@@ -75,6 +76,10 @@ namespace WeexCore {
         void callMarkDirty(char* instanceId,char *componentRef,bool dirty);
 
         void callSetViewPortWidth(char* instanceId,float value);
+        
+        bool callBindMeasureFunc(const char* componentRef,WXCoreMeasureFunc measureFunc);
+        
+        void callForceLayout(const char* instanceId);
         
     };
 }

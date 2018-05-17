@@ -28,18 +28,48 @@
 
 #include <core/bridge/PlatformBridge.h>
 #include <core/bridge/RenderBridge.h>
+#include <core/api/WXTypeDefine.h>
 
 namespace WeexCore {
+    
+    enum InstanceState{
+        ON_CREATE,
+        ON_BACK,
+        ON_DESTORY
+    };
+    
+    enum ExceptionType{
+        JS_EXCEPTION,
+        NATIVE_CORE_EXCEPTION
+    };
+    
     class PlatformBridge{
     protected:
         PlatformBridge(){}
     public:
-        void callInitWeexCore(char* frameWork,WeexCore::RenderBridge *renderBridge,std::map<char*,char*> params);
-        void callRegisterCoreEnv(char *instanceId,char* key,char* value);
         
+        //impl by platform
+        virtual WeexCore::WXValue onCallNative(const char* instanceId,const char* task,const char* callBack) = 0;
+        virtual WeexCore::WXValue onCallNativeModule(const char* instanceId, const char *module, const char *method,
+                                                     const char *argString, const char *optString) = 0;
+        virtual WeexCore::WXValue onnCallNativeComponent(const char* pageId, const char* ref, const char *method,
+                                       const char *argString, const char *optString)=0;
         
+        virtual void onReportException(ExceptionType exceptionType,const char* instanceId,const char* func,const char* exception)=0;
         
+        virtual void onSetTimeOut(const char* instanceId,const char* callBackId,const char* time) =0;
+        virtual void onRemoveimer(const char* instanceId)=0;
         
+        //api of weexCore
+        void callInitWeexCore(const char* frameWork,WeexCore::RenderBridge *renderBridge,std::map<char*,char*> params);
+        
+        void callInstanceStateChanged(const char* instanceId, InstanceState state,std::map<char*,char*> infos);
+        void callRegisterCoreEnv(const char *instanceId,char* key,char* value);
+        
+        WeexCore::WXValue callJSMethod(const char* instanceId,const char *methodName,WeexCore::WXValue *arg);
+        void callExecuteJavascript(const char *stript,WeexCore::WXValue *arg);
+        
+        void callUpdateGlobalConfig(const char* config);
         
     };
 }
