@@ -27,7 +27,16 @@ Pod::Spec.new do |s|
   s.platform     = :ios
   s.ios.deployment_target = '8.0'
   s.source =  { :path => '.' }
-  s.source_files = 'ios/sdk/WeexSDK/Sources/**/*.{h,m,mm,c,cpp}'
+  s.source_files = 'ios/sdk/WeexSDK/Sources/**/*.{h,m,mm,c,cpp}',
+                    'weex_core/Source/base/**/*.{h,m,mm,c,cpp}',
+                    'weex_core/Source/core/**/*.{h,m,mm,c,cpp}',
+                    'weex_core/Source/include/**/*.{h,m,mm,c,cpp}',
+                    'weex_core/Source/rapidjson/**/*.{h,m,mm,c,cpp}',
+                    'weex_core/Source/iOS/**/*.{h,m,mm,c,cpp}'
+  s.exclude_files = 'weex_core/Source/base/Compatible.cpp',
+                    'weex_core/Source/core/api/WeexJSCoreApi.cpp',
+                    'weex_core/Source/rapidjson/msinttypes'
+
   s.resources = 'pre-build/*.js','ios/sdk/WeexSDK/Resources/wx_load_error@3x.png'
 
   s.user_target_xcconfig  = { 'FRAMEWORK_SEARCH_PATHS' => "'$(PODS_ROOT)/WeexSDK'" }
@@ -36,8 +45,8 @@ Pod::Spec.new do |s|
 
 #  s.xcconfig = { "GCC_PREPROCESSOR_DEFINITIONS" => '$(inherited) DEBUG=1' }
 
-  s.private_header_files = 'ios/sdk/WeexSDK/Sources/Component/RecycleList/WXJSASTParser.h',
-                           'ios/sdk/WeexSDK/Sources/Layout/WXScrollerComponent+Layout.h'
+  s.private_header_files = 'ios/sdk/WeexSDK/Sources/Component/RecycleList/WXJSASTParser.h'
+                            
 
   s.xcconfig = { "OTHER_LINK_FLAG" => '$(inherited) -ObjC'}
 
