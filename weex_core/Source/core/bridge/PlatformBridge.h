@@ -17,47 +17,31 @@
  * under the License.
  */
 //
-//  WXTypeDefine.h
-//  WeexSDK
+//  PlatformBridge.hpp
+//  Pods-WeexDemo
 //
-//  Created by 陈佩翰 on 2018/5/16.
-//  Copyright © 2018年 taobao. All rights reserved.
+//  Created by 陈佩翰 on 2018/5/17.
 //
 
-#ifndef WXTypeDefine_h
-#define WXTypeDefine_h
+#ifndef PlatformBridge_hpp
+#define PlatformBridge_hpp
 
-#include <cstdint>
+#include <core/bridge/PlatformBridge.h>
+#include <core/bridge/RenderBridge.h>
 
 namespace WeexCore {
-    
-    enum WXTypeDefine {
-        INTEGER = 1,
-        DOUBLE,
-        STRING,
-        JSON,
-        WSON
-    };
-    
-    union WXValeDefine {
-        int64_t intValue;
-        double doubleValue;
-        char* string;
-    };
-    
-    
-    struct WXValue {
-        WXTypeDefine type;
-        WXValeDefine value;
-    };
-    
-    struct WXFuncSignature {
-        char*           methodName;
-        WXTypeDefine    returnType;
-        WXTypeDefine   *argsType;
-        void*           fucnAddr;
+    class PlatformBridge{
+    protected:
+        PlatformBridge(){}
+    public:
+        void callInitWeexCore(char* frameWork,WeexCore::RenderBridge *renderBridge,std::map<char*,char*> params);
+        void callRegisterCoreEnv(char *instanceId,char* key,char* value);
+        
+        
+        
+        
+        
     };
 }
 
-
-#endif /* WXTypeDefine_h */
+#endif /* PlatformBridge_hpp */
