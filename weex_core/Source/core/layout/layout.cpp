@@ -93,6 +93,8 @@ namespace WeexCore {
             containingBlockWidth = renderPageWidth;
           }
           break;
+        default:
+          break;
       }
       if (!isnan(containingBlockWidth)) {
         width = containingBlockWidth -
@@ -121,6 +123,8 @@ namespace WeexCore {
           if (!isnan(renderPageHeight)) {
             containingBlockHeight = renderPageHeight;
           }
+          break;
+        default:
           break;
       }
       if (!isnan(containingBlockHeight)) {

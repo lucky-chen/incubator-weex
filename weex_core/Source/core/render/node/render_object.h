@@ -147,9 +147,9 @@ namespace WeexCore {
 
 #ifdef __ANDROID__
     bool BindMeasureFuncImplAndroid(jobject measureFunc_impl_android);
-#elif TARGET_OS_IPHONE
-    bool BindMeasureFuncImplIOS(WXCoreMeasureFunc measureFunc_impl_ios);
 #endif
+    bool BindMeasureFuncImplIOS(WXCoreMeasureFunc measureFunc_impl_ios);
+
     void onLayoutBefore();
 
     void onLayoutAfter(float width, float height);
