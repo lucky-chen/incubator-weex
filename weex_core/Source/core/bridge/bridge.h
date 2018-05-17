@@ -46,6 +46,9 @@ namespace WeexCore {
 #ifdef __ANDROID__
     virtual jobject callNativeModule(const char* pageId, const char *module, const char *method,
                                      const char *argString, const char *optString) = 0;
+#elif __APPLE__
+    virtual void* callNativeModule(const char* pageId, const char *module, const char *method,
+                                   const char *argString, const char *optString) = 0;
 #endif
       
     virtual void callNativeComponent(const char* pageId, const char* ref, const char *method,
