@@ -27,6 +27,6 @@
 //#include <stdio.h>
 #include <core/bridge/JSBridge.h>
 
-void WeexCore::JSBridge::reportJSException(int32_t runTimeId, int32_t contextId, char *exception, std::map<char *, char *> extInfos){
-    //...
+void WeexCore::JSBridge::onReportJSException(int32_t runTimeId, int32_t contextId, char *exception, std::map<std::string, std::string> &extInfos){
+    
 }

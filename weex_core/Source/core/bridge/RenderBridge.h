@@ -80,7 +80,11 @@ namespace WeexCore {
         bool callBindMeasureFunc(const char* componentRef,WXCoreMeasureFunc measureFunc);
         
         void callForceLayout(const char* instanceId);
+        bool callNotifyLayout(const char* instanceId);
         
+        void callSetDefaultSizeIntoRootDom(const char* instanceId, float defaultWidth, float defaultHeight, bool isWidthWrapContent, bool isHeightWrapContent);
+        void callSetRenderContainerWrapContent(const char* instanceId, bool wrap);
+       
     };
 }
 

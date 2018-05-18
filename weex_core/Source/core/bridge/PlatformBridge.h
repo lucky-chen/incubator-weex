@@ -30,6 +30,7 @@
 #include <core/bridge/RenderBridge.h>
 #include <core/api/WXTypeDefine.h>
 
+
 namespace WeexCore {
     
     enum InstanceState{
@@ -61,12 +62,12 @@ namespace WeexCore {
         virtual void onRemoveimer(const char* instanceId)=0;
         
         //api of weexCore
-        void callInitWeexCore(const char* frameWork,WeexCore::RenderBridge *renderBridge,std::map<char*,char*> params);
+        void callInitWeexCore(const char* frameWork,WeexCore::RenderBridge *renderBridge,std::map<std::string,std::string> params);
         
-        void callInstanceStateChanged(const char* instanceId, InstanceState state,std::map<char*,char*> infos);
+        void callInstanceStateChanged(const char* instanceId, InstanceState state,std::map<std::string,std::string> infos);
         void callRegisterCoreEnv(const char *instanceId,char* key,char* value);
         
-        WeexCore::WXValue callJSMethod(const char* instanceId,const char *methodName,WeexCore::WXValue *arg);
+        WeexCore::WXValue callJSMethod(const char* instanceId,const char *methodName,WeexCore::WXValue *arg,uint32_t argLength);
         void callExecuteJavascript(const char *stript,WeexCore::WXValue *arg);
         
         void callUpdateGlobalConfig(const char* config);

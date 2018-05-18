@@ -52,9 +52,10 @@ namespace WeexCore {
     };
     
     struct WXFuncSignature {
-        char*           methodName;
+        char*            methodName;
         WXTypeDefine    returnType;
         WXTypeDefine   *argsType;
+        uint8_t         argsLength;
         void*           fucnAddr;
     };
 }

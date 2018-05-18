@@ -41,24 +41,24 @@ namespace WeexCore {
     protected:
         JSBridge(){}
     public:
-        virtual bool createJSRunTime        (int32_t runTimeId, char *params)=0;
-        virtual bool destroyJSRunTime       (int32_t runTimeId)=0;
+        virtual bool callCreateJSRunTime        (uint32_t runTimeId, std::map<std::string,std::string> &params)=0;
+        virtual bool callDestroyJSRunTime       (uint32_t runTimeId)=0;
         
-        virtual bool createJSContext        (int32_t runTimeId,int32_t contextId) =0;
-        virtual bool destoryJSContext       (int32_t runTimeId,int32_t contextId) =0;
+        virtual bool callCreateJSContext        (uint32_t runTimeId,uint32_t contextId) =0;
+        virtual bool callDestoryJSContext       (uint32_t runTimeId,uint32_t contextId) =0;
         
-        virtual WXValue callJSMethod        (int32_t runTimeId, int32_t contextId,char *methodName,WXValue args[])=0;
-        virtual WXValue execNative          (int32_t runTimeId, int32_t contextId,char *args)=0;
-        virtual WXValue executeJavascript   (int32_t runTimeId, int32_t contextId,char *script)=0;
+        virtual WXValue callJSMethod        (uint32_t runTimeId, uint32_t contextId,char *methodName,WXValue args[],uint8_t argsLength)=0;
+        virtual WXValue callExecNative          (uint32_t runTimeId, uint32_t contextId,WXValue args[],uint8_t argsLength)=0;
+        virtual WXValue callExecuteJavascript   (uint32_t runTimeId, uint32_t contextId,char *script)=0;
         
-        virtual bool setJSVale              (int32_t runTimeId,int32_t contextId,char* name,WXValue value)=0;
-        virtual bool getJSVale              (int32_t runTimeId,int32_t contextId,char* name,WXValue value)=0;
+        virtual bool callReigsterJSVale              (uint32_t runTimeId,uint32_t contextId,char* name,WXValue value)=0;
+        virtual bool callGetJSVale              (uint32_t runTimeId,uint32_t contextId,char* name,WXValue value)=0;
         
-        virtual void reigsterJSFunc         (int32_t runTimeId,int32_t contextId,WXFuncSignature func)=0;
+        virtual void callReigsterJSFunc         (uint32_t runTimeId,uint32_t contextId,WXFuncSignature func)=0;
         
         
        // virtual JSExceptionHandler getJSExceptionHandler ()=0;
-        void reportJSException(int32_t runTimeId,int32_t contextId,char* exception,std::map<char*,char*> extInfos);
+        void onReportJSException(int32_t runTimeId,int32_t contextId,char* exception,std::map<std::string,std::string> &extInfos);
         
     };
 }
