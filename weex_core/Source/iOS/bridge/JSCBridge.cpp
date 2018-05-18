@@ -17,17 +17,10 @@
  * under the License.
  */
 //
-//  JSBridge.cpp
-//  WeexSDK
+//  JSCBridge.cpp
+//  Pods-WeexDemo
 //
-//  Created by 陈佩翰 on 2018/5/16.
-//  Copyright © 2018年 taobao. All rights reserved.
+//  Created by 陈佩翰 on 2018/5/18.
 //
 
-//#include <stdio.h>
-#include <core/bridge/JSBridge.h>
-
-void WeexCore::JSBridge::onReportJSException(int32_t runTimeId, int32_t contextId, char *exception, std::map<std::string, std::string> &extInfos){
-    //getBridge
-    
-}
+#include "JSCBridge.h"
