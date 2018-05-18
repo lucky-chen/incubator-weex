@@ -49,29 +49,29 @@ namespace WeexCore {
             return m_instance;
         }
         
-        void setJSVersion(const char* version) = 0;
+        void setJSVersion(const char* version) ;
         
-        void reportException(const char* pageId, const char *func, const char *exception_string) = 0;
+        void reportException(const char* pageId, const char *func, const char *exception_string) ;
         
-        int callNative(const char* pageId, const char *task, const char *callback) = 0;
+        int callNative(const char* pageId, const char *task, const char *callback) ;
         
         void* callNativeModule(const char* pageId, const char *module, const char *method,
-                                       const char *argString, const char *optString) = 0;
+                                       const char *argString, const char *optString) ;
         
         void callNativeComponent(const char* pageId, const char* ref, const char *method,
-                                         const char *argString, const char *optString) = 0;
+                                         const char *argString, const char *optString) ;
         
-        void setTimeout(const char* callbackID, const char* time) = 0;
+        void setTimeout(const char* callbackID, const char* time) ;
         
-        void callNativeLog(const char* str_array) = 0;
+        void callNativeLog(const char* str_array) ;
         
-        int callUpdateFinish(const char* pageId, const char *task, const char *callback) = 0;
+        int callUpdateFinish(const char* pageId, const char *task, const char *callback) ;
         
-        int callRefreshFinish(const char* pageId, const char *task, const char *callback) = 0;
+        int callRefreshFinish(const char* pageId, const char *task, const char *callback) ;
         
-        int callAddEvent(const char* pageId, const char* ref, const char *event) = 0;
+        int callAddEvent(const char* pageId, const char* ref, const char *event) ;
         
-        int callRemoveEvent(const char* pageId, const char* ref, const char *event) = 0;
+        int callRemoveEvent(const char* pageId, const char* ref, const char *event) ;
         
         int callCreateBody(const char* pageId, const char *componentType, const char* ref,
                                    std::map<std::string, std::string> *styles,
@@ -79,7 +79,7 @@ namespace WeexCore {
                                    std::set<std::string> *events,
                                    const WXCoreMargin &margins,
                                    const WXCorePadding &paddings,
-                                   const WXCoreBorderWidth &borders) = 0;
+                                   const WXCoreBorderWidth &borders) ;
         
         int callAddElement(const char* pageId, const char *componentType, const char* ref,
                                    int &index, const char* parentRef,
@@ -89,28 +89,28 @@ namespace WeexCore {
                                    const WXCoreMargin &margins,
                                    const WXCorePadding &paddings,
                                    const WXCoreBorderWidth &borders,
-                                   bool willLayout= true) = 0;
+                                   bool willLayout= true) ;
         
         int callLayout(const char* pageId, const char* ref,
                                int top, int bottom, int left, int right,
-                               int height, int width, int index) = 0;
+                               int height, int width, int index) ;
         
         int callUpdateStyle(const char* pageId, const char* ref,
                                     std::vector<std::pair<std::string, std::string>> *style,
                                     std::vector<std::pair<std::string, std::string>> *margin,
                                     std::vector<std::pair<std::string, std::string>> *padding,
-                                    std::vector<std::pair<std::string, std::string>> *border) = 0;
+                                    std::vector<std::pair<std::string, std::string>> *border) ;
         
         int callUpdateAttr(const char* pageId, const char* ref,
-                                   std::vector<std::pair<std::string, std::string>> *attrs) = 0;
+                                   std::vector<std::pair<std::string, std::string>> *attrs) ;
         
-        int callCreateFinish(const char* pageId) = 0;
+        int callCreateFinish(const char* pageId) ;
         
-        int callRemoveElement(const char* pageId, const char* ref) = 0;
+        int callRemoveElement(const char* pageId, const char* ref) ;
         
-        int callMoveElement(const char* pageId, const char* ref, const char* parentRef, int index) = 0;
+        int callMoveElement(const char* pageId, const char* ref, const char* parentRef, int index) ;
         
-        int callAppendTreeCreateFinish(const char* pageId, const char* ref) = 0;
+        int callAppendTreeCreateFinish(const char* pageId, const char* ref) ;
     };
 }
 
