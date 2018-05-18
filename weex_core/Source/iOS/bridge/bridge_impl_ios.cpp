@@ -19,6 +19,8 @@
 
 #include "bridge_impl_ios.h"
 
+using namespace WeexCore;
+
 namespace WeexCore {
     
     Bridge_Impl_iOS *Bridge_Impl_iOS::m_instance = nullptr;
@@ -29,7 +31,7 @@ namespace WeexCore {
     
     void Bridge_Impl_iOS::setJSVersion(const char* version) {
         
-    };
+    }
     
     void Bridge_Impl_iOS::reportException(const char* pageId, const char *func, const char *exception_string) {
         
