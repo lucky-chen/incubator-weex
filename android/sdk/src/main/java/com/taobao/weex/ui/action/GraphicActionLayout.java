@@ -18,6 +18,8 @@
  */
 package com.taobao.weex.ui.action;
 
+import android.util.Log;
+import com.taobao.weex.WXSDKInstance;
 import com.taobao.weex.WXSDKManager;
 import com.taobao.weex.ui.component.WXComponent;
 
@@ -30,6 +32,7 @@ public class GraphicActionLayout extends BasicGraphicAction {
     super(pageId, ref);
     this.mLayoutPosition = layoutPosition;
     this.mLayoutSize = layoutSize;
+
   }
 
   @Override
@@ -38,6 +41,13 @@ public class GraphicActionLayout extends BasicGraphicAction {
     if (component == null) {
       return;
     }
+
+    WXSDKInstance instance = WXSDKManager.getInstance().getWXRenderManager().getWXSDKInstance(getPageId());
+    if (instance == null || instance.getContext() == null) {
+      return;
+    }
+    instance.layoutCount++;
+    Log.d("GraphicActionLayout", "layoutCount :"+instance.layoutCount);
 
     component.setDemission(mLayoutSize, mLayoutPosition);
     component.setLayout(component);

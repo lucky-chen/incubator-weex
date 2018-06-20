@@ -66,5 +66,11 @@ public class GraphicActionCreateFinish extends BasicGraphicAction {
       instance.onCreateFinish();
     }
     instance.onRenderSuccess(mLayoutWidth, mLayoutHeight);
+
+    instance.isCreateFinishOnUI = true;
+    if (null != instance.getWXPerformance()){
+      instance.getWXPerformance().callCreateFinishTime = System.currentTimeMillis()-instance.getWXPerformance()
+          .renderTimeOrigin;
+    }
   }
 }

@@ -21,6 +21,7 @@ package com.taobao.weex.ui.action;
 import android.support.annotation.RestrictTo;
 import android.support.annotation.RestrictTo.Scope;
 import android.support.annotation.WorkerThread;
+import android.util.Log;
 import com.taobao.weex.WXSDKInstance;
 import com.taobao.weex.WXSDKManager;
 import com.taobao.weex.common.WXErrorCode;
@@ -39,7 +40,6 @@ public class GraphicActionAddElement extends GraphicActionAbstractAddElement {
   private WXComponent child;
   private GraphicPosition layoutPosition;
   private GraphicSize layoutSize;
-  private boolean isJSCreateFinish = false;
 
   public GraphicActionAddElement(String pageId, String ref,
                                  String componentType, String parentRef,
@@ -73,7 +73,7 @@ public class GraphicActionAddElement extends GraphicActionAbstractAddElement {
           mParentRef);
       child = createComponent(instance, parent, basicComponentData);
       child.setTransition(WXTransition.fromMap(child.getStyles(), child));
-      isJSCreateFinish = instance.isJSCreateFinish;
+      child.isElementTreeChanged = true;
 
       if (child == null || parent == null) {
         return;
@@ -122,11 +122,15 @@ public class GraphicActionAddElement extends GraphicActionAbstractAddElement {
       child.applyLayoutAndEvent(child);
 
       child.bindData(child);
+
       WXSDKInstance instance = WXSDKManager.getInstance().getWXRenderManager().getWXSDKInstance(getPageId());
-      if (null!=instance){
-        instance.onElementChange(isJSCreateFinish);
-       // instance.setma
+      if (instance == null || instance.getContext() == null) {
+        return;
       }
+      if (instance.isCreateFinishOnUI){
+        Log.e("executeAction","AddElement"+ child.getRef() );
+      }
+
     } catch (Exception e) {
       WXLogUtils.e("add component failed.", e);
     }

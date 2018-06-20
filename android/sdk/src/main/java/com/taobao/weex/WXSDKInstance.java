@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -32,6 +32,7 @@ import android.support.annotation.RestrictTo.Scope;
 import android.support.annotation.WorkerThread;
 import android.support.v4.util.ArrayMap;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
@@ -104,9 +105,10 @@ public class WXSDKInstance implements IWXActivityStateListener,View.OnLayoutChan
 
   private static  final  String SOURCE_TEMPLATE_BASE64_MD5 = "templateSourceBase64MD5";
 
+  public  int layoutCount =0;
   //Performance
   public boolean mEnd = false;
-  public boolean isJSCreateFinish =false;
+  public boolean isCreateFinishOnUI = false;
   public static final String BUNDLE_URL = "bundleUrl";
   private IWXUserTrackAdapter mUserTrackAdapter;
   private IWXRenderListener mRenderListener;
@@ -1085,10 +1087,6 @@ public class WXSDKInstance implements IWXActivityStateListener,View.OnLayoutChan
 
 
   public void onCreateFinish() {
-    if (null != mWXPerformance){
-      mWXPerformance.callCreateFinishTime=System.currentTimeMillis()-mWXPerformance
-              .renderTimeOrigin;
-    }
     if (mContext != null) {
       runOnUiThread(new Runnable() {
 
@@ -1122,7 +1120,6 @@ public class WXSDKInstance implements IWXActivityStateListener,View.OnLayoutChan
   }
 
   public void onRenderSuccess(final int width, final int height) {
-    isJSCreateFinish = true;
     firstScreenRenderFinished();
 
     long time = System.currentTimeMillis() - mRenderStartTime;
@@ -1182,21 +1179,52 @@ public class WXSDKInstance implements IWXActivityStateListener,View.OnLayoutChan
     }
   }
 
+
+  int changeCount =0;
+  int allChangeCount =0;
+
   /**
    * when add/rm element
    */
-  public void onElementChange(boolean afterJSCreateFinish){
-    if (isDestroy() || !afterJSCreateFinish ||null == mRenderContainer || mRenderContainer.isPageHasEvent() ||
-            mWXPerformance == null){
+  public void onChangeElementLayout(WXComponent component,boolean isOutInstanceScreen){
+    if (!component.isElementTreeChanged){
       return;
     }
-    long lazyLoadTime = System.currentTimeMillis()- mWXPerformance.renderTimeOrigin - mWXPerformance
-            .callCreateFinishTime;
-    if (lazyLoadTime > 8000){
-      //bad case
+    component.isElementTreeChanged = true;
+
+    if (isDestroy()  || null == mRenderContainer || mWXPerformance == null){
       return;
     }
-    getWXPerformance().interactionTime = mWXPerformance.callCreateFinishTime + lazyLoadTime;
+    allChangeCount++;
+
+    if (mRenderContainer.isPageHasEvent()){
+      return;
+    }
+
+    if (isOutInstanceScreen){
+      return;
+    }
+
+    long lastElementChangeTime =  System.currentTimeMillis();
+
+    long lazyLoadTime=0;
+
+    if (isCreateFinishOnUI){
+      lazyLoadTime = lastElementChangeTime - mWXPerformance.renderTimeOrigin - mWXPerformance.callCreateFinishTime;
+      if (lazyLoadTime > 8000){
+        //bad case
+        return;
+      }
+    }
+    changeCount++;
+    getWXPerformance().interactionTime = lastElementChangeTime - mWXPerformance.renderTimeOrigin;
+
+    Log.d("onElementChange", "interactionTime: "+getWXPerformance().interactionTime
+        +"|lazyLoadTime:"+lazyLoadTime
+        +"| componentRef:"+component.getRef()
+        + "| changeCount: "+changeCount
+        + "| allChangeCount: "+allChangeCount
+    );
   }
 
   public void onRenderError(final String errCode, final String msg) {

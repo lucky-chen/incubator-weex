@@ -324,6 +324,8 @@ public class WXBridge implements IWXBridge {
   public int callAddElement(String instanceId, String componentType, String ref, int index, String parentRef,
                             HashMap<String, String> styles, HashMap<String, String> attributes, HashSet<String> events,
                             float[] margins, float[] paddings, float[] borders,  boolean willLayout) {
+
+    Log.d("ACTION", "callAddElement, ref: " + ref);
     int errorCode = IWXBridge.INSTANCE_RENDERING;
 
     try {
@@ -341,6 +343,7 @@ public class WXBridge implements IWXBridge {
 
   @Override
   public int callRemoveElement(String instanceId, String ref) {
+    Log.d("ACTION", "callRemoveElement, ref: " + ref);
     int errorCode = IWXBridge.INSTANCE_RENDERING;
     try {
       errorCode = WXBridgeManager.getInstance().callRemoveElement(instanceId, ref);
@@ -427,6 +430,8 @@ public class WXBridge implements IWXBridge {
 
   @Override
   public int callLayout(String instanceId, String ref, int top, int bottom, int left, int right, int height, int width, int index) {
+    Log.d("ACTION", "callLayout, ref: " + ref);
+
     int errorCode = IWXBridge.INSTANCE_RENDERING;
     try {
       errorCode = WXBridgeManager.getInstance().callLayout(instanceId, ref, top, bottom, left, right, height, width, index);

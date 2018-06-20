@@ -45,6 +45,7 @@ import android.support.v4.view.AccessibilityDelegateCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.accessibility.AccessibilityNodeInfoCompat;
 import android.text.TextUtils;
+import android.util.Log;
 import android.util.Pair;
 import android.view.Menu;
 import android.view.View;
@@ -179,6 +180,11 @@ public abstract class WXComponent<T extends View> extends WXBasicComponent imple
   private ContentBoxMeasurement contentBoxMeasurement;
   private WXTransition mTransition;
   private GraphicSize mPseudoResetGraphicSize;
+
+  public boolean isAddOrRmAfterJSCreateFinish = false;
+  //add or rm
+  public boolean isElementTreeChanged = false;
+
   @Nullable
   private ConcurrentLinkedQueue<Pair<String, Map<String, Object>>> animations;
 
@@ -940,11 +946,21 @@ public abstract class WXComponent<T extends View> extends WXBasicComponent imple
     if (mHost == null) {
       return;
     }
-
     //calculate first screen time
-    if (!mInstance.mEnd && !(mHost instanceof ViewGroup) && mAbsoluteY + realHeight > mInstance.getWeexHeight() + 1) {
-      mInstance.firstScreenRenderFinished();
+    if (!(mHost instanceof ViewGroup) && !mInstance.mEnd && mAbsoluteY + realHeight > mInstance.getWeexHeight() + 1) {
+        mInstance.firstScreenRenderFinished();
     }
+
+    boolean isOutInstanceScreen = mAbsoluteY > mInstance.getWeexHeight();
+    mInstance.onChangeElementLayout(this,isOutInstanceScreen);
+
+
+    Log.d("positionY", "isOutInstanceScreen:"+isOutInstanceScreen
+        + "| ref:"+getRef()
+        + "| AbsoluteY:"+(mAbsoluteY+realHeight)
+        + "| weexHeight:"+mInstance.getWeexHeight()
+    );
+
 
     MeasureOutput measureOutput = measure(realWidth, realHeight);
     realWidth = measureOutput.width;
