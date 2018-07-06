@@ -85,7 +85,7 @@
         return FALSE;
     }
     CommitState limitSate = [[limitDic objectForKey:key] intValue];
-    return timeState == limitSate;
+    return timeState >= limitSate;
 }
 
 + (NSDictionary *) getKeys:(BOOL) measureOrDimen
@@ -121,7 +121,7 @@
                              FIRSETSCREENJSFEXECUTETIME:    [NSNumber numberWithInt:DebugAfterFSFinish],
                              CALLCREATEINSTANCETIME:        [NSNumber numberWithInt:DebugAfterFSFinish],
                              COMMUNICATETOTALTIME:          [NSNumber numberWithInt:DebugAfterExist],
-                             FSRENDERTIME:                  [NSNumber numberWithInt:DebugAfterExist],
+                             FSRENDERTIME:                  @(DebugOnRealTime),
                              CACHEPROCESSTIME:              [NSNumber numberWithInt:DebugAfterRequest],
                              CACHERATIO:                    [NSNumber numberWithInt:DebugAfterRequest],
                              M_FS_CALL_JS_TIME:             [NSNumber numberWithInt:DebugAfterFSFinish],

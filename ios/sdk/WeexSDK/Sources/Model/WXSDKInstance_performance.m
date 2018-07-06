@@ -49,7 +49,7 @@
     WX_MONITOR_PERF_SET(WXPTMaxDeepVDom,self.performance.maxVdomDeep,self);
     WX_MONITOR_PERF_SET(WXPTImgWrongSizeNum,self.performance.imgWrongSizeNum,self);
     WX_MONITOR_PERF_SET(WXPTInteractionTime,self.performance.interactionTime,self);
-    WX_MONITOR_PERF_SET(WXPTComponentCount,self.performance.componentCount,self);
+    //WX_MONITOR_PERF_SET(WXPTComponentCount,self.numberOfComponents,self);
     WX_MONITOR_PERF_SET(WXPTComponentCreateTime,self.performance.componentCreateTime,self);
 }
 

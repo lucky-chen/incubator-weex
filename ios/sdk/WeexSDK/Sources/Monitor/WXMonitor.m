@@ -32,6 +32,7 @@
 #import "WXSDKInstance_performance.h"
 
 #import "WXAnalyzerCenter+Transfer.h"
+#import "WXAppMonitorProtocol.h"
 
 
 NSString *const kStartKey = @"start";
@@ -67,10 +68,31 @@ static WXThreadSafeMutableDictionary *globalPerformanceDict;
     }
     
     dict[kEndKey] = @(CACurrentMediaTime() * 1000);
+    
+    if (tag == WXPTFirstScreenRender) {
+        [self _realTimeTransFerFsRenderTime:instance];
+    }
 
 //    if (tag == WXPTAllRender) {
 //        [self performanceFinish:instance];
 //    }
+}
+
++ (void)_realTimeTransFerFsRenderTime:(WXSDKInstance*)instance
+{
+    if (![WXAnalyzerCenter isOpen]) {
+        return;
+    }
+    NSMutableDictionary *performanceDict = [self performanceDictForInstance:instance];
+    NSMutableDictionary *dict = performanceDict[@(WXPTFirstScreenRender)];
+    if (!dict) {
+        return;
+    }
+    
+    NSNumber* start =  dict[kStartKey];
+    NSNumber* end =  dict[kEndKey];
+    NSDictionary* fsTimeDic = @{FSRENDERTIME:@(end.integerValue - start.integerValue)};
+    [WXAnalyzerCenter transDataOnState:DebugOnRealTime withInstaneId:instance.instanceId data:fsTimeDic];
 }
 
 + (void)performancePoint:(WXPerformanceTag)tag didSetValue:(double)value withInstance:(WXSDKInstance *)instance
@@ -83,6 +105,10 @@ static WXThreadSafeMutableDictionary *globalPerformanceDict;
     dict[kStartKey] = @(0);
     dict[kEndKey] = @(value);
     performanceDict[@(tag)] = dict;
+    
+    if (tag == WXPTFirstScreenRender) {
+        [self _realTimeTransFerFsRenderTime:instance];
+    }
 }
 
 + (BOOL)performancePoint:(WXPerformanceTag)tag isRecordedWithInstance:(WXSDKInstance *)instance
@@ -147,6 +173,7 @@ static WXThreadSafeMutableDictionary *globalPerformanceDict;
         }
     }
     WXPerformBlockOnComponentThread(^{
+        WX_MONITOR_PERF_SET(WXPTComponentCount,instance.numberOfComponents,instance);
         WXPerformBlockOnMainThread(^{
             [self commitPerformanceWithDict:commitDict instance:instance comitState:state];
         });
