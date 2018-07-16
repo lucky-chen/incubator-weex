@@ -17,6 +17,9 @@
  * under the License.
  */
 
+
+#pragma mark - Deprecated
+
 #import <Foundation/Foundation.h>
 #import "WXDefine.h"
 #import "WXSDKError.h"
