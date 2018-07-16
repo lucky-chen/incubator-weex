@@ -31,6 +31,7 @@ import com.taobao.weex.common.WXErrorCode;
 import com.taobao.weex.common.WXJSExceptionInfo;
 import com.taobao.weex.common.WXPerformance;
 import com.taobao.weex.performance.WXAnalyzerDataTransfer;
+import com.taobao.weex.ui.IFComponentHolder;
 
 import java.util.HashMap;
 import java.util.List;
@@ -42,74 +43,75 @@ import java.util.Map;
 
 public class WXExceptionUtils {
 
-	/**
-	 * degradeUrl for degrade case
-	 */
-	public static String degradeUrl = "BundleUrlDefaultDegradeUrl";
+    /**
+     * degradeUrl for degrade case
+     */
+    public static String degradeUrl = "BundleUrlDefaultDegradeUrl";
 
 
-	/**
-	 * commitCriticalExceptionRT eg:JsRuntime Exception or JsFramework Init Exception
-	 * @param instanceId
-	 * @param errCode
-	 * @param function
-	 * @param exception
-	 * @param extParams
-	 */
-	public static void commitCriticalExceptionRT(@Nullable final String instanceId,
-												 @Nullable final WXErrorCode errCode,
-												 @Nullable final String function,
-												 @Nullable final String exception,
-												 @Nullable final Map<String,String> extParams ) {
-		IWXJSExceptionAdapter adapter = WXSDKManager.getInstance().getIWXJSExceptionAdapter();
-		WXSDKInstance instance;
-		WXJSExceptionInfo exceptionCommit;
-		String bundleUrlCommit = "BundleUrlDefault";
-		String instanceIdCommit = "InstanceIdDefalut";
-		String exceptionMsgCommit = exception;
-		Map<String, String> commitMap = extParams;
-		if (null == commitMap){
-			commitMap = new HashMap<>();
-		}
-		commitMap.put("activity","empty");
+    /**
+     * commitCriticalExceptionRT eg:JsRuntime Exception or JsFramework Init Exception
+     * @param instanceId
+     * @param errCode
+     * @param function
+     * @param exception
+     * @param extParams
+     */
+    public static void commitCriticalExceptionRT(@Nullable final String instanceId,
+                                                 @Nullable final WXErrorCode errCode,
+                                                 @Nullable final String function,
+                                                 @Nullable final String exception,
+                                                 @Nullable final Map<String,String> extParams ) {
+        commitInstanceCriticalException(
+            WXSDKManager.getInstance().getAllInstanceMap().get(instanceId),
+            errCode,function,exception,extParams
+        );
+    }
 
-		if (!TextUtils.isEmpty(instanceId)) {
-			instanceIdCommit = instanceId;
-			instance = WXSDKManager.getInstance().getAllInstanceMap().get(instanceId);
+    public static void commitInstanceCriticalException(@Nullable final WXSDKInstance instance,
+                                                       @Nullable final WXErrorCode errCode,
+                                                       @Nullable final String function,
+                                                       @Nullable final String exception,
+                                                       @Nullable final Map<String,String> extParams ) {
+        IWXJSExceptionAdapter adapter = WXSDKManager.getInstance().getIWXJSExceptionAdapter();
+        WXJSExceptionInfo exceptionCommit;
+        String bundleUrlCommit = "BundleUrlDefault";
+        String instanceIdCommit = "InstanceIdDefalut";
+        String exceptionMsgCommit = exception;
+        Map<String, String> commitMap = extParams;
+        if (null == commitMap){
+            commitMap = new HashMap<>(1);
+        }
+        commitMap.put("activity","empty");
 
-			if (null != instance && instance.getContainerView() != null){
-				Context c = instance.getContainerView().getContext();
-				if (c instanceof Activity){
-					commitMap.put("activity",c.getClass().getSimpleName());
-				}
-			}
+        if (null == instance){
+            if (!TextUtils.isEmpty(WXSDKInstance.requestUrl)) {
+                bundleUrlCommit = WXSDKInstance.requestUrl;
+            }
+            if (commitMap.size() > 0) {
+                bundleUrlCommit = TextUtils.isEmpty(commitMap.get("weexUrl")) ? commitMap.get("weexUrl")
+                    : commitMap.get("bundleUrl");
+            }
+        } else {
+            if (instance.getContainerView() != null){
+                Context c = instance.getContainerView().getContext();
+                if (c instanceof Activity){
+                    commitMap.put("activity",c.getClass().getSimpleName());
+                }
+            }
+            bundleUrlCommit = instance.getBundleUrl();
+            commitMap.put("templateInfo",instance.getTemplateInfo());
+            if (TextUtils.isEmpty(bundleUrlCommit) || bundleUrlCommit.equals(WXPerformance.DEFAULT)) {
+                 bundleUrlCommit =  TextUtils.equals(degradeUrl, "BundleUrlDefaultDegradeUrl")
+                     ? WXSDKInstance.requestUrl
+                     : degradeUrl;
+            }
+        }
 
-			if (null != instance) {
-				bundleUrlCommit = instance.getBundleUrl();
-				commitMap.put("templateInfo",instance.getTemplateInfo());
-				if (TextUtils.isEmpty(bundleUrlCommit) || bundleUrlCommit.equals(WXPerformance.DEFAULT)) {
-					if (!TextUtils.equals(degradeUrl, "BundleUrlDefaultDegradeUrl")) {
-						bundleUrlCommit = degradeUrl;
-					} else
-						bundleUrlCommit = WXSDKInstance.requestUrl;
-				}
-			}
-		} else {//instance is null for instance id is null
-			if (!TextUtils.isEmpty(WXSDKInstance.requestUrl)) {
-				bundleUrlCommit = WXSDKInstance.requestUrl;
-			}
-			if (commitMap.size() > 0) {
-				bundleUrlCommit = TextUtils.isEmpty(commitMap.get("weexUrl")) ? commitMap.get("weexUrl")
-								: commitMap.get("bundleUrl");
-			}
-		}
-
-		exceptionCommit = new WXJSExceptionInfo(instanceIdCommit, bundleUrlCommit, errCode, function, exceptionMsgCommit, commitMap);
-		if (adapter != null) {
-			adapter.onJSException(exceptionCommit);
-		}
-
-		WXAnalyzerDataTransfer.transferError(exceptionCommit, instanceId);
-
-	}
+        exceptionCommit = new WXJSExceptionInfo(instanceIdCommit, bundleUrlCommit, errCode, function, exceptionMsgCommit, commitMap);
+        if (adapter != null) {
+            adapter.onJSException(exceptionCommit);
+        }
+        WXAnalyzerDataTransfer.transferError(exceptionCommit, instanceIdCommit);
+    }
 }
