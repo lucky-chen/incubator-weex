@@ -285,6 +285,11 @@ typedef NS_ENUM(NSInteger, WXErrorCode) {//error.code
  */
 - (NSUInteger)numberOfComponents;
 
+/**
+ * set ext info from view container
+ */
+- (void) setContainerExtInfo:(NSDictionary *)continerInfo;
+
 
 /**
  * check whether the module eventName is registered

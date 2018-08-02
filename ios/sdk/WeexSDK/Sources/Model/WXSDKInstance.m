@@ -782,6 +782,11 @@ typedef enum : NSUInteger {
     }
 }
 
+- (void)setContainerExtInfo:(NSDictionary *)continerInfo
+{
+    
+}
+
 @end
 
 @implementation WXSDKInstance (Deprecated)
