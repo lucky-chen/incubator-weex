@@ -26,6 +26,8 @@ import com.taobao.weex.dom.CSSShorthand;
 import com.taobao.weex.ui.component.WXComponent;
 import com.taobao.weex.ui.component.WXComponentFactory;
 import com.taobao.weex.ui.component.WXVContainer;
+import com.taobao.weex.utils.WXUtils;
+
 import java.util.Map;
 import java.util.Set;
 
@@ -48,7 +50,7 @@ public abstract class GraphicActionAbstractAddElement extends BasicGraphicAction
   }
 
   protected WXComponent createComponent(WXSDKInstance instance, WXVContainer parent, BasicComponentData basicComponentData) {
-    long createComponentStart = System.currentTimeMillis();
+    long createComponentStart = WXUtils.getFixUnixTime();
     if (basicComponentData != null) {
       basicComponentData.addStyle(mStyle);
       basicComponentData.addAttr(mAttributes);
@@ -67,7 +69,7 @@ public abstract class GraphicActionAbstractAddElement extends BasicGraphicAction
           .put(Constants.Name.TRANSFORM_ORIGIN, mStyle.get(Constants.Name.TRANSFORM_ORIGIN));
       component.addAnimationForElement(animationMap);
     }
-    instance.onComponentCreate(component,System.currentTimeMillis() -createComponentStart);
+    instance.onComponentCreate(component,WXUtils.getFixUnixTime() -createComponentStart);
     return component;
   }
 

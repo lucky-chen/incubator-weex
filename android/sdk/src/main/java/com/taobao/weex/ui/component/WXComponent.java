@@ -170,6 +170,7 @@ public abstract class WXComponent<T extends View> extends WXBasicComponent imple
   private String mLastBoxShadowId;
   public int mDeepInComponentTree = 0;
   public boolean mIsAddElementToTree = false;
+  public long createCostTime = 0;
 
   public WXTracing.TraceInfo mTraceInfo = new WXTracing.TraceInfo();
 

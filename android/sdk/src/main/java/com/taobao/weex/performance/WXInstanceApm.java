@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import android.text.TextUtils;
+import android.util.Log;
 import com.taobao.weex.WXEnvironment;
 import com.taobao.weex.WXSDKInstance;
 import com.taobao.weex.WXSDKManager;
@@ -134,26 +135,33 @@ public class WXInstanceApm {
      * record stage
      */
     public void onStage(String name) {
-        long time =  WXUtils.getFixUnixTime();
-        onStageWithTime(name,time);
+        long time = WXUtils.getFixUnixTime();
+        onStageWithTime(name, time);
     }
 
     /**
-     *
      * @param name stage
      * @param time unixTime ,plz use WXUtils.getFixUnixTime
      */
-    public void onStageWithTime(String name,long time){
+
+    long recordOriginTime = 0;
+
+    public void onStageWithTime(String name, long time) {
         WXSDKInstance instance = WXSDKManager.getInstance().getSDKInstance(mInstanceId);
-        if (null != instance){
+        if (null != instance) {
             instance.getExceptionRecorder().recordStage(name, time);
         }
         if (null == apmInstance) {
             return;
         }
-        apmInstance.onStage(name, time);
-    }
+        if (KEY_PAGE_STAGES_DOWN_BUNDLE_START.equals(name)) {
+            recordOriginTime = time;
+        }
 
+        apmInstance.onStage(name, time);
+        String pageName = null == instance ? "unKonwInstance" : instance.getWXPerformance().pageName;
+        Log.w("jsLog", "[wxapm][Stage] " + name + ":" + time + " ===>pageName:" + pageName);
+    }
 
     /**
      * record property
@@ -163,6 +171,9 @@ public class WXInstanceApm {
             return;
         }
         apmInstance.addProperty(key, value);
+        WXSDKInstance instance = WXSDKManager.getInstance().getSDKInstance(mInstanceId);
+        String pageName = null == instance ? "unKonwInstance" : instance.getWXPerformance().pageName;
+        Log.e("jsLog", "[wxapm][property] " + key + ":" + value + " ====>pageName:" + pageName);
     }
 
     /**
@@ -173,10 +184,12 @@ public class WXInstanceApm {
             return;
         }
         apmInstance.addStats(key, value);
+        WXSDKInstance instance = WXSDKManager.getInstance().getSDKInstance(mInstanceId);
+        String pageName = null == instance ? "unKonwInstance" : instance.getWXPerformance().pageName;
+        Log.e("jsLog", "[wxapm][statCount] " + key + ":" + value + " ====>pageName:" + pageName);
     }
 
-
-    public boolean hasInit(){
+    public boolean hasInit() {
         return mHasInit;
     }
 
@@ -184,7 +197,7 @@ public class WXInstanceApm {
      * start record
      */
     public void doInit() {
-        if (mHasInit){
+        if (mHasInit) {
             return;
         }
         mHasInit = true;
@@ -216,14 +229,14 @@ public class WXInstanceApm {
         addProperty(KEY_PAGE_PROPERTIES_BIZ_ID, fixPageName);
     }
 
-    public void onAppear(){
+    public void onAppear() {
         if (null == apmInstance) {
             return;
         }
         apmInstance.onAppear();
     }
 
-    public void onDisAppear(){
+    public void onDisAppear() {
         if (null == apmInstance) {
             return;
         }
@@ -242,7 +255,7 @@ public class WXInstanceApm {
     }
 
     public void arriveFSRenderTime() {
-        if (null == apmInstance){
+        if (null == apmInstance) {
             return;
         }
         onStage(WXInstanceApm.KEY_PAGE_STAGES_NEW_FSRENDER);
@@ -283,12 +296,12 @@ public class WXInstanceApm {
         }
         Double preVal = recordStatsMap.containsKey(name) ? recordStatsMap.get(name) : 0;
         //fix by use ConcurrentHashMap,but not sure,so report if error still happen
-        if (null == preVal){
+        if (null == preVal) {
             WXExceptionUtils.commitCriticalExceptionRT(
                 "",
                 WXErrorCode.WX_ERR_HASH_MAP_TMP,
                 "updateDiffStats",
-                "key : "+name,
+                "key : " + name,
                 null
             );
             return;
@@ -305,12 +318,12 @@ public class WXInstanceApm {
         }
         Double maxValue = recordStatsMap.containsKey(name) ? recordStatsMap.get(name) : 0;
         //fix by use ConcurrentHashMap,but not sure,so report if error still happen
-        if (null == maxValue){
+        if (null == maxValue) {
             WXExceptionUtils.commitCriticalExceptionRT(
                 "",
                 WXErrorCode.WX_ERR_HASH_MAP_TMP,
                 "updateMaxStats",
-                "key : "+name,
+                "key : " + name,
                 null
             );
             return;

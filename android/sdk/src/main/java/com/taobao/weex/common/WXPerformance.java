@@ -24,6 +24,7 @@ import com.taobao.weex.WXEnvironment;
 import com.taobao.weex.WXSDKInstance;
 import com.taobao.weex.WXSDKManager;
 import com.taobao.weex.performance.WXInstanceApm;
+import com.taobao.weex.utils.WXUtils;
 import com.taobao.weex.utils.WXViewUtils;
 
 import java.util.HashMap;
@@ -165,6 +166,8 @@ public class WXPerformance {
 
   @RestrictTo(RestrictTo.Scope.LIBRARY)
   public long renderTimeOrigin;
+
+  public long renderTimeRequestOrigin;
 
   public long fsRenderTime;
 
@@ -554,7 +557,7 @@ public class WXPerformance {
   }
 
   public void beforeInstanceRender(String instanceId) {
-    renderTimeOrigin = System.currentTimeMillis();
+    renderTimeOrigin = WXUtils.getFixUnixTime();
   }
 
   public void afterInstanceDestroy(String instanceId) {
