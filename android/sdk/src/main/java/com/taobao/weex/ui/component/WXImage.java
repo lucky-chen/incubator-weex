@@ -476,8 +476,7 @@ public class WXImage extends WXComponent<ImageView> {
       if (imgHeight > 1921 && imgWidth > 1081){
         instance.getApmForInstance().updateDiffStats(WXInstanceApm.KEY_PAGE_STATS_LARGE_IMG_COUNT,1);
       }
-      if (imgHeight * imgWidth > imageView.getMeasuredHeight() *
-          imageView.getMeasuredWidth() +10){
+      if (imgHeight * imgWidth > imageView.getMeasuredHeight() * imageView.getMeasuredWidth() +10){
         instance.getWXPerformance().wrongImgSizeCount++;
         instance.getApmForInstance().updateDiffStats(WXInstanceApm.KEY_PAGE_STATS_WRONG_IMG_SIZE_COUNT,1);
       }
