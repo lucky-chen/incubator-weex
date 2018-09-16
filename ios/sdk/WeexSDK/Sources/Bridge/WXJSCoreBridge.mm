@@ -38,6 +38,7 @@
 #import "WXAppMonitorProtocol.h"
 #import "JSContext+Weex.h"
 #import "WXCoreBridge.h"
+#import "WXAnalyzerCenter.h"
 
 #import <dlfcn.h>
 
@@ -200,8 +201,15 @@
         NSString *parentRef = [ref toString];
         NSInteger insertIndex = [[index toNumber] integerValue];
         WXLogDebug(@"callAddElement...%@, %@, %@, %ld", instanceIdString, parentRef, componentData, (long)insertIndex);
-        
-        return [JSValue valueWithInt32:(int32_t)callAddElement(instanceIdString, parentRef, componentData, insertIndex) inContext:[JSContext currentContext]];
+        if (WXAnalyzerCenter.isInteractionLogOpen) {
+            WXLogDebug(@"wxInteractionAnalyzer : [jsengin][addElementStart],%@,%@",instanceIdString,componentData[@"ref"]);
+        }
+        JSValue * result = [JSValue valueWithInt32:(int32_t)callAddElement(instanceIdString, parentRef, componentData, insertIndex) inContext:[JSContext currentContext]];
+       
+        if (WXAnalyzerCenter.isInteractionLogOpen) {
+            WXLogDebug(@"wxInteractionAnalyzer : [jsengin][addElementEnd],%@,%@",instanceIdString,componentData[@"ref"]);
+        }
+        return result;
     };
     
     _jsContext[@"callAddElement"] = callAddElementBlock;
