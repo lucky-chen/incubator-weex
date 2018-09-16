@@ -1178,4 +1178,9 @@ static void _convertToCString(id _Nonnull obj, void (^callback)(const char*))
     WeexCore::WeexCoreManager::Instance()->script_bridge()->core_side()->UpdateFinish([pageId UTF8String] ?: "", nullptr, 0, nullptr, 0);
 }
 
++ (void)registercCoreEnv:(NSString*)key withValue:(NSString*)value
+{
+    WeexCore::WeexCoreManager::Instance()->getPlatformBridge()->core_side()->RegisterCoreEnv([key UTF8String]?:"", [value UTF8String]?:"");
+}
+
 @end
