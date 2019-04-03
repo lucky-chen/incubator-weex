@@ -31,6 +31,10 @@
 #include "android/jsengine/weex_ipc_server.h"
 #include "android/jsengine/weex_ipc_client.h"
 
+namespace WeexCore {
+    class ScriptBridge;
+}
+
 class WeexEnv {
 
 public:
@@ -76,6 +80,13 @@ public:
         WeexEnv::enableTrace_ = enableTrace_;
     }
 
+    void setUseRunTimeApi(bool use){
+        this->useRunTimeApi_ = use;
+    }
+
+    bool isUseRunTimeApi(){
+        return useRunTimeApi_;
+    }
 
     void initIPC();
 
@@ -130,6 +141,7 @@ public:
 
    std::unique_ptr<crash_handler::CrashHandlerInfo> crashHandler;
 
+    bool useRunTimeApi_ = false;
 };
 
 

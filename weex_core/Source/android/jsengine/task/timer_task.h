@@ -25,16 +25,13 @@
 
 
 #include <cstdint>
-#include "WTFString.h"
-#include "JSCJSValue.h"
-#include "android/jsengine/object/weex_global_object.h"
-
+#include <string>
 class TimerTask {
 
 public:
     int taskId;
 
-    String instanceID;
+    std::string instanceID;
     uint32_t m_function;
 
     uint64_t timeout;
@@ -42,16 +39,15 @@ public:
 
     bool repeat = false;
 
-    WeexGlobalObject* global_object_;
+    bool from_instance_ = true;
 
-    explicit TimerTask(String id, uint32_t function, uint64_t millSecTimeout, WeexGlobalObject* global_object, bool repeat = false);
+   // WeexGlobalObject* global_object_;
+
+    explicit TimerTask(const std::string &id, uint32_t function, uint64_t millSecTimeout, bool repeat = false);
 
     explicit TimerTask(TimerTask *timerTask);
 
     TimerTask(TimerTask &timerTask);
-
-private:
-
 
 };
 

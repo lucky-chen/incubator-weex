@@ -3,9 +3,35 @@
 #    cmake_policy(SET CMP0042 NEW)
 #endif ()
 
+cmake_minimum_required(VERSION 3.4.1)
+
+if(DEFINED ENV{WEEX_CORE_SOURCE_DIR})
+    message('WEEX_CORE_SOURCE_DIR has set')
+else()
+    message('rewrite WEEX_CORE_SOURCE_DIR')
+    set(WEEX_CORE_SOURCE_DIR ../..)
+endif()
+
+
+if(DEFINED ENV{ANDROID_PLATFORM})
+    message('ANDROID_PLATFORM has set')
+else()
+    message('rewrite ANDROID_PLATFORM')
+    set(ANDROID_PLATFORM " ")
+endif()
+
+
 set(PORT JSCOnly)
 add_definitions(-DPRINT_LOG_CACHEFILE=0)
 add_definitions(-DOS_ANDROID)
+
+# log switch for debug in file "js_runtime/utils/log_utils.h"
+#add_definitions(-DLOG_JS_RUNTIME_DEBUG=1)
+#add_definitions(-DLOG_WEEX_RUNTIME_DEBUG=1)
+#add_definitions(-DLOG_CONVERSION_DEBUG=0)
+#add_definitions(-DLOG_WEEX_BINDING_DEBUG=1)
+add_definitions(-DLOG_JS_DEBUG=0)
+
 
 add_definitions(-DUSE_SYSTEM_MALLOC=1)
 if (${ANDROID_PLATFORM} STREQUAL "android-21")
@@ -38,25 +64,72 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 include_directories(${WEEX_CORE_SOURCE_DIR})
 include_directories(${WEEX_CORE_SOURCE_DIR}/include)
 include_directories(${WEEX_CORE_SOURCE_DIR}/include/JavaScriptCore)
-include_directories(${WEEX_CORE_SOURCE_DIR}/include/JavaScriptCore/API)
-include_directories(${WEEX_CORE_SOURCE_DIR}/include/JavaScriptCore/ForwardingHeaders)
-include_directories(${WEEX_CORE_SOURCE_DIR}/include/JavaScriptCore/assembler)
-include_directories(${WEEX_CORE_SOURCE_DIR}/include/JavaScriptCore/bytecode)
-include_directories(${WEEX_CORE_SOURCE_DIR}/include/JavaScriptCore/dfg)
-include_directories(${WEEX_CORE_SOURCE_DIR}/include/JavaScriptCore/disassembler)
-include_directories(${WEEX_CORE_SOURCE_DIR}/include/JavaScriptCore/domjit)
-include_directories(${WEEX_CORE_SOURCE_DIR}/include/JavaScriptCore/runtime)
-include_directories(${WEEX_CORE_SOURCE_DIR}/include/JavaScriptCore/heap)
-include_directories(${WEEX_CORE_SOURCE_DIR}/include/JavaScriptCore/jit)
-include_directories(${WEEX_CORE_SOURCE_DIR}/include/JavaScriptCore/interpreter)
-include_directories(${WEEX_CORE_SOURCE_DIR}/include/JavaScriptCore/parser)
-include_directories(${WEEX_CORE_SOURCE_DIR}/include/JavaScriptCore/profiler)
-include_directories(${WEEX_CORE_SOURCE_DIR}/include/JavaScriptCore/yarr)
-include_directories(${WEEX_CORE_SOURCE_DIR}/include/wtf/icu)
-include_directories(${WEEX_CORE_SOURCE_DIR}/include/wtf/text)
-include_directories(${WEEX_CORE_SOURCE_DIR}/include/wtf)
 #include_directories(${WEEX_CORE_SOURCE_DIR}/android/jsengine/dependence/WTF/)
 #include_directories(${WEEX_CORE_SOURCE_DIR}/android/jsengine/dependence/icu)
+
+#set(JS_RUNTIME_API_SRCS
+#        ${WEEX_CORE_SOURCE_DIR}/third_party/js_api/runtime_vm.cc
+#        ${WEEX_CORE_SOURCE_DIR}/third_party/js_api/runtime_context_android.cc
+#        ${WEEX_CORE_SOURCE_DIR}/third_party/js_api/runtime_values.cc
+#        ${WEEX_CORE_SOURCE_DIR}/third_party/js_api/binding_macro.h
+#        ${WEEX_CORE_SOURCE_DIR}/third_party/js_api/jsc/engine_context_jsc.cc
+#        ${WEEX_CORE_SOURCE_DIR}/third_party/js_api/jsc/jsc_utils.cc
+#        ${WEEX_CORE_SOURCE_DIR}/third_party/js_api/jsc/runtime_object_jsc.cc
+#        ${WEEX_CORE_SOURCE_DIR}/third_party/js_api/jsc/runtime_values_jsc.cc
+#        ${WEEX_CORE_SOURCE_DIR}/third_party/js_api/jsc/vm_jsc.cc
+#        ${WEEX_CORE_SOURCE_DIR}/third_party/js_api/jsc/binding_macro_jsc.h
+#        )
+
+
+set(JS_RUNTIME_API_SRCS
+        ${WEEX_CORE_SOURCE_DIR}/js_runtime/runtime/runtime_vm.cc
+        ${WEEX_CORE_SOURCE_DIR}/js_runtime/runtime/runtime_context_android.cc
+        ${WEEX_CORE_SOURCE_DIR}/js_runtime/runtime/runtime_values.cc
+        ${WEEX_CORE_SOURCE_DIR}/js_runtime/runtime/binding_macro.h
+        ${WEEX_CORE_SOURCE_DIR}/js_runtime/runtime/jsc/engine_context_jsc.cc
+        ${WEEX_CORE_SOURCE_DIR}/js_runtime/runtime/jsc/jsc_utils.cc
+        ${WEEX_CORE_SOURCE_DIR}/js_runtime/runtime/jsc/runtime_object_jsc.cc
+        ${WEEX_CORE_SOURCE_DIR}/js_runtime/runtime/jsc/runtime_values_jsc.cc
+        ${WEEX_CORE_SOURCE_DIR}/js_runtime/runtime/jsc/vm_jsc.cc
+        ${WEEX_CORE_SOURCE_DIR}/js_runtime/runtime/jsc/binding_macro_jsc.h
+        ${WEEX_CORE_SOURCE_DIR}/js_runtime/runtime/js_runtime_conversion.cpp
+        ${WEEX_CORE_SOURCE_DIR}/js_runtime/runtime/js_runtime_conversion.h
+        ${WEEX_CORE_SOURCE_DIR}/js_runtime/utils/log_utils.h
+        )
+set(WEEX_BINDING
+        ${WEEX_CORE_SOURCE_DIR}/js_runtime/weex/binding/weex_instance_binding.cpp
+        ${WEEX_CORE_SOURCE_DIR}/js_runtime/weex/binding/weex_instance_binding.h
+        ${WEEX_CORE_SOURCE_DIR}/js_runtime/weex/binding/weex_global_binding.cpp
+        ${WEEX_CORE_SOURCE_DIR}/js_runtime/weex/binding/weex_global_binding.h
+        ${WEEX_CORE_SOURCE_DIR}/js_runtime/weex/binding/app_context_binding.cpp
+        ${WEEX_CORE_SOURCE_DIR}/js_runtime/weex/binding/app_context_binding.h
+        ${WEEX_CORE_SOURCE_DIR}/js_runtime/weex/binding/weex_console_binding.cpp
+        ${WEEX_CORE_SOURCE_DIR}/js_runtime/weex/binding/weex_console_binding.h
+
+        ${WEEX_CORE_SOURCE_DIR}/js_runtime/weex/utils/wson_for_runtime.cpp
+        ${WEEX_CORE_SOURCE_DIR}/js_runtime/weex/utils/wson_for_runtime.h
+
+        ${WEEX_CORE_SOURCE_DIR}/js_runtime/weex/binding/weex_binding_utils.cpp
+        ${WEEX_CORE_SOURCE_DIR}/js_runtime/weex/binding/weex_binding_utils.h
+        ${WEEX_CORE_SOURCE_DIR}/js_runtime/weex/utils/weex_conversion_utils.cpp
+        ${WEEX_CORE_SOURCE_DIR}/js_runtime/weex/utils/weex_conversion_utils.h
+
+        )
+
+set(JSON_SRC
+        ${WEEX_CORE_SOURCE_DIR}/third_party/json11/json11.hpp
+        ${WEEX_CORE_SOURCE_DIR}/third_party/json11/json11.cc
+        )
+set(WEEX_RUNTIME_V2
+        ${WEEX_CORE_SOURCE_DIR}/js_runtime/weex/object/weex_runtime_v2.cpp
+        ${WEEX_CORE_SOURCE_DIR}/js_runtime/weex/object/weex_runtime_v2.h
+        ${WEEX_CORE_SOURCE_DIR}/js_runtime/weex/object/weex_object_holder_v2.cpp
+        ${WEEX_CORE_SOURCE_DIR}/js_runtime/weex/object/weex_object_holder_v2.h
+        ${WEEX_CORE_SOURCE_DIR}/js_runtime/weex/object/weex_global_object_v2.cpp
+        ${WEEX_CORE_SOURCE_DIR}/js_runtime/weex/object/weex_global_object_v2.h
+        )
+
+
 
 set(${WEEXJSSERVER_NAME}_SOURCES
         weex_ipc_client.h
@@ -65,8 +138,6 @@ set(${WEEXJSSERVER_NAME}_SOURCES
         weex_ipc_server.cpp
         weex_jsc_utils.h
         weex_jsc_utils.cpp
-        weex_runtime.h
-        weex_runtime.cpp
 
         bridge/script/script_bridge_in_multi_so.cpp
         bridge/script/script_bridge_in_multi_process.cpp
@@ -79,16 +150,8 @@ set(${WEEXJSSERVER_NAME}_SOURCES
         object/args/init_framework_args.cpp
         object/args.h
         object/args.cpp
-        object/weex_console_object.h
-        object/weex_console_object.cpp
         object/weex_env.h
         object/weex_env.cpp
-        object/weex_global_object.h
-        object/weex_global_object.cpp
-        object/weex_object_holder.h
-        object/weex_object_holder.cpp
-        object/weex_simple_object.h
-        object/weex_simple_object.cpp
 
         task/impl/init_framework_task.cpp
         task/impl/create_app_context_task.cpp
@@ -110,8 +173,12 @@ set(${WEEXJSSERVER_NAME}_SOURCES
         task/timer_queue.cpp
         task/back_to_weex_core_queue.cpp
 
-        wson/wson_jsc.h
-        wson/wson_jsc.cpp
+      #  ${JS_RUNTIME_API_SRCS}
+        ${JS_RUNTIME_API_SRCS}
+        ${DOM_API_SRCS}
+        ${WEEX_BINDING}
+        ${JSON_SRC}
+        ${WEEX_RUNTIME_V2}
 )
 link_directories(${LOCAL_LIBRARIES_DIR})
 SET(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS}" CACHE STRING "toolchain_exelinkflags" FORCE)
@@ -120,7 +187,7 @@ SET(CMAKE_SHARED_LIBRARY_CREATE_CXX_FLAGS "${CMAKE_SHARED_LIBRARY_CREATE_CXX_FLA
 #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=armv7-a -fno-omit-frame-pointer")# -fsanitize=address -g3")
 set(WEEXJSSERVERSTUB_NAME libweexjsb.so)
 add_executable(${WEEXJSSERVERSTUB_NAME}
-               weex_js_server_main_stub.cpp)
+               weex_js_server_main_stub.cpp ../../js_runtime/utils/base64.hpp)
 
 set_target_properties(${WEEXJSSERVERSTUB_NAME} 
 PROPERTIES                                                                        
@@ -142,12 +209,13 @@ endif()
 
 set(${WEEXJSSERVER_NAME}_LIBRARY_TYPE SHARED)
 
+message("${LOCAL_LIBRARIES_DIR}")
 set(${WEEXJSSERVER_NAME}_LIBRARIES
 weexbase
 weexipc
 wson
-JavaScriptCore
-WTF
+c++_shared
+jsc
 log
 z
 -lc
@@ -156,7 +224,7 @@ z
 )
 
 add_library(${WEEXJSSERVER_NAME} SHARED
-            ${${WEEXJSSERVER_NAME}_SOURCES})
+            ${${WEEXJSSERVER_NAME}_SOURCES} )
 
 
 target_link_libraries(${WEEXJSSERVER_NAME}
