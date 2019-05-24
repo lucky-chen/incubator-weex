@@ -20,6 +20,8 @@
 // Created by furture on 2018/5/15.
 //
 
+#include <list>
+#include <android/utils/params_utils.h>
 #include "core/render/node/render_object.h"
 #include "core/render/page/render_page.h"
 #include "core/render/node/factory/render_creator.h"
@@ -48,7 +50,6 @@ namespace WeexCore {
     RenderObject *parserWson2RenderObject(wson_parser& parser, RenderObject *parent, int index, const std::string &pageId){
         int objectType = parser.nextType();
         if(!parser.isMap(objectType)){
-            LOGE("[dom_wson],parser is not Map !!!!!!!!!");
             parser.skipValue(objectType);
             return nullptr;
         }
@@ -203,12 +204,125 @@ namespace WeexCore {
     }
 
 
+
+
+    RenderObject *parserWson2RenderObjectNew(wson_parser& parser, RenderObject *parent, int index, const std::string &pageId){
+        int objectType = parser.nextType();
+        if(!parser.isMap(objectType)){
+            parser.skipValue(objectType);
+            return nullptr;
+        }
+        int size = parser.nextMapSize();
+        std::string ref;
+        std::string renderType;
+        std::map<std::string, std::string> attrs;
+        std::map<std::string, std::string> styles;
+        std::vector<std::string> events;
+        std::vector<RenderObject*> children;
+
+        RenderObject *render = nullptr;
+        for(int i=0; i < size; i++){
+            std::string objectKey = parser.nextMapKeyUTF8();
+            if(0 == strcmp(objectKey.c_str(), "ref")){
+                ref = parser.nextStringUTF8(parser.nextType());
+            }else if (0 == strcmp(objectKey.c_str(), "type")) {
+                renderType = parser.nextStringUTF8(parser.nextType());
+            }else if (0 == strcmp(objectKey.c_str(), "attr")){ //attr is map object
+                uint8_t attrType = parser.nextType();
+                if(parser.isMap(attrType)){
+                    int attrMapSize = parser.nextMapSize();
+                    for(int attrIndex=0; attrIndex<attrMapSize; attrIndex++){
+                        std::string attrKeyString = parser.nextMapKeyUTF8();
+                        std::string attrValueString = parser.nextStringUTF8(parser.nextType());
+                        attrs.insert({attrKeyString, attrValueString});
+                    }
+                }else{
+                    parser.skipValue(attrType);
+                }
+            }else if (0 == strcmp(objectKey.c_str(), "style")){ //style is map object
+                uint8_t styleType = parser.nextType();
+                if(parser.isMap(styleType)){
+                    int styleMapSize = parser.nextMapSize();
+                    for(int styleIndex=0; styleIndex<styleMapSize; styleIndex++){
+                        std::string styleKeyString = parser.nextMapKeyUTF8();
+                        std::string styleValueString = parser.nextStringUTF8(parser.nextType());
+                        styles.insert({styleKeyString, styleValueString});
+                    }
+                }else{
+                    parser.skipValue(styleType);
+                }
+            }else if (0 == strcmp(objectKey.c_str(), "event")) {//event is array
+                uint8_t  eventType = parser.nextType();
+                if(parser.isArray(eventType)){
+                    int eventSize = parser.nextArraySize();
+                    for(int eventIndex=0; eventIndex < eventSize; eventIndex++){
+                        std::string eventValue = parser.nextStringUTF8(parser.nextType());
+                        if(eventValue.size() > 0){
+                            events.push_back(eventValue);
+                        }
+                    }
+                }else{
+                    parser.skipValue(eventType);
+                }
+            }else if (0 == strcmp(objectKey.c_str(), "children")) {
+                uint8_t  childType = parser.nextType();
+                if(parser.isArray(childType)){
+                    int childSize = parser.nextArraySize();
+                    for(int childIndex=0; childIndex < childSize; childIndex++){
+                        RenderObject* child = parserWson2RenderObject(parser, nullptr, childIndex, pageId);
+                        if(child != nullptr){
+                            children.push_back(child);
+                        }
+                    }
+                }else{
+                    parser.skipValue(childType);
+                }
+            }else{
+                parser.skipValue(parser.nextType());
+            }
+        }
+
+        render = (RenderObject *) RenderCreator::GetInstance()->CreateRender(renderType, ref);
+        render->set_page_id(pageId);
+
+
+        for(auto& it : attrs){
+            render->AddAttr(it.first, it.second);
+        }
+
+        for(auto& it : styles){
+            render->AddStyle(it.first, it.second);
+        }
+
+        for(auto& it : events){
+            render->AddEvent(it);
+        }
+
+        int childIndex = 0;
+        for(auto& child : children){
+            render->AddRenderObject(childIndex, child);
+        }
+
+
+        if (render != nullptr) {
+            render->ApplyDefaultStyle();
+            render->ApplyDefaultAttr();
+        }
+        return render;
+    }
+
+
     RenderObject *Wson2RenderObject(const char *data, const std::string &pageId){
         if(!data){
             return nullptr;
         }
         wson_parser parser(data);
-        return parserWson2RenderObject(parser, nullptr, 0, pageId);
+        if (isUseRunTimeApi()){
+            return  parserWson2RenderObjectNew(parser,nullptr,0,pageId);
+        } else{
+            return parserWson2RenderObject(parser, nullptr, 0, pageId);
+        }
+
     }
 
     std::vector<std::pair<std::string, std::string>> *Wson2Pairs(const char *data){
