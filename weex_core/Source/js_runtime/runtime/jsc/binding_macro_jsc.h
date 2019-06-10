@@ -252,9 +252,6 @@ static void FINALIZE_CALLBACK_FUNCTION(class_)(JSObjectRef object) {       \
 #define CLASS_REGISTER_START(class_name_, js_class_name_)                  \
 JSClassRef class_name_::s_jsclass_##class_name_ = nullptr;                              \
 JSClassRef class_name_::CreateClassRef(unicorn::EngineContext* context) {  \
-  if (class_name_::s_jsclass_##class_name_)                                             \
-    return class_name_::s_jsclass_##class_name_;                                        \
-                                                                            \
   JSContextRef ctx = nullptr != context                                    \
           ?static_cast<JSContextRef>(context->GetContext())                  \
           :nullptr;                                                             \

@@ -69,10 +69,10 @@ namespace weex {
 
         WeexInstanceBinding::WeexInstanceBinding(unicorn::EngineContext *context, const OpaqueJSContext *js_ctx)
                 : RuntimeObject(context, js_ctx) {
-            SetJSClass(WeexInstanceBinding::s_jsclass_WeexInstanceBinding);
+            //SetJSClass(WeexInstanceBinding::s_jsclass_WeexInstanceBinding);
             LOG_WEEX_BINDING("WeexInstanceBinding init");
-            WeexConsoleBinding::CreateClassRef(context);
             consoleBinding.reset(new WeexConsoleBinding(context, js_ctx));
+            SetJSClass(weex::jsengine::WeexInstanceBinding::CreateClassRef(context));
         }
 
         WeexInstanceBinding::~WeexInstanceBinding() {

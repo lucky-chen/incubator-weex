@@ -62,9 +62,9 @@ namespace weex {
 
         AppWorkerBinding::AppWorkerBinding(unicorn::EngineContext *context, const OpaqueJSContext *js_ctx)
                 : RuntimeObject(context, js_ctx) {
-            SetJSClass(AppWorkerBinding::s_jsclass_AppWorkerBinding);
-            WeexConsoleBinding::CreateClassRef(context);
+           // SetJSClass(AppWorkerBinding::s_jsclass_AppWorkerBinding);
             consoleBinding.reset(new WeexConsoleBinding(context, js_ctx));
+            SetJSClass(AppWorkerBinding::CreateClassRef(context));
         }
 
         AppWorkerBinding::~AppWorkerBinding() {

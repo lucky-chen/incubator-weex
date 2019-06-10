@@ -79,6 +79,8 @@ namespace unicorn {
                 break;
             case Type::ARRAY:
                 array_ = std::move(that.array_);
+            case Type::JSONObject:
+                data_.string_value_=that.data_.string_value_;
                 break;
         }
     }

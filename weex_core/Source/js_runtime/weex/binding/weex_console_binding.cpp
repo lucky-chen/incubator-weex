@@ -47,7 +47,7 @@ namespace weex {
 
         WeexConsoleBinding::WeexConsoleBinding(unicorn::EngineContext *context, const OpaqueJSContext *js_ctx)
                 : RuntimeObject(context, js_ctx) {
-            SetJSClass(WeexConsoleBinding::s_jsclass_WeexConsoleBinding);
+            SetJSClass(WeexConsoleBinding::CreateClassRef(context));
         }
 
 //        enum class MessageLevel {

@@ -117,7 +117,8 @@ namespace weex {
 
         WeexGlobalBinding::WeexGlobalBinding(unicorn::EngineContext *context, const OpaqueJSContext *js_ctx)
                 : RuntimeObject(context, js_ctx) {
-            SetJSClass(WeexGlobalBinding::s_jsclass_WeexGlobalBinding);
+            //SetJSClass(WeexGlobalBinding::s_jsclass_WeexGlobalBinding);
+            SetJSClass(WeexGlobalBinding::CreateClassRef(context));
             LOG_WEEX_BINDING("WeexGlobalBinding init");
         }
 

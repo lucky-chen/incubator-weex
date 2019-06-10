@@ -53,24 +53,12 @@ namespace unicorn {
 
     bool EngineContextJSC::RunJavaScript(const std::string &script, std::string *runException) {
         LOG_JS_RUNTIME("EngineContextJSC:: RunJavaScript onContext :%p, script :%s", context_, script.c_str());
+
         JSStringRef source = JSStringCreateWithUTF8CString(script.c_str());
+
+
         JSValueRef exceptionRef = nullptr;
-
-//  JSObjectRef targetObjectRef = nullptr;
-//  if(nullptr == target || nullptr == target->GetJSObject()){
-//    targetObjectRef = JSContextGetGlobalObject(context_);
-//    LOG_TEST("EngineContextJSC : RunJavaScript on contextGlobalObject %d ,script:%s",targetObjectRef,script.c_str());
-//  } else{
-//    JSValueRef valueRef= target->GetJSObject();
-//    targetObjectRef = JSValueToObject(context_,valueRef,&exceptionRef);
-//  }
-
-        //JSValueRef result = nullptr;
         JSEvaluateScript(context_, source, NULL, NULL, 0, &exceptionRef);
-        // release jsc string
-        Conversion::JSValueToStdString(context_, exceptionRef, runException);
-        // Conversion::printJSValueRefException(context_, exceptionRef);
-
         JSStringRelease(source);
         if (exceptionRef && nullptr != runException) {
             Conversion::JSValueToStdString(context_,exceptionRef,runException);
@@ -85,10 +73,10 @@ namespace unicorn {
         JSStringRef source = JSStringCreateWithUTF8CString(script.c_str());
         JSValueRef exceptionRef = nullptr;
 
-        JSValueRef result = nullptr;
+
+
+        JSValueRef result = JSEvaluateScript(context_, source, NULL, NULL, 0, &exceptionRef);
         if (!exceptionRef) {
-            result = JSEvaluateScript(context_, source, NULL, NULL, 0, &exceptionRef);
-        } else {
             Conversion::JSValueToStdString(context_, exceptionRef, exception);
         }
 
@@ -277,9 +265,10 @@ namespace unicorn {
 
             LOG_JS_RUNTIME("[EngineContextJSC] GetObjectPropertyName item :%s", result.c_str());
 
-            JSStringRelease(propertyName_);
+            //JSStringRelease(propertyName_);
             nameArrays.push_back(result);
         }
+        JSPropertyNameArrayRelease(pArray);
         return true;
     }
 

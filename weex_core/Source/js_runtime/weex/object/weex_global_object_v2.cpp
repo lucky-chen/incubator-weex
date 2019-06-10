@@ -35,10 +35,10 @@ static bool isGlobalConfigStartUpSet = false;
 
 void WeexGlobalObjectV2::makeWeexGlobalObject(unicorn::RuntimeVM *vm) {
     this->object_type_ = WeexGlobal;
-    weex::jsengine::WeexGlobalBinding::CreateClassRef(nullptr);
-    context = unicorn::RuntimeContext::Create(vm, weex::jsengine::WeexGlobalBinding::s_jsclass_WeexGlobalBinding);
+    auto binding_object = new weex::jsengine::WeexGlobalBinding(nullptr, nullptr);
+    context = unicorn::RuntimeContext::Create(vm, binding_object->GetJSClass());
+    binding_object->SetEngineContext(context->GetEngineContext());
     LOG_RUNTIME("[Context] makeWeexGlobalObject context ptr:%p", context->GetEngineContext()->GetContext());
-    auto binding_object = new weex::jsengine::WeexGlobalBinding(context->GetEngineContext(), nullptr);
     auto global_js_object = context->GetEngineContext()->GetGlobalObjectInContext();
     context->GetEngineContext()->BindDataToObject(global_js_object, binding_object);
     binding_object->SetJSObject(global_js_object);
@@ -52,11 +52,10 @@ void
 WeexGlobalObjectV2::makeWeexInstanceObject(unicorn::RuntimeVM *vm, const std::string &id, const std::string &name) {
     this->object_type_ = WeexInstance;
     //global object not support bind static method for globalObject now cause jsruntime
-    weex::jsengine::WeexInstanceBinding::CreateClassRef(nullptr);
-    context = unicorn::RuntimeContext::Create(vm, weex::jsengine::WeexInstanceBinding::s_jsclass_WeexInstanceBinding);
-    LOG_RUNTIME("[Context] makeWeexInstanceObject context ptr:%p", context->GetEngineContext()->GetContext());
+    auto binding_object = new weex::jsengine::WeexInstanceBinding(nullptr, nullptr);
+    context = unicorn::RuntimeContext::Create(vm, binding_object->GetJSClass());
+    binding_object->SetEngineContext(context->GetEngineContext());
     context->GetEngineContext()->SetName(id);
-    auto binding_object = new weex::jsengine::WeexInstanceBinding(context->GetEngineContext(), nullptr);
     binding_object->nativeObject = this;
     auto global_js_object = context->GetEngineContext()->GetGlobalObjectInContext();
     context->GetEngineContext()->BindDataToObject(global_js_object, binding_object);
@@ -67,9 +66,9 @@ WeexGlobalObjectV2::makeWeexInstanceObject(unicorn::RuntimeVM *vm, const std::st
 void WeexGlobalObjectV2::makeAppWorkerObject(unicorn::RuntimeVM *vm) {
     this->object_type_ = AppWorker;
     //global object not support bind static method for globalObject now cause jsruntime
-    weex::jsengine::AppWorkerBinding::CreateClassRef(nullptr);
-    context = unicorn::RuntimeContext::Create(vm, weex::jsengine::AppWorkerBinding::s_jsclass_AppWorkerBinding);
-    auto binding_object = new weex::jsengine::AppWorkerBinding(context->GetEngineContext(), nullptr);
+    auto binding_object = new weex::jsengine::AppWorkerBinding(nullptr, nullptr);
+    context = unicorn::RuntimeContext::Create(vm, binding_object->GetJSClass());
+    binding_object->SetEngineContext(context->GetEngineContext());
     auto global_js_object = context->GetEngineContext()->GetGlobalObjectInContext();
     context->GetEngineContext()->BindDataToObject(global_js_object, binding_object);
     binding_object->nativeObject = this;

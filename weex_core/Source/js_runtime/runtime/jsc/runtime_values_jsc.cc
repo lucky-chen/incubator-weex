@@ -183,14 +183,19 @@ std::unique_ptr<Array> JSCArray::Create(JSContextRef ctx, JSObjectRef thiz) {
 }
 
 JSCArray::JSCArray(JSContextRef ctx, JSObjectRef thiz)
-          : Array(),
-            thiz_(thiz) {
+          : Array(), context_(ctx), thiz_(thiz) {
   //LOG_TEST("JSCArray before JSValueProtect ctx:%p , thiz:%p",context_,thiz_);
-  //JSValueProtect(context_, thiz_);
+  if (nullptr != ctx && nullptr != thiz){
+    JSValueProtect(context_, thiz_);
+  }
+  //
   //LOG_TEST("JSCArray after JSValueProtect ");
 }
 
 JSCArray::~JSCArray() {
+  if (nullptr != context_ && nullptr != thiz_){
+    JSValueUnprotect(context_, thiz_);
+  }
   //JSValueUnprotect(context_, thiz_);
 }
 
