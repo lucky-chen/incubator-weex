@@ -174,7 +174,6 @@ static JSValueRef METHOD_CALLBACK_FUNCTION(method_name_)(                  \
                                         ) {                                \
                                                                                                             \
   auto addr = JSObjectGetPrivate(thiz);                                                                     \
-  LOGW("[Context]thiz:%p, object :%p,method  :%s on context:%p",thiz,addr,#method_name_,ctx);   \
   if(nullptr == addr && s_is_global_binding){                                                               \
       JSObjectRef globalObject = JSContextGetGlobalObject(ctx);                                             \
       addr = JSObjectGetPrivate(globalObject);                                                              \

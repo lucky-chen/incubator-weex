@@ -67,9 +67,9 @@ RenderPage::RenderPage(const std::string &page_id)
 }
 
 RenderPage::~RenderPage() {
-  //#if RENDER_LOG
+  #if RENDER_LOG
   LOGE("[RenderPage] Delete RenderPage >>>> pageId: %s", page_id().c_str());
-  //#endif
+  #endif
 
   this->render_object_registers_.clear();
 

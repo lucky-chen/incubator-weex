@@ -591,7 +591,7 @@ int WeexRuntimeV2::destroyInstance(const std::string &instanceId) {
   if (weex_object_holder_v2_->timeQueue != nullptr) {
     weex_object_holder_v2_->timeQueue->destroyPageTimer(instance_id_str.c_str());
   }
-  LOGE("[WEEX][release] delete object");
+ // LOGE("[WEEX][release] delete object");
   delete globalObject;
   globalObject = nullptr;
   return static_cast<int32_t>(true);

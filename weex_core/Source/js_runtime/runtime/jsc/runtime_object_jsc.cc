@@ -25,7 +25,7 @@ RuntimeObject::~RuntimeObject() {
    if (nullptr != this->object_ && nullptr != this->context_){
      JSObjectSetPrivate(object_,nullptr);
    }
-  LOGE("[release] ~RuntimeObject() this:%p", this);
+  //LOGE("[release] ~RuntimeObject() this:%p", this);
 }
 
 void RuntimeObject::SetParentJSClass(JSRunTimeClass parent_class) {
