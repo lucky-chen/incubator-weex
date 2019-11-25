@@ -916,14 +916,18 @@ public class WXScroller extends WXVContainer<ViewGroup> implements WXScrollViewL
    */
   private boolean checkItemVisibleInScroller(WXComponent component) {
     boolean visible = false;
+    WXComponent targetComponent = component;
     while (component != null && !(component instanceof WXScroller)) {
       if (component.getParent() instanceof WXScroller) {
+        if (null != getInstance() && !getInstance().enableNewScrollerAppear){
+            targetComponent = component;
+        }
         if (mOrientation == Constants.Orientation.HORIZONTAL) {
-          int offsetLeft = (int) component.getLayoutPosition().getLeft() - getScrollX();
-          visible = (offsetLeft > 0 - component.getLayoutWidth() && offsetLeft < getLayoutWidth());
+          int offsetLeft = (int) targetComponent.getLayoutPosition().getLeft() - getScrollX();
+          visible = (offsetLeft > 0 - targetComponent.getLayoutWidth() && offsetLeft < getLayoutWidth());
         } else {
-          int offsetTop = (int) component.getLayoutPosition().getTop() - getScrollY();
-          visible = (offsetTop > 0 - component.getLayoutHeight() && offsetTop < getLayoutHeight());
+          int offsetTop = (int) targetComponent.getLayoutPosition().getTop() - getScrollY();
+          visible = (offsetTop > 0 - targetComponent.getLayoutHeight() && offsetTop < getLayoutHeight());
         }
       }
       component = component.getParent();

@@ -121,6 +121,7 @@ public class WXSDKInstance implements IWXActivityStateListener,View.OnLayoutChan
   //Performance
   public boolean mEnd = false;
   public boolean mHasCreateFinish = false;
+  public boolean enableNewScrollerAppear = true;
   public static final String BUNDLE_URL = "bundleUrl";
   private IWXUserTrackAdapter mUserTrackAdapter;
   private IWXRenderListener mRenderListener;
@@ -886,6 +887,14 @@ public class WXSDKInstance implements IWXActivityStateListener,View.OnLayoutChan
       renderByUrl(pageName, WXEnvironment.sDynamicUrl, renderOptions, jsonInitData, flag);
       return;
     }
+    try {
+      IWXConfigAdapter configAdapter = WXSDKManager.getInstance().getWxConfigAdapter();
+      if (null != configAdapter){
+        this.enableNewScrollerAppear = Boolean.valueOf(configAdapter.getConfig("wxapm","enableNewScrollerAppear","true"));
+      }
+    }catch (Throwable e){
+      e.printStackTrace();
+    }
 
     TimeCalculator timeCalculator = new TimeCalculator(this);
 
@@ -915,6 +924,7 @@ public class WXSDKInstance implements IWXActivityStateListener,View.OnLayoutChan
                             WXViewUtils.getScreenDensity(mContext));
          }
     }
+
     logDetail.taskStart();
     if (isPreInitMode()){
       getApmForInstance().onStage(WXInstanceApm.KEY_PAGE_STAGES_LOAD_BUNDLE_START);
